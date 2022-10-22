@@ -1,10 +1,9 @@
-import React, { CSSProperties, useContext, useMemo } from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { IArticle } from "../db/articles";
-import { useMounted } from "../hooks/useMounted";
-import { AppContext } from "../pages";
 import { mq } from "../styles/mediaqueries";
 import Article from "./Article";
+import { Sort } from "./Feed";
 import Timestamp from "./Timestamp";
 
 const getDateMinusDays = (days: number) => {
@@ -82,21 +81,21 @@ const groupArticlesByDate = (articles) => {
   }, {});
 };
 
-const sortByDesc = (date1, date2) => {
+const sortByLatest = (date1, date2) => {
   return new Date(date2).getTime() - new Date(date1).getTime();
 };
 
-const sortByAsc = (date1, date2) => {
+const sortByEarliest = (date1, date2) => {
   return new Date(date1).getTime() - new Date(date2).getTime();
 };
 
 interface TimelineProps {
   articles: IArticle[];
+  sort: Sort;
 }
 
-export default function Timeline({ articles }: TimelineProps) {
-  const { sort } = useContext(AppContext);
-  const sortMethod = sort === "Latest" ? sortByDesc : sortByAsc;
+export default function Timeline({ articles, sort }: TimelineProps) {
+  const sortMethod = sort === "Latest" ? sortByLatest : sortByEarliest;
   const groupedArticles = useMemo(
     () => groupArticlesByDate(articles),
     [articles]
