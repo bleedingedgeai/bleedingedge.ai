@@ -1,10 +1,8 @@
 import { useRouter } from "next/router";
-import React, { CSSProperties, useCallback } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import IconStar from "../components/Icons/IconStar";
 import { IArticle } from "../db/articles";
-import { useMounted } from "../hooks/useMounted";
-import { useTags } from "../hooks/useTags";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 import { today, yesterday } from "./Timeline";

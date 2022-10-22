@@ -23,8 +23,8 @@ export default function Select({ options: initialOptions }: SelectProps) {
   const [value, setValue] = useState("");
 
   const filteredOptions = useMemo(() => {
-    return initialOptions?.filter((option) => selected !== option);
-  }, [selected, initialOptions]);
+    return options?.filter((option) => selected !== option);
+  }, [selected, options]);
 
   ////////////////////////////////////////////////////////////////
   // Event handlers and utility methods
@@ -128,7 +128,7 @@ export default function Select({ options: initialOptions }: SelectProps) {
       }
 
       if (event.key === "Backspace") {
-        setSelected([]);
+        setSelected(null);
       }
     };
 
@@ -147,10 +147,12 @@ export default function Select({ options: initialOptions }: SelectProps) {
   const [dropdownStyles] = useSpring(
     {
       height:
-        options?.length === 0 ? 31 + 10 : options?.length * 28.5 + 31 + 13,
+        filteredOptions?.length === 0
+          ? 31 + 10
+          : filteredOptions?.length * 28.5 + 31 + 13,
       config: { tension: 2650, friction: 100 },
     },
-    [options, tag]
+    [filteredOptions]
   );
 
   const dropdownTransitions = useTransition(open, {
