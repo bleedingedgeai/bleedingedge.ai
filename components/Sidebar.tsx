@@ -21,7 +21,7 @@ export default function Sidebar() {
           Bleeding Edge is a feed of noteworthy — or novel — developments in AI.
           this site is very much a work in progress. Please send feedback!
         </Description>
-        {router.pathname === "/" && (
+        {router.pathname !== "/about" && (
           <Link href="/about">
             <StyledLink>
               More about this project

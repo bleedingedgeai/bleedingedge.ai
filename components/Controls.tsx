@@ -1,14 +1,18 @@
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import styled from "styled-components";
 import Select from "../components/Forms/Select";
 import IconArrow from "../components/Icons/IconArrow";
 import { inputIsFocused } from "../helpers/input";
-import { AppContext } from "../pages";
 import { mq } from "../styles/mediaqueries";
+import { Sort } from "./Feed";
 
-export default function Controls({ tags }: { tags: string[] }) {
-  const { sort, setSort } = useContext(AppContext);
+interface ControlsProps {
+  tags: string[];
+  sort: Sort;
+  setSort: React.Dispatch<React.SetStateAction<Sort>>;
+}
 
+export default function Controls({ tags, sort, setSort }: ControlsProps) {
   const handleSortClick = useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
