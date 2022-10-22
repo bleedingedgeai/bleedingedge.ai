@@ -100,7 +100,12 @@ export default function Suggestion() {
             <GitHub />
             <Button
               text="Go to Github"
-              onClick={() => window.open("https://github.com", "_blank")}
+              onClick={() =>
+                window.open(
+                  "https://github.com/bleedingedgeai/bleedingedge.ai",
+                  "_blank"
+                )
+              }
             />
           </>
         ) : (

@@ -80,7 +80,13 @@ export default function Navigation() {
                   <Link href="/about">Email</Link>
                 </Item>
                 <Item>
-                  <Link href="/about">Twitter</Link>
+                  <a
+                    href="/https://twitter.com/bleedingedgeai"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Twitter
+                  </a>
                 </Item>
               </List>
               <Divider />
