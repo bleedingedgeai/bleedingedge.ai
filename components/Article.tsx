@@ -78,7 +78,6 @@ const Title = styled.h3`
     font-size: 16px;
     white-space: normal;
     overflow: visible;
-    margin-bottom: 4px;
   }
 `;
 
@@ -168,13 +167,13 @@ function ArticleFeatured({ article, dateKey }: ArticleProps) {
           <Title>{article.title}</Title>
           <ArticleFeaturedSourceDesktop>
             <span>{host}</span>
+            <ArticleMetadata article={article} dateKey={dateKey} showSource />
           </ArticleFeaturedSourceDesktop>
           <Blurb>{article.blurb}</Blurb>
           <ArticleFeaturedSourceMobile>
             <span>Source: {host}</span>
           </ArticleFeaturedSourceMobile>
         </TextContainer>
-        <ArticleMetadata article={article} dateKey={dateKey} showSource />
       </ArticleWithBackgroundContent>
     </ArticleWithBackgroundContainer>
   );
@@ -196,7 +195,10 @@ function ArticleHighlight({ article, dateKey }: ArticleProps) {
       <Dot />
       <ArticleWithBackgroundContent>
         <TextContainer>
-          <Title>{article.title}</Title>
+          <Top>
+            <Title>{article.title}</Title>
+            <ArticleMetadata article={article} dateKey={dateKey} showSource />
+          </Top>
           <ArticleFeaturedSourceDesktop style={{ marginTop: 2 }}>
             <span>{host}</span>
           </ArticleFeaturedSourceDesktop>
@@ -205,11 +207,19 @@ function ArticleHighlight({ article, dateKey }: ArticleProps) {
             <span>Source: {host}</span>
           </ArticleFeaturedSourceMobile>
         </TextContainer>
-        <ArticleMetadata article={article} dateKey={dateKey} showSource />
       </ArticleWithBackgroundContent>
     </ArticleWithBackgroundContainer>
   );
 }
+
+const Top = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  ${mq.desktopSmall} {
+    flex-direction: column;
+  }
+`;
 
 const Dot = styled.div`
   position: absolute;
@@ -224,7 +234,7 @@ const Dot = styled.div`
 
   ${mq.desktopSmall} {
     left: 29px;
-    top: 22px;
+    top: 30px;
     box-shadow: none;
   }
 
@@ -283,11 +293,11 @@ function ArticleMetadata({
         {article.tags?.length > 0 && <DotDivider>·</DotDivider>}
         <PostedAt>{format(new Date(article.posted_at))}</PostedAt>
       </ArticleMetadataContent>
-      {showSource && (
+      {/* {showSource && (
         <ArticleFeaturedSourceTablet>
           <span>&lt;{url.host}&gt;</span>
         </ArticleFeaturedSourceTablet>
-      )}
+      )} */}
     </ArticleMetadataContainer>
   );
 }
@@ -300,6 +310,11 @@ const ArticleMetadataContainer = styled.div<{ defaultArticle?: boolean }>`
   ${mq.desktopSmall} {
     padding: 0;
     width: 100%;
+    margin-top: 4px;
+  }
+
+  ${mq.phablet} {
+    margin-top: 2px;
   }
 `;
 
@@ -310,6 +325,8 @@ const ArticleFeaturedSourceTablet = styled.div`
   line-height: 120%;
   color: ${(p) => p.theme.colors.light_grey};
   margin-bottom: 2px;
+  position: relative;
+  top: -12px;
 
   ${mq.desktopSmallUp} {
     display: none;
@@ -324,17 +341,17 @@ const ArticleFeaturedSourceMobile = styled.div`
   font-weight: 500;
   font-size: 12px;
   line-height: 120%;
-  margin-top: 16px;
+  margin-top: 8px;
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   color: ${(p) => p.theme.colors.off_white};
 
-  ${mq.phabletUp} {
+  ${mq.desktopSmallUp} {
     display: none;
   }
 `;
 
 const DotDivider = styled.span`
-  margin: 0 2px;
+  margin: 0 1px;
   color: ${(p) => p.theme.colors.light_grey};
 
   ${mq.phabletUp} {
@@ -406,6 +423,7 @@ const PostedAt = styled.div`
   }
 
   ${mq.tablet} {
+    margin-right: 5px;
     font-size: 10px;
   }
 `;
@@ -420,7 +438,7 @@ const StarContainer = styled.div`
 
   ${mq.desktopSmall} {
     left: 28px;
-    top: 15px;
+    top: 23px;
     z-index: 1;
     box-shadow: none;
     background: none;
@@ -464,12 +482,12 @@ const ArticleWithBackgroundContent = styled.div`
   overflow: hidden;
 
   ${mq.desktopSmall} {
-    padding: 16px 32px 24px 32px;
+    padding: 24px 32px 24px 32px;
     flex-direction: column-reverse;
   }
 
   ${mq.phablet} {
-    padding: 16px 32px 24px 41px;
+    padding: 24px 32px 24px 41px;
     flex-direction: column-reverse;
     border-radius: 0;
     border-left: none;
