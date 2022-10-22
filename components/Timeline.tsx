@@ -126,8 +126,9 @@ export default function Timeline({ articles, sort }: TimelineProps) {
 }
 
 const Content = styled.div`
-  transition: opacity 0.15s;
+  margin-bottom: 2px;
 `;
+
 const Container = styled.div`
   position: relative;
   border-left: 1px solid rgba(255, 255, 255, 0.42);

@@ -22,8 +22,8 @@ export default function Feed(props: FeedProps) {
   return (
     <>
       <SEO title="bleeding edge | Home" />
-      <Navigation />
       <Glow />
+      <Navigation />
       <Bounds>
         <Container>
           <Left>
@@ -131,15 +131,15 @@ const Right = styled.div`
 `;
 
 const Glow = styled.div`
-  position: absolute;
+  position: fixed;
   width: 356px;
   height: 192px;
-  left: 18%;
+  left: 22%;
   top: -110px;
   border-radius: 50%;
-  background: rgba(52, 39, 32, 0.32);
+  background: rgba(52, 39, 32, 0.52);
   filter: blur(66px);
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
 
   ${mq.desktopSmall} {
