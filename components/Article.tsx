@@ -1,12 +1,16 @@
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
-import { timeAgo } from "short-time-ago";
 import styled from "styled-components";
 import IconStar from "../components/Icons/IconStar";
 import { IArticle } from "../db/articles";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 import { lastWeek, today, yesterday } from "./Timeline";
+
+const getPrettyHostname = (urlString: string) => {
+  const { hostname } = new URL(urlString);
+  return hostname.replace("www.", "");
+};
 
 interface ArticleProps {
   article: IArticle;
@@ -18,7 +22,6 @@ export default function Article({ article, dateKey }: ArticleProps) {
     featured: ArticleFeatured,
     highlight: ArticleHighlight,
   };
-
   const ArticleComponent = formats[article.format] || ArticleDefault;
 
   return <ArticleComponent article={article} dateKey={dateKey} />;
@@ -29,44 +32,18 @@ export default function Article({ article, dateKey }: ArticleProps) {
 ////////////////////////////////////////////////////////////////////
 
 function ArticleDefault({ article, dateKey }: ArticleProps) {
-  const url = new URL(article.url);
-
   return (
     <ArticleDefaultContainer href={article.url} target="_blank" rel="noopener">
       <ArticleDefaultContent>
         <TextContainer>
-          <Host>
-            {url.host}
-            <TimeAgo dateKey={dateKey} date={new Date(article.posted_at)} />
-          </Host>
           <Title>{article.title}</Title>
+          <Host>{getPrettyHostname(article.url)}</Host>
         </TextContainer>
         <ArticleMetadata article={article} dateKey={dateKey} defaultArticle />
       </ArticleDefaultContent>
     </ArticleDefaultContainer>
   );
 }
-
-interface TimeAgoProps {
-  dateKey: string;
-  date: Date;
-}
-
-function TimeAgo({ dateKey, date }: TimeAgoProps) {
-  switch (dateKey) {
-    case today:
-    case yesterday:
-    case lastWeek:
-      return <Time> · {timeAgo(date)}</Time>;
-    default:
-      // will format to: Oct 19
-      return null;
-  }
-}
-
-const Time = styled.span`
-  opacity: 0.5;
-`;
 
 const TextContainer = styled.div`
   overflow: hidden;
@@ -79,7 +56,7 @@ const Host = styled.div`
   font-size: 9px;
   line-height: 120%;
   color: ${(p) => p.theme.colors.light_grey};
-  margin-bottom: 2px;
+  margin-top: 2px;
 
   ${mq.desktopSmall} {
     display: none;
@@ -101,6 +78,7 @@ const Title = styled.h3`
     font-size: 16px;
     white-space: normal;
     overflow: visible;
+    margin-bottom: 4px;
   }
 `;
 
@@ -143,20 +121,18 @@ const ArticleDefaultContainer = styled.a`
 const ArticleDefaultContent = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: flex-start;
   position: relative;
   font-weight: 500;
   margin-right: 21px;
   padding-left: 42px;
 
   ${mq.desktopSmall} {
+    flex-direction: column;
     padding: 0 0 0 21px;
-    display: flex;
-    flex-direction: column-reverse;
   }
 
   ${mq.tablet} {
-    flex-direction: column-reverse;
     margin-bottom: 24px;
   }
 
@@ -170,7 +146,7 @@ const ArticleDefaultContent = styled.div`
 ////////////////////////////////////////////////////////////////////
 
 function ArticleFeatured({ article, dateKey }: ArticleProps) {
-  const url = new URL(article.url);
+  const host = getPrettyHostname(article.url);
 
   return (
     <ArticleWithBackgroundContainer
@@ -189,14 +165,13 @@ function ArticleFeatured({ article, dateKey }: ArticleProps) {
           <BlueGradient />
         </BlueGradientContainer>
         <TextContainer>
-          <ArticleFeaturedSourceDesktop>
-            <span>{url.host}</span>
-            <TimeAgo dateKey={dateKey} date={new Date(article.posted_at)} />
-          </ArticleFeaturedSourceDesktop>
           <Title>{article.title}</Title>
+          <ArticleFeaturedSourceDesktop>
+            <span>{host}</span>
+          </ArticleFeaturedSourceDesktop>
           <Blurb>{article.blurb}</Blurb>
           <ArticleFeaturedSourceMobile>
-            <span>Source: {url.host}</span>
+            <span>Source: {host}</span>
           </ArticleFeaturedSourceMobile>
         </TextContainer>
         <ArticleMetadata article={article} dateKey={dateKey} showSource />
@@ -210,7 +185,7 @@ function ArticleFeatured({ article, dateKey }: ArticleProps) {
 ////////////////////////////////////////////////////////////////////
 
 function ArticleHighlight({ article, dateKey }: ArticleProps) {
-  const url = new URL(article.url);
+  const host = getPrettyHostname(article.url);
 
   return (
     <ArticleWithBackgroundContainer
@@ -221,14 +196,13 @@ function ArticleHighlight({ article, dateKey }: ArticleProps) {
       <Dot />
       <ArticleWithBackgroundContent>
         <TextContainer>
-          <ArticleFeaturedSourceDesktop>
-            <span>{url.host}</span>
-            <TimeAgo dateKey={dateKey} date={new Date(article.posted_at)} />
-          </ArticleFeaturedSourceDesktop>
           <Title>{article.title}</Title>
+          <ArticleFeaturedSourceDesktop style={{ marginTop: 2 }}>
+            <span>{host}</span>
+          </ArticleFeaturedSourceDesktop>
           <Blurb>{article.blurb}</Blurb>
           <ArticleFeaturedSourceMobile>
-            <span>Source: {url.host}</span>
+            <span>Source: {host}</span>
           </ArticleFeaturedSourceMobile>
         </TextContainer>
         <ArticleMetadata article={article} dateKey={dateKey} showSource />
@@ -245,9 +219,8 @@ const Dot = styled.div`
   background: ${(p) => p.theme.colors.off_white};
   box-shadow: 0 0 0 6px ${(p) => p.theme.colors.black};
   z-index: 1;
-
   left: -4px;
-  top: 16px;
+  top: 24px;
 
   ${mq.desktopSmall} {
     left: 29px;
@@ -323,7 +296,6 @@ const ArticleMetadataContainer = styled.div<{ defaultArticle?: boolean }>`
   position: relative;
   display: flex;
   justify-content: space-between;
-  ${(p) => (p.defaultArticle ? `padding-bottom: 1px;` : `padding-top: 4px;`)}
 
   ${mq.desktopSmall} {
     padding: 0;
@@ -378,7 +350,6 @@ const ArticleMetadataContent = styled.div`
   ${mq.desktopSmall} {
     flex-direction: row-reverse;
     justify-content: flex-end;
-    margin-bottom: 6px;
   }
 `;
 
@@ -442,7 +413,7 @@ const PostedAt = styled.div`
 const StarContainer = styled.div`
   position: absolute;
   left: -4px;
-  top: 10px;
+  top: 16px;
   border-radius: 50%;
   background: ${(p) => p.theme.colors.black};
   box-shadow: 0 0 0 2px ${(p) => p.theme.colors.black};
@@ -485,7 +456,7 @@ const ArticleWithBackgroundContent = styled.div`
   background: #090808;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 7px;
-  padding: 15px 21px 16px;
+  padding: 18px 21px 16px;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -512,7 +483,8 @@ const ArticleFeaturedSourceDesktop = styled.div`
   font-size: 9px;
   line-height: 120%;
   color: ${(p) => p.theme.colors.light_grey};
-  margin-bottom: 2px;
+  margin-top: 2px;
+  display: inline-block;
 
   ${mq.desktopSmall} {
     display: none;
