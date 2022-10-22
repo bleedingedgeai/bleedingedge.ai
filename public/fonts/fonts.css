@@ -1,0 +1,15 @@
+@font-face {
+  font-family: "Nouvelle Grotesk";
+  src: url("/fonts/nouvelle/NNNouvelleGroteskSTD-Normal.woff2"),
+    url("/fonts/nouvelle/NNNouvelleGroteskSTD-Normal.woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Nouvelle Grotesk";
+  src: url("/fonts/nouvelle/NNNouvelleGroteskSTD-Medium.woff2"),
+    url("/fonts/nouvelle/NNNouvelleGroteskSTD-Medium.woff");
+  font-weight: 500;
+  font-style: normal;
+}
