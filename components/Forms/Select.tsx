@@ -128,7 +128,9 @@ export default function Select({ options: initialOptions }: SelectProps) {
       }
 
       if (event.key === "Backspace") {
-        setSelected(null);
+        if (selected) {
+          handleSelect(null);
+        }
       }
     };
 
@@ -138,7 +140,7 @@ export default function Select({ options: initialOptions }: SelectProps) {
         document.removeEventListener("keydown", handleKeyDown);
       };
     }
-  }, [open, options, highlighted]);
+  }, [open, options, highlighted, handleSelect]);
 
   ////////////////////////////////////////////////////////////////
   // Dropdown animation styles
