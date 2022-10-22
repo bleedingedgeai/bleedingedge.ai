@@ -16,6 +16,7 @@
     "react-is": "^18.2.0",
     "react-outside-click-handler": "^1.3.0",
     "react-spring": "^9.5.5",
+    "short-time-ago": "^2.0.0",
     "styled-components": "^5.3.5"
   },
   "devDependencies": {

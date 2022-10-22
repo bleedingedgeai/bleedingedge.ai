@@ -35,8 +35,7 @@ export default function Timestamp({ dateKey, first }: TimestampProps) {
 
 const TimestampContainer = styled.div<{ first: boolean }>`
   position: relative;
-  margin-bottom: 18px;
-  margin-right: 21px;
+  margin-bottom: 16px;
   padding-left: 42px;
   color: ${(p) => p.theme.colors.orange};
 

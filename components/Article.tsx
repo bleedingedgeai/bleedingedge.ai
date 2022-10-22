@@ -1,15 +1,16 @@
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
+import { timeAgo } from "short-time-ago";
 import styled from "styled-components";
 import IconStar from "../components/Icons/IconStar";
 import { IArticle } from "../db/articles";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
-import { today, yesterday } from "./Timeline";
+import { lastWeek, today, yesterday } from "./Timeline";
 
 interface ArticleProps {
   article: IArticle;
-  dateKey?: string;
+  dateKey: string;
 }
 
 export default function Article({ article, dateKey }: ArticleProps) {
@@ -28,21 +29,61 @@ export default function Article({ article, dateKey }: ArticleProps) {
 ////////////////////////////////////////////////////////////////////
 
 function ArticleDefault({ article, dateKey }: ArticleProps) {
+  const url = new URL(article.url);
+
   return (
     <ArticleDefaultContainer href={article.url} target="_blank" rel="noopener">
       <ArticleDefaultContent>
         <TextContainer>
+          <Host>
+            {url.host}
+            <TimeAgo dateKey={dateKey} date={new Date(article.posted_at)} />
+          </Host>
           <Title>{article.title}</Title>
         </TextContainer>
-        <ArticleMetadata article={article} dateKey={dateKey} />
+        <ArticleMetadata article={article} dateKey={dateKey} defaultArticle />
       </ArticleDefaultContent>
     </ArticleDefaultContainer>
   );
 }
 
+interface TimeAgoProps {
+  dateKey: string;
+  date: Date;
+}
+
+function TimeAgo({ dateKey, date }: TimeAgoProps) {
+  switch (dateKey) {
+    case today:
+    case yesterday:
+    case lastWeek:
+      return <Time> · {timeAgo(date)}</Time>;
+    default:
+      // will format to: Oct 19
+      return null;
+  }
+}
+
+const Time = styled.span`
+  opacity: 0.5;
+`;
+
 const TextContainer = styled.div`
   overflow: hidden;
   width: 100%;
+`;
+
+const Host = styled.div`
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
+  font-weight: 500;
+  font-size: 9px;
+  line-height: 120%;
+  color: ${(p) => p.theme.colors.light_grey};
+  margin-bottom: 2px;
+
+  ${mq.desktopSmall} {
+    display: none;
+  }
 `;
 
 const Title = styled.h3`
@@ -76,7 +117,7 @@ const Blurb = styled.p`
 const ArticleDefaultContainer = styled.a`
   display: block;
   position: relative;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 
   &::before {
     content: "";
@@ -102,7 +143,7 @@ const ArticleDefaultContainer = styled.a`
 const ArticleDefaultContent = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: flex-end;
   position: relative;
   font-weight: 500;
   margin-right: 21px;
@@ -150,6 +191,7 @@ function ArticleFeatured({ article, dateKey }: ArticleProps) {
         <TextContainer>
           <ArticleFeaturedSourceDesktop>
             <span>{url.host}</span>
+            <TimeAgo dateKey={dateKey} date={new Date(article.posted_at)} />
           </ArticleFeaturedSourceDesktop>
           <Title>{article.title}</Title>
           <Blurb>{article.blurb}</Blurb>
@@ -181,6 +223,7 @@ function ArticleHighlight({ article, dateKey }: ArticleProps) {
         <TextContainer>
           <ArticleFeaturedSourceDesktop>
             <span>{url.host}</span>
+            <TimeAgo dateKey={dateKey} date={new Date(article.posted_at)} />
           </ArticleFeaturedSourceDesktop>
           <Title>{article.title}</Title>
           <Blurb>{article.blurb}</Blurb>
@@ -234,6 +277,7 @@ const formatDateStringMethod = (dateKey: string) => {
 
 interface ArticleMetadataProps extends ArticleProps {
   showSource?: boolean;
+  defaultArticle?: boolean;
   dateKey: string;
 }
 
@@ -241,6 +285,7 @@ function ArticleMetadata({
   article,
   showSource,
   dateKey,
+  defaultArticle,
 }: ArticleMetadataProps) {
   const url = new URL(article.url);
   const { format } = formatDateStringMethod(dateKey);
@@ -252,7 +297,7 @@ function ArticleMetadata({
   }, []);
 
   return (
-    <ArticleMetadataContainer>
+    <ArticleMetadataContainer defaultArticle={defaultArticle}>
       <ArticleMetadataContent>
         <Tags>
           {article.tags?.map((tag, index) => (
@@ -262,7 +307,7 @@ function ArticleMetadata({
             </Tag>
           ))}
         </Tags>
-        {article.tags?.length > 0 && <Divider />}
+        {article.tags?.length > 0 && <DotDivider>·</DotDivider>}
         <PostedAt>{format(new Date(article.posted_at))}</PostedAt>
       </ArticleMetadataContent>
       {showSource && (
@@ -274,12 +319,14 @@ function ArticleMetadata({
   );
 }
 
-const ArticleMetadataContainer = styled.div`
+const ArticleMetadataContainer = styled.div<{ defaultArticle?: boolean }>`
   position: relative;
   display: flex;
   justify-content: space-between;
+  ${(p) => (p.defaultArticle ? `padding-bottom: 1px;` : `padding-top: 4px;`)}
 
   ${mq.desktopSmall} {
+    padding: 0;
     width: 100%;
   }
 `;
@@ -314,11 +361,9 @@ const ArticleFeaturedSourceMobile = styled.div`
   }
 `;
 
-const Divider = styled.div`
-  width: 1px;
-  height: 12px;
-  background: ${(p) => p.theme.colors.light_grey};
-  margin: 0 3px;
+const DotDivider = styled.span`
+  margin: 0 2px;
+  color: ${(p) => p.theme.colors.light_grey};
 
   ${mq.phabletUp} {
     display: none;
@@ -384,12 +429,12 @@ const PostedAt = styled.div`
   min-width: 55px;
 
   ${mq.desktopSmall} {
+    min-width: auto;
+    margin-right: 6px;
     text-align: left;
   }
 
   ${mq.tablet} {
-    min-width: auto;
-    margin-right: 6px;
     font-size: 10px;
   }
 `;
