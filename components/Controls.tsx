@@ -6,13 +6,13 @@ import { inputIsFocused } from "../helpers/input";
 import { AppContext } from "../pages";
 import { mq } from "../styles/mediaqueries";
 
-export default function Controls() {
+export default function Controls({ tags }: { tags: string[] }) {
   const { sort, setSort } = useContext(AppContext);
 
   const handleSortClick = useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      setSort((prev) => (prev === "Descending" ? "Ascending" : "Descending"));
+      setSort((prev) => (prev === "Latest" ? "Earliest" : "Latest"));
     },
     [setSort]
   );
@@ -24,7 +24,7 @@ export default function Controls() {
       }
 
       if (event.code === "KeyT") {
-        setSort((prev) => (prev === "Descending" ? "Ascending" : "Descending"));
+        setSort((prev) => (prev === "Latest" ? "Earliest" : "Latest"));
       }
     };
 
@@ -36,7 +36,7 @@ export default function Controls() {
     <Container>
       <SortContainer onClick={handleSortClick}>
         <SortArrow
-          style={sort === "Descending" ? {} : { transform: "rotate(180deg" }}
+          style={sort === "Latest" ? {} : { transform: "rotate(180deg" }}
         >
           <IconArrow />
         </SortArrow>
@@ -44,7 +44,7 @@ export default function Controls() {
           Timeline <span>:: {sort}</span>
         </SortButton>
       </SortContainer>
-      <Select />
+      <Select options={tags} />
     </Container>
   );
 }

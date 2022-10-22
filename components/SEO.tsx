@@ -8,6 +8,7 @@
  */
 
 import Head from "next/head";
+import { useRouter } from "next/router";
 import React from "react";
 
 interface SEOProps {
@@ -16,7 +17,6 @@ interface SEOProps {
   image?: string;
   description?: string;
   themeColor?: string;
-  pathname: string;
   title: string;
 }
 
@@ -27,11 +27,12 @@ export default function SEO({
   children,
   dateforSEO,
   image = "/assets/meta/be-meta.jpg",
-  pathname,
   title,
   themeColor = "#0B0B0F",
   description = defaultDescription,
 }: React.PropsWithChildren<SEOProps>) {
+  const router = useRouter();
+
   const site = {
     siteUrl: process.env.NEXT_PUBLIC_URL,
     title,
@@ -41,11 +42,11 @@ export default function SEO({
     social: [
       {
         name: "twitter",
-        url: "https://twitter.com",
+        url: "https://twitter.com/bleedingedgeai",
       },
       {
         name: "github",
-        url: "https://github.com",
+        url: "https://github.com/bleedingedgeai/bleedingedge.ai",
       },
     ],
   };
@@ -53,7 +54,7 @@ export default function SEO({
   const twitter = site.social.find((option) => option.name === "twitter");
   const github = site.social.find((option) => option.name === "github");
 
-  const pageUrl = site.siteUrl + pathname;
+  const pageUrl = site.siteUrl + router.pathname;
 
   const fullURL = (path: string) => (path ? `${path}` : site.siteUrl);
 

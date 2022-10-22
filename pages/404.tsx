@@ -35,7 +35,7 @@ export default function NotFound() {
           <AdjustedBounds>
             <ImageLayout>
               <ErrorImageContainer>
-                <Image src="/assets/404/be-error.svg" layout="fill" />
+                <Image src="/assets/404/be-error-404.svg" layout="fill" />
               </ErrorImageContainer>
               <ImageAlignBottom>
                 <StatueImageContainer>

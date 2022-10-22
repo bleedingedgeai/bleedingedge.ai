@@ -247,24 +247,11 @@ function ArticleMetadata({
   const url = new URL(article.url);
   const { format } = formatDateStringMethod(dateKey);
   const router = useRouter();
-  const tags = useTags();
 
-  const handleTagClick = useCallback(
-    (event: React.MouseEvent, tag) => {
-      event.preventDefault();
-
-      router.replace(router.pathname, {
-        query: { tags: [...tags, tag].join(",") },
-      });
-    },
-    [tags]
-  );
-
-  const mounted = useMounted();
-  const style: CSSProperties = {
-    visibility: mounted ? "visible" : "hidden",
-    opacity: mounted ? 1 : 0,
-  };
+  const handleTagClick = useCallback((event: React.MouseEvent, tag) => {
+    event.preventDefault();
+    router.replace(`/tags/${tag}`);
+  }, []);
 
   return (
     <ArticleMetadataContainer>
@@ -278,11 +265,7 @@ function ArticleMetadata({
           ))}
         </Tags>
         {article.tags?.length > 0 && <Divider />}
-        {mounted && (
-          <PostedAt style={style}>
-            {format(new Date(article.posted_at))}
-          </PostedAt>
-        )}
+        <PostedAt>{format(new Date(article.posted_at))}</PostedAt>
       </ArticleMetadataContent>
       {showSource && (
         <ArticleFeaturedSourceTablet>
@@ -407,6 +390,8 @@ const PostedAt = styled.div`
   }
 
   ${mq.tablet} {
+    min-width: auto;
+    margin-right: 6px;
     font-size: 10px;
   }
 `;
