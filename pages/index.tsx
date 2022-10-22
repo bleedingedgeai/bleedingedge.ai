@@ -14,6 +14,7 @@ export async function getStaticProps() {
       articles,
       tags,
     },
+    revalidate: 60, // In seconds
   };
 }
 
