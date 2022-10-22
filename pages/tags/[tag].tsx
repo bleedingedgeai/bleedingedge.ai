@@ -19,9 +19,23 @@ export async function getStaticProps({ params }) {
       getArticles({ tags: [params.tag] }),
       getTags(),
     ]);
-    return { props: { articles, tags, tag: params.tag } };
+    return {
+      props: {
+        articles,
+        tags,
+        tag: params.tag,
+      },
+      revalidate: 60, // In seconds
+    };
   } catch (error) {
-    console.error(error);
+    return {
+      props: {
+        articles: [],
+        tags: [],
+        tag: params.tag,
+      },
+      revalidate: 60, // In seconds
+    };
   }
 }
 
