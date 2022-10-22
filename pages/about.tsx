@@ -17,7 +17,7 @@ const specialThanks = [
   },
 
   {
-    name: " David Song",
+    name: "David Song",
     href: "https://twitter.com/davidtsong",
   },
 
@@ -39,7 +39,7 @@ const additionalThanks = [
   },
 
   {
-    name: " Marco Mascorro",
+    name: "Marco Mascorro",
     href: "https://twitter.com/Mascobot",
   },
 
