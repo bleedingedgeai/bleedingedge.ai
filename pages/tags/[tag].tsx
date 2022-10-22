@@ -1,16 +1,37 @@
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import styled from "styled-components";
-import Bounds from "../components/Bounds";
-import Controls from "../components/Controls";
-import Navigation from "../components/Navigation";
-import SEO from "../components/SEO";
-import Sidebar from "../components/Sidebar";
-import Timeline from "../components/Timeline";
-import { getArticles } from "../db/articles";
-import { getTags } from "../db/tags";
-import { mq } from "../styles/mediaqueries";
+import Bounds from "../../components/Bounds";
+import Controls from "../../components/Controls";
+import Navigation from "../../components/Navigation";
+import SEO from "../../components/SEO";
+import Sidebar from "../../components/Sidebar";
+import Timeline from "../../components/Timeline";
+import { getArticles } from "../../db/articles";
+import { getTags } from "../../db/tags";
+import { mq } from "../../styles/mediaqueries";
 
-export type Sort = "Latest" | "Earliest";
+export type Sort = "Earliest" | "Latest";
+
+export async function getStaticPaths() {
+  const tags = await getTags();
+  const paths = tags.map((tag) => ({ params: { tag } }));
+
+  return { paths, fallback: false };
+}
+
+// This also gets called at build time
+export async function getStaticProps({ params }) {
+  try {
+    const [articles, tags] = await Promise.all([
+      getArticles({ tags: [params.tag] }),
+      getTags(),
+    ]);
+    return { props: { articles, tags } };
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 interface AppContext {
   sort: Sort;
@@ -24,26 +45,13 @@ const initialAppContext: AppContext = {
 
 export const AppContext = React.createContext<AppContext>(initialAppContext);
 
-export async function getStaticProps() {
-  const articlesRequest = getArticles({ tags: [] });
-  const tagsRequest = getTags();
-
-  const [articles, tags] = await Promise.all([articlesRequest, tagsRequest]);
-
-  return {
-    props: {
-      articles,
-      tags,
-    },
-  };
-}
-
 export default function Home(props) {
   const [sort, setSort] = useState<Sort>("Latest");
+  const router = useRouter();
 
   return (
     <>
-      <SEO title="bleeding edge | Home" />
+      <SEO title={`bleeding edge | ${router.query.tag}`} />
       <AppContext.Provider value={{ sort, setSort }}>
         <Navigation />
         <Glow />

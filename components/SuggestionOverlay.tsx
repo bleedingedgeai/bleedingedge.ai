@@ -238,16 +238,32 @@ function GitHub() {
         bleedingedgeai / <span>bleedingedge.ai</span>
       </GithubRepo>
       <GithubLinks>
-        <GithubLink href="https://github.com" target="_blank" rel="noopener">
+        <GithubLink
+          href="https://github.com/bleedingedgeai/bleedingedge.ai"
+          target="_blank"
+          rel="noopener"
+        >
           <IconCode /> Code
         </GithubLink>
-        <GithubLink href="https://github.com" target="_blank" rel="noopener">
+        <GithubLink
+          href="https://github.com/bleedingedgeai/bleedingedge.ai/issues"
+          target="_blank"
+          rel="noopener"
+        >
           <IconIssues /> Issues
         </GithubLink>
-        <GithubLink href="https://github.com" target="_blank" rel="noopener">
+        <GithubLink
+          href="https://github.com/bleedingedgeai/bleedingedge.ai/pulls"
+          target="_blank"
+          rel="noopener"
+        >
           <IconPullRequest /> Pull requests
         </GithubLink>
-        <GithubLink href="https://github.com" target="_blank" rel="noopener">
+        <GithubLink
+          href="https://github.com/bleedingedgeai/bleedingedge.ai/blob/main/README.md"
+          target="_blank"
+          rel="noopener"
+        >
           <IconReadme /> Readme
         </GithubLink>
         <GithubLink href="https://github.com" target="_blank" rel="noopener">

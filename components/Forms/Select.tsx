@@ -1,32 +1,30 @@
 import Fuse from "fuse.js/dist/fuse.basic";
 import { useRouter } from "next/router";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import OutsideClickHandler from "react-outside-click-handler";
 import { animated, useSpring, useTransition } from "react-spring";
 import styled from "styled-components";
 import { inputIsFocused } from "../../helpers/input";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
-import { useTags } from "../../hooks/useTags";
-import { AppContext } from "../../pages";
 import { mq } from "../../styles/mediaqueries";
 import IconEx from "../Icons/IconEx";
 
-export default function Select() {
-  const { allTags } = useContext(AppContext);
+interface SelectProps {
+  options: string[];
+}
+export default function Select({ options: initialOptions }: SelectProps) {
   const router = useRouter();
+  const tag = router.query.tag as string;
   const media = useMediaQuery();
-  const tags = useTags();
-  const [options, setOptions] = useState(allTags);
-  const [selected, setSelected] = useState(
-    (router.query?.tags as string)?.split(",") || []
-  );
+  const [selected, setSelected] = useState(tag);
+  const [options, setOptions] = useState(initialOptions);
   const [highlighted, setHighlighted] = useState(0);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
 
   const filteredOptions = useMemo(() => {
-    return options.filter((option) => !selected.includes(option));
-  }, [selected, options]);
+    return initialOptions?.filter((option) => selected !== option);
+  }, [selected, initialOptions]);
 
   ////////////////////////////////////////////////////////////////
   // Event handlers and utility methods
@@ -39,13 +37,18 @@ export default function Select() {
   }, [setHighlighted, setOpen, setValue]);
 
   const handleRemove = useCallback((value) => {
-    setSelected((prev) => prev.filter((p) => p !== value));
+    setSelected(value);
   }, []);
 
   const handleSelect = useCallback(
     (value) => {
-      setSelected((prev) => [...prev, value]);
-      setOptions((prev) => prev.filter((p) => p !== value));
+      if (value) {
+        router.replace(`/tags/${value}`);
+      } else {
+        router.replace(`/`);
+      }
+
+      setSelected(value);
       reset();
     },
     [reset]
@@ -72,26 +75,13 @@ export default function Select() {
       });
       const results = value
         ? fuse.search(value).map((result) => result?.item)
-        : allTags;
+        : initialOptions;
 
       setOptions(results);
     } else {
-      setOptions(allTags.filter((tag) => !selected.includes(tag)));
+      setOptions(initialOptions);
     }
-  }, [value, allTags]);
-
-  useEffect(() => {
-    if (selected.length === 0) {
-      router.replace(router.pathname);
-      return;
-    }
-
-    if (router.query.tags !== selected.join(",")) {
-      router.replace(router.pathname, {
-        query: { tags: selected.join(",") },
-      });
-    }
-  }, [selected]);
+  }, [value, initialOptions]);
 
   ////////////////////////////////////////////////////////////////
   // Keyboard events
@@ -156,10 +146,11 @@ export default function Select() {
 
   const [dropdownStyles] = useSpring(
     {
-      height: options.length === 0 ? 31 + 10 : options.length * 28.5 + 31 + 13,
+      height:
+        options?.length === 0 ? 31 + 10 : options?.length * 28.5 + 31 + 13,
       config: { tension: 2650, friction: 100 },
     },
-    [options, tags]
+    [options, tag]
   );
 
   const dropdownTransitions = useTransition(open, {
@@ -172,11 +163,11 @@ export default function Select() {
   return (
     <OutsideClickHandler onOutsideClick={reset}>
       <Container>
-        {tags.map((tag) => (
-          <Tag onClick={() => handleRemove(tag)} key={tag}>
+        {tag && (
+          <Tag onClick={() => handleSelect(null)} key={tag}>
             <span>{tag}</span> <IconEx />
           </Tag>
-        ))}
+        )}
         <Button onClick={() => setOpen((prev) => !prev)}>Filter</Button>
         {dropdownTransitions(
           (style, item) =>
@@ -218,7 +209,7 @@ const Container = styled.div`
 `;
 
 const Button = styled.button`
-  margin-left: 5px;
+  margin-left: 7px;
   padding: 4px 7px 5px;
   margin-right: -7px;
   background: rgba(255, 255, 255, 0);

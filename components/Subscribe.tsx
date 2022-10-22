@@ -160,6 +160,7 @@ const Contiainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
+  overflow: hidden;
 `;
 
 const SubscribeButton = styled.button`
@@ -183,7 +184,7 @@ const Input = styled.input`
   caret-color: ${(p) => p.theme.colors.orange};
   font-size: 12px;
   line-height: 130%;
-  width: 124px;
+  width: 204px;
   padding-right: 6px;
 `;
 

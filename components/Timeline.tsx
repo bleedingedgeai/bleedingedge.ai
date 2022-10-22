@@ -96,19 +96,11 @@ interface TimelineProps {
 
 export default function Timeline({ articles }: TimelineProps) {
   const { sort } = useContext(AppContext);
-  const sortMethod = sort === "Descending" ? sortByDesc : sortByAsc;
+  const sortMethod = sort === "Latest" ? sortByDesc : sortByAsc;
   const groupedArticles = useMemo(
     () => groupArticlesByDate(articles),
     [articles]
   );
-
-  // We need to hide this to avoid hyrdation errors because of SSR and timezones
-  // https://github.com/vercel/next.js/discussions/38263
-  const mounted = useMounted();
-  const style: CSSProperties = {
-    visibility: mounted ? "visible" : "hidden",
-    opacity: mounted ? 1 : 0,
-  };
 
   return (
     <Container>
@@ -116,7 +108,7 @@ export default function Timeline({ articles }: TimelineProps) {
         .sort(sortMethod)
         .map((date, index) => {
           return (
-            <Content key={date} style={style}>
+            <Content key={date}>
               <Timestamp first={index === 0} dateKey={date} />
               {[...groupedArticles[date]]
                 .sort((a, b) => sortMethod(a.posted_at, b.posted_at))
