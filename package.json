@@ -10,6 +10,7 @@
     "airtable": "^0.11.5",
     "fuse.js": "^6.6.2",
     "next": "latest",
+    "next-use-posthog": "^1.16.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.37.0",
