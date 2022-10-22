@@ -19,7 +19,7 @@ export default function Conenct() {
       </Row>
       <Row>
         <Label>twitter</Label>
-        <ContactLink href="hhttps://twitter.com/bleedingedgeai" target="_blank">
+        <ContactLink href="https://twitter.com/bleedingedgeai" target="_blank">
           @bleedingedgeai
         </ContactLink>
         <IconGoTo />
