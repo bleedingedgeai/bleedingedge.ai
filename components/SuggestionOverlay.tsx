@@ -266,7 +266,11 @@ function GitHub() {
         >
           <IconReadme /> Readme
         </GithubLink>
-        <GithubLink href="https://github.com" target="_blank" rel="noopener">
+        <GithubLink
+          href="https://github.com/bleedingedgeai/bleedingedge.ai/blob/main/LICENSE.md"
+          target="_blank"
+          rel="noopener"
+        >
           <IconLicense /> View license
         </GithubLink>
       </GithubLinks>
