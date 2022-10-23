@@ -103,8 +103,7 @@ const Right = styled.div`
     }
 
     ${mq.phablet} {
-      height: 200px;
-      background: linear-gradient(#000 60%, transparent 100%);
+      display: none;
     }
   }
 
