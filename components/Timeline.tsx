@@ -106,18 +106,31 @@ export default function Timeline({ articles, sort }: TimelineProps) {
       {Object.keys(groupedArticles)
         .sort(sortMethod)
         .map((date, index) => {
+          const sortedArticles = [...groupedArticles[date]].sort((a, b) =>
+            sortMethod(a.posted_at, b.posted_at)
+          );
+
           return (
             <Content key={date}>
               <Timestamp first={index === 0} dateKey={date} />
-              {[...groupedArticles[date]]
-                .sort((a, b) => sortMethod(a.posted_at, b.posted_at))
-                .map((article) => (
+              {sortedArticles.map((article, index) => {
+                const firstArticle = index === 0;
+                const nextArticle = sortedArticles[index + 1] as IArticle;
+                const withMarginTop = firstArticle && Boolean(article?.format);
+                const withMarginBottom =
+                  Boolean(article?.format) && Boolean(nextArticle?.format);
+
+                return (
                   <Article
                     key={article.title}
                     article={article}
                     dateKey={date}
+                    withMarginTop={withMarginTop}
+                    withMarginBottom={withMarginBottom}
+                    nextArticleIsDefault={!Boolean(nextArticle?.format)}
                   />
-                ))}
+                );
+              })}
             </Content>
           );
         })}
@@ -126,7 +139,7 @@ export default function Timeline({ articles, sort }: TimelineProps) {
 }
 
 const Content = styled.div`
-  margin-bottom: 2px;
+  margin-bottom: 16px;
 `;
 
 const Container = styled.div`
@@ -148,6 +161,6 @@ const Container = styled.div`
   ${mq.phablet} {
     padding-bottom: 80px;
     min-height: calc(100vh - 172px);
-    border-left: 1px solid rgba(255, 255, 255, 0.16);
+    border: none;
   }
 `;

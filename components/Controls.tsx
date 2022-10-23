@@ -67,6 +67,7 @@ const Container = styled.div`
 
   ${mq.phablet} {
     margin-bottom: 28px;
+    display: none;
   }
 `;
 

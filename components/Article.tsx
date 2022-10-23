@@ -5,7 +5,7 @@ import IconStar from "../components/Icons/IconStar";
 import { IArticle } from "../db/articles";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
-import { lastWeek, today, yesterday } from "./Timeline";
+import { today, yesterday } from "./Timeline";
 
 const getPrettyHostname = (urlString: string) => {
   const { hostname } = new URL(urlString);
@@ -15,25 +15,36 @@ const getPrettyHostname = (urlString: string) => {
 interface ArticleProps {
   article: IArticle;
   dateKey: string;
+  nextArticleIsDefault?: boolean;
+  withMarginTop?: boolean;
+  withMarginBottom?: boolean;
 }
 
-export default function Article({ article, dateKey }: ArticleProps) {
+export default function Article(props: ArticleProps) {
   const formats = {
     featured: ArticleFeatured,
     highlight: ArticleHighlight,
   };
-  const ArticleComponent = formats[article.format] || ArticleDefault;
-
-  return <ArticleComponent article={article} dateKey={dateKey} />;
+  const ArticleComponent = formats[props.article.format] || ArticleDefault;
+  return <ArticleComponent {...props} />;
 }
 
 ////////////////////////////////////////////////////////////////////
 // Default article with basic styles
 ////////////////////////////////////////////////////////////////////
 
-function ArticleDefault({ article, dateKey }: ArticleProps) {
+function ArticleDefault({
+  article,
+  dateKey,
+  nextArticleIsDefault,
+}: ArticleProps) {
   return (
-    <ArticleDefaultContainer href={article.url} target="_blank" rel="noopener">
+    <ArticleDefaultContainer
+      href={article.url}
+      target="_blank"
+      rel="noopener"
+      nextArticleIsDefault={!nextArticleIsDefault}
+    >
       <ArticleDefaultContent>
         <TextContainer>
           <Title>{article.title}</Title>
@@ -46,6 +57,7 @@ function ArticleDefault({ article, dateKey }: ArticleProps) {
 }
 
 const TextContainer = styled.div`
+  position: relative;
   overflow: hidden;
   width: 100%;
 `;
@@ -89,12 +101,30 @@ const Blurb = styled.p`
   font-size: 13px;
   line-height: 120%;
   max-width: 613px;
+
+  ${mq.phablet} {
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
 `;
 
-const ArticleDefaultContainer = styled.a`
+const ArticleDefaultContainer = styled.a<{ nextArticleIsDefault?: boolean }>`
   display: block;
   position: relative;
   margin-bottom: 16px;
+
+  ${mq.tablet} {
+    margin-bottom: 24px;
+  }
+
+  ${mq.phablet} {
+    margin-bottom: 0;
+    padding-bottom: ${(p) => (p.nextArticleIsDefault ? 0 : "16px")};
+    padding-bottom: 16px;
+    padding-top: 16px;
+    border-bottom: ${(p) =>
+      p.nextArticleIsDefault ? "none" : " 1px solid rgba(255, 255, 255, 0.1)"};
+  }
 
   &::before {
     content: "";
@@ -108,7 +138,7 @@ const ArticleDefaultContainer = styled.a`
     box-shadow: 0 0 0 6px ${(p) => p.theme.colors.black};
 
     ${mq.phablet} {
-      top: 5px;
+      display: none;
     }
   }
 
@@ -128,15 +158,12 @@ const ArticleDefaultContent = styled.div`
 
   ${mq.desktopSmall} {
     flex-direction: column;
-    padding: 0 0 0 21px;
-  }
-
-  ${mq.tablet} {
-    margin-bottom: 24px;
+    padding-left: 21px;
   }
 
   ${mq.phablet} {
-    padding: 0 0 0 17px;
+    padding-left: 0;
+    margin-right: 0;
   }
 `;
 
@@ -144,7 +171,13 @@ const ArticleDefaultContent = styled.div`
 // Featured article with gradient background
 ////////////////////////////////////////////////////////////////////
 
-function ArticleFeatured({ article, dateKey }: ArticleProps) {
+function ArticleFeatured({
+  article,
+  dateKey,
+  nextArticleIsDefault,
+  withMarginTop,
+  withMarginBottom,
+}: ArticleProps) {
   const host = getPrettyHostname(article.url);
 
   return (
@@ -152,6 +185,9 @@ function ArticleFeatured({ article, dateKey }: ArticleProps) {
       href={article.url}
       target="_blank"
       rel="noopener"
+      nextArticleIsDefault={nextArticleIsDefault}
+      withMarginTop={withMarginTop}
+      withMarginBottom={withMarginBottom}
     >
       <StarContainer>
         <IconStar />
@@ -164,18 +200,13 @@ function ArticleFeatured({ article, dateKey }: ArticleProps) {
           <BlueGradient />
         </BlueGradientContainer>
         <TextContainer>
-          <Top>
-            <Title>{article.title}</Title>
-            <ArticleMetadata article={article} dateKey={dateKey} showSource />
-          </Top>
+          <Title>{article.title}</Title>
           <ArticleFeaturedSourceDesktop>
             <span>{host}</span>
           </ArticleFeaturedSourceDesktop>
           <Blurb>{article.blurb}</Blurb>
-          <ArticleFeaturedSourceMobile>
-            <span>Source: {host}</span>
-          </ArticleFeaturedSourceMobile>
         </TextContainer>
+        <ArticleMetadata article={article} dateKey={dateKey} showSource />
       </ArticleWithBackgroundContent>
     </ArticleWithBackgroundContainer>
   );
@@ -185,7 +216,13 @@ function ArticleFeatured({ article, dateKey }: ArticleProps) {
 // Featured article with grey background
 ////////////////////////////////////////////////////////////////////
 
-function ArticleHighlight({ article, dateKey }: ArticleProps) {
+function ArticleHighlight({
+  article,
+  dateKey,
+  nextArticleIsDefault,
+  withMarginTop,
+  withMarginBottom,
+}: ArticleProps) {
   const host = getPrettyHostname(article.url);
 
   return (
@@ -193,22 +230,20 @@ function ArticleHighlight({ article, dateKey }: ArticleProps) {
       href={article.url}
       target="_blank"
       rel="noopener"
+      nextArticleIsDefault={nextArticleIsDefault}
+      withMarginTop={withMarginTop}
+      withMarginBottom={withMarginBottom}
     >
       <Dot />
       <ArticleWithBackgroundContent>
         <TextContainer>
-          <Top>
-            <Title>{article.title}</Title>
-            <ArticleMetadata article={article} dateKey={dateKey} showSource />
-          </Top>
+          <Title>{article.title}</Title>
           <ArticleFeaturedSourceDesktop style={{ marginTop: 2 }}>
             <span>{host}</span>
           </ArticleFeaturedSourceDesktop>
           <Blurb>{article.blurb}</Blurb>
-          <ArticleFeaturedSourceMobile>
-            <span>Source: {host}</span>
-          </ArticleFeaturedSourceMobile>
         </TextContainer>
+        <ArticleMetadata article={article} dateKey={dateKey} showSource />
       </ArticleWithBackgroundContent>
     </ArticleWithBackgroundContainer>
   );
@@ -241,7 +276,7 @@ const Dot = styled.div`
   }
 
   ${mq.phablet} {
-    left: 20px;
+    display: none;
   }
 `;
 
@@ -272,7 +307,6 @@ function ArticleMetadata({
   dateKey,
   defaultArticle,
 }: ArticleMetadataProps) {
-  const url = new URL(article.url);
   const { format } = formatDateStringMethod(dateKey);
   const router = useRouter();
 
@@ -292,14 +326,12 @@ function ArticleMetadata({
             </Tag>
           ))}
         </Tags>
-        {article.tags?.length > 0 && <DotDivider>·</DotDivider>}
         <PostedAt>{format(new Date(article.posted_at))}</PostedAt>
+        <DotDivider>·</DotDivider>
+        <ArticleMetadataMobile>
+          {getPrettyHostname(article.url)}
+        </ArticleMetadataMobile>
       </ArticleMetadataContent>
-      {/* {showSource && (
-        <ArticleFeaturedSourceTablet>
-          <span>&lt;{url.host}&gt;</span>
-        </ArticleFeaturedSourceTablet>
-      )} */}
     </ArticleMetadataContainer>
   );
 }
@@ -314,46 +346,22 @@ const ArticleMetadataContainer = styled.div<{ defaultArticle?: boolean }>`
     width: 100%;
     margin-top: 4px;
   }
-
   ${mq.phablet} {
     margin-top: 2px;
   }
 `;
 
-const ArticleFeaturedSourceTablet = styled.div`
-  font-family: ${(p) => p.theme.fontFamily.nouvelle};
-  font-weight: 500;
-  font-size: 9px;
-  line-height: 120%;
-  color: ${(p) => p.theme.colors.light_grey};
-  margin-bottom: 2px;
-  position: relative;
-  top: -12px;
-
-  ${mq.desktopSmallUp} {
-    display: none;
-  }
-
-  ${mq.phablet} {
-    display: none;
-  }
-`;
-
-const ArticleFeaturedSourceMobile = styled.div`
-  font-weight: 500;
+const ArticleMetadataMobile = styled.div`
   font-size: 12px;
-  line-height: 120%;
-  margin-top: 8px;
-  font-family: ${(p) => p.theme.fontFamily.nouvelle};
-  color: ${(p) => p.theme.colors.off_white};
+  color: ${(p) => p.theme.colors.light_grey};
 
-  ${mq.desktopSmallUp} {
+  ${mq.phabletUp} {
     display: none;
   }
 `;
 
 const DotDivider = styled.span`
-  margin: 0 1px;
+  margin: 0 6px;
   color: ${(p) => p.theme.colors.light_grey};
 
   ${mq.phabletUp} {
@@ -374,6 +382,10 @@ const ArticleMetadataContent = styled.div`
 
 const Tags = styled.div`
   display: flex;
+
+  ${mq.phablet} {
+    display: none;
+  }
 `;
 
 const Tag = styled.button`
@@ -425,8 +437,13 @@ const PostedAt = styled.div`
   }
 
   ${mq.tablet} {
-    margin-right: 5px;
+    margin-right: 8px;
     font-size: 10px;
+  }
+
+  ${mq.phablet} {
+    font-size: 12px;
+    margin: 0;
   }
 `;
 
@@ -447,11 +464,15 @@ const StarContainer = styled.div`
   }
 
   ${mq.phablet} {
-    left: 20px;
+    display: none;
   }
 `;
 
-const ArticleWithBackgroundContainer = styled.a`
+const ArticleWithBackgroundContainer = styled.a<{
+  nextArticleIsDefault?: boolean;
+  withMarginTop?: boolean;
+  withMarginBottom?: boolean;
+}>`
   display: block;
   position: relative;
   padding-left: 22px;
@@ -467,7 +488,8 @@ const ArticleWithBackgroundContainer = styled.a`
 
   ${mq.phablet} {
     padding-left: 0;
-    margin: 0 -16px 38px -24px;
+    margin: ${(p) => (p.withMarginTop ? "16px" : 0)} -16px ${(p) =>
+        p.nextArticleIsDefault && !p.withMarginBottom ? 0 : "16px"} -24px;
   }
 `;
 
@@ -485,12 +507,11 @@ const ArticleWithBackgroundContent = styled.div`
 
   ${mq.desktopSmall} {
     padding: 24px 32px 24px 32px;
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 
   ${mq.phablet} {
-    padding: 24px 32px 24px 41px;
-    flex-direction: column-reverse;
+    padding: 21px 16px 21px 24px;
     border-radius: 0;
     border-left: none;
     border-right: none;

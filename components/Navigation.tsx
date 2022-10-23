@@ -129,6 +129,21 @@ const Nav = styled.nav`
   top: 0;
   z-index: 2147483647;
   background: ${(p) => p.theme.colors.black};
+  margin-bottom: 32px;
+
+  ${mq.desktopSmallUp} {
+    display: none;
+  }
+
+  ${mq.tablet} {
+    margin-bottom: 28px;
+  }
+
+  ${mq.phablet} {
+    background: rgba(0, 0, 0, 0.64);
+    backdrop-filter: blur(13px);
+    margin-bottom: 20px;
+  }
 `;
 
 const Menu = styled.div`
@@ -200,16 +215,10 @@ const Content = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 32px 0;
-  margin-bottom: 32px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
   ${mq.phablet} {
-    padding: 28px 0;
-    margin-bottom: 28px;
-  }
-
-  ${mq.desktopSmallUp} {
-    display: none;
+    padding: 27px 0;
   }
 `;
 

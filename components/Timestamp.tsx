@@ -8,19 +8,21 @@ interface TimestampProps {
 }
 
 const formatDateString = (dateString: string) => {
+  // will format to: "Oct 2022", "Sept 2022"
+  const shortDate = new Intl.DateTimeFormat("en", {
+    year: "numeric",
+    month: "short",
+  }).format(new Date(dateString));
+
   switch (dateString) {
     case today:
-      return "Today";
+      return `Today, ${shortDate.split(" ").join(", ")}`;
     case yesterday:
-      return "Yesterday";
+      return `Yesterday, ${shortDate.split(" ").join(", ")}`;
     case lastWeek:
       return "Last week";
     default:
-      // will format to: Oct 2022, Sept 2022, etc
-      return new Intl.DateTimeFormat("en", {
-        year: "numeric",
-        month: "short",
-      }).format(new Date(dateString));
+      return shortDate;
   }
 };
 
@@ -61,8 +63,12 @@ const TimestampContainer = styled.div<{ first: boolean }>`
 
   ${mq.phablet} {
     font-size: 12px;
-    margin-bottom: 18px;
-    padding-left: 17px;
+    margin-bottom: 0;
+    padding-left: 0;
+
+    &::after {
+      display: none;
+    }
   }
 `;
 
@@ -105,4 +111,8 @@ const Dot = styled.div<{ first: boolean }>`
   top: 5px;
   box-shadow: 0 0 0 6px ${(p) => p.theme.colors.black};
   ${(p) => p.first && pulsateMixin}
+
+  ${mq.phablet} {
+    display: none;
+  }
 `;
