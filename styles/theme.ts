@@ -18,7 +18,7 @@ export const theme: BleedingEdgeTheme = {
   colors: {
     white: "#FFFFFF",
     off_white: "#CECECE",
-    light_grey: "#858585",
+    light_grey: "#969696",
     orange: "#D19F64",
     dark_grey: "#0A0A0A",
     black: "#000000",
