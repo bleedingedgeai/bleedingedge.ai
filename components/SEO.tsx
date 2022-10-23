@@ -10,6 +10,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
+import { theme } from "../styles/theme";
 
 interface SEOProps {
   canonicalUrl?: string;
@@ -28,7 +29,7 @@ export default function SEO({
   dateforSEO,
   image = "/assets/meta/be-meta.jpg",
   title,
-  themeColor = "#0B0B0F",
+  themeColor = theme.colors.black,
   description = defaultDescription,
 }: React.PropsWithChildren<SEOProps>) {
   const router = useRouter();

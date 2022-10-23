@@ -47,6 +47,7 @@ export default class MyDocument extends Document {
             rel="stylesheet"
           />
           <link href="/fonts/fonts.css" rel="stylesheet" />
+          <meta name="theme-color" content={theme.colors.black} />
           <meta
             name="theme-color"
             content={theme.colors.black}
