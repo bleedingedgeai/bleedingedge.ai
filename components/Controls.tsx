@@ -45,7 +45,7 @@ export default function Controls({ tags, sort, setSort }: ControlsProps) {
           <IconArrow />
         </SortArrow>
         <SortButton>
-          Timeline <span>:: {sort}</span>
+          Sort by <span>:: {sort}</span>
         </SortButton>
       </SortContainer>
       <Select options={tags} />
