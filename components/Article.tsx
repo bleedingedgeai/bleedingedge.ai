@@ -520,7 +520,7 @@ const ArticleWithBackgroundContent = styled.div`
 
 const ArticleFeaturedSourceDesktop = styled.div`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
-  font-weight: 500;
+  font-weight: 400;
   font-size: 9px;
   line-height: 120%;
   color: ${(p) => p.theme.colors.light_grey};
