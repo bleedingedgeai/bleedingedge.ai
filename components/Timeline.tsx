@@ -162,5 +162,6 @@ const Container = styled.div`
     padding-bottom: 80px;
     min-height: calc(100vh - 172px);
     border: none;
+    margin-left: 0;
   }
 `;
