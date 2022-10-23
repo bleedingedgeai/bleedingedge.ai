@@ -1,5 +1,6 @@
 import { usePostHog } from "next-use-posthog";
 import dynamic from "next/dynamic";
+import Script from "next/script";
 import React, { Suspense } from "react";
 import { ThemeProvider } from "styled-components";
 import Favicon from "../components/Favicon";
@@ -31,6 +32,9 @@ export default function App({ Component, pageProps }) {
           </Suspense>
         </OerlayProvider>
       </ThemeProvider>
+      {process.env.NODE_ENV === "production" ? (
+        <Script id="insights" src="/va/script.js" strategy="afterInteractive" />
+      ) : null}
     </>
   );
 }
