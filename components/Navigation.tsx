@@ -219,6 +219,7 @@ const Content = styled.div`
 
   ${mq.phablet} {
     padding: 27px 0;
+    border: none;
   }
 `;
 
