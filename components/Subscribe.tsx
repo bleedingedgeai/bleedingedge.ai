@@ -22,8 +22,14 @@ export default function Subscribe() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setInputWidth(inputRef.current?.getBoundingClientRect().width);
-  }, [buttonRef, inputRef]);
+    function handleResize() {
+      setInputWidth(inputRef.current?.getBoundingClientRect().width);
+    }
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []); // Empty array ensures that effect is only run on mount and unmount
 
   const handleSubscribeClick = useCallback(() => {
     setFormStep(FormSteps.Initial);
