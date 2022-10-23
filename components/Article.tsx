@@ -164,10 +164,12 @@ function ArticleFeatured({ article, dateKey }: ArticleProps) {
           <BlueGradient />
         </BlueGradientContainer>
         <TextContainer>
-          <Title>{article.title}</Title>
+          <Top>
+            <Title>{article.title}</Title>
+            <ArticleMetadata article={article} dateKey={dateKey} showSource />
+          </Top>
           <ArticleFeaturedSourceDesktop>
             <span>{host}</span>
-            <ArticleMetadata article={article} dateKey={dateKey} showSource />
           </ArticleFeaturedSourceDesktop>
           <Blurb>{article.blurb}</Blurb>
           <ArticleFeaturedSourceMobile>
