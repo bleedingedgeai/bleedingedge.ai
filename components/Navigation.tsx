@@ -77,7 +77,7 @@ export default function Navigation() {
                   )}
                 </Item>
                 <Item>
-                  <Link href="/about">Email</Link>
+                  <a href="mailto:lachygroom@gmail.com">Email</a>
                 </Item>
                 <Item>
                   <a
