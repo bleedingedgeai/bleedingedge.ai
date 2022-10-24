@@ -9,6 +9,8 @@ import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { mq } from "../../styles/mediaqueries";
 import IconEx from "../Icons/IconEx";
 
+const INPUT_HEIGHT = 31;
+const OPTION_HEIGHT = 28.5;
 interface SelectProps {
   options: string[];
 }
@@ -142,8 +144,6 @@ export default function Select({ options: initialOptions }: SelectProps) {
   // Dropdown animation styles
   ////////////////////////////////////////////////////////////////
 
-  const INPUT_HEIGHT = 31;
-  const OPTION_HEIGHT = 28;
   const [dropdownStyles] = useSpring(
     {
       height:
