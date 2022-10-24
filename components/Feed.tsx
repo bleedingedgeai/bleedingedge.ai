@@ -21,7 +21,6 @@ export default function Feed(props: FeedProps) {
 
   return (
     <>
-      <SEO title="bleeding edge | Home" />
       <Glow />
       <Navigation />
       <Bounds>
