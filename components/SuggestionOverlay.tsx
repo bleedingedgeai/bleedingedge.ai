@@ -2,10 +2,10 @@ import { useCallback, useState } from "react";
 import styled from "styled-components";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { mq } from "../styles/mediaqueries";
-import Button from "./Forms/Button";
+import Button from "./Button";
 import Input from "./Forms/Input";
 import Textarea from "./Forms/Textarea";
-import Success from "./Success";
+import OverlaySuccess from "./OverlaySuccess";
 
 enum FormSteps {
   "Initial" = "Initial",
@@ -62,7 +62,7 @@ export default function Suggestion() {
   if (formStep === FormSteps.Success) {
     return (
       <SuccessContainer>
-        <Success
+        <OverlaySuccess
           heading="Thank you for your suggestion"
           subheading="I will carefully review every entry. In the meantime, feel free to check my GitHub page."
         />

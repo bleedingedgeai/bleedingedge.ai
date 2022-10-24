@@ -1,7 +1,8 @@
 import React from "react";
+import { theme } from "../../styles/theme";
 import { IconProps } from "./types";
 
-const IconLogo = ({ fill = "#fff", ...rest }: IconProps) => (
+const IconLogo = ({ fill = theme.colors.white, ...rest }: IconProps) => (
   <svg
     width="100%"
     viewBox="0 0 143 24"

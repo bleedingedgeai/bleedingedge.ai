@@ -53,7 +53,6 @@ export default function SEO({
   };
 
   const twitter = site.social.find((option) => option.name === "twitter");
-  const github = site.social.find((option) => option.name === "github");
 
   const pageUrl = site.siteUrl + router.pathname;
 
@@ -68,81 +67,6 @@ export default function SEO({
   } else {
     image = fullURL(image);
   }
-
-  const schema = `{
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        "@id": "${site.siteUrl}/#organization",
-        "name": "${site.title}",
-        "url": "${site.siteUrl}",
-        "sameAs": [
-          "${twitter.url}",
-          "${github.url}",
-        ],
-        "logo": {
-          "@type": "ImageObject",
-          "@id": "${site.siteUrl}/#logo",
-          "inLanguage": "en-US",
-          "url": "${site.siteUrl}/icons/icon-512x512.png",
-          "width": 512,
-          "height": 512,
-          "caption": "${site.title}"
-        },
-        "image": {
-          "@id": "${site.siteUrl}/#logo"
-        }
-      },
-      {
-        "@type": "WebSite",
-        "@id": "${site.siteUrl}/#website",
-        "url": "${site.siteUrl}",
-        "name": "${site.name}",
-        "description": "${site.description}",
-        "publisher": {
-          "@id": "${site.siteUrl}/#organization"
-        },
-        "inLanguage": "en-US"
-      },
-      {
-        "@type": [
-          "WebPage"
-        ],
-        "@id": "${pageUrl}/#webpage",
-        "url": "${pageUrl}",
-        "name": "${title || site.name}",
-        "isPartOf": {
-          "@id": "${site.siteUrl}/#website"
-        },
-        "about": {
-          "@id": "${site.siteUrl}/#organization"
-        },
-        "description": "${description || site.description}",
-        "inLanguage": "en-US"
-      },
-      {
-        "@type": "BreadcrumbList",
-        "description": "Breadcrumbs list",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "item": "${site.siteUrl}",
-            "name": "Homepage",
-            "position": "1"
-          }
-        ],
-        "name": "Breadcrumbs"
-      }
-    ]
-  }
-`.replace(/"[^"]+"|(\s)/gm, function (matched, group1) {
-    if (!group1) {
-      return matched;
-    } else {
-      return "";
-    }
-  });
 
   const metaTags = [
     { name: "twitter:card", content: "summary_large_image" },
@@ -168,7 +92,6 @@ export default function SEO({
       <meta name="description" content={description} />
       <meta name="image" content={image} />
       <meta name="theme-color" content={themeColor} />
-
       {metaTags.map((meta) => {
         if (meta.name) {
           return (
@@ -185,11 +108,6 @@ export default function SEO({
           );
         }
       })}
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: schema }}
-      />
       {children}
     </Head>
   );

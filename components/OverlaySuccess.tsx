@@ -1,22 +1,23 @@
 import { animated, useTrail } from "react-spring";
 import styled from "styled-components";
+import IconConfirmation from "./Icons/IconConfirmation";
 
-interface SuccessProps {
+interface OverlaySuccessProps {
   heading: string;
   subheading: string;
   show?: boolean;
 }
-export default function Success({
+export default function OverlaySuccess({
   heading,
   subheading,
   show = true,
-}: SuccessProps) {
+}: OverlaySuccessProps) {
   const components = [
     <IconContainer>
       <IconConfirmation />
     </IconContainer>,
-    <SuccessHeading>{heading}</SuccessHeading>,
-    <SuccessText>{subheading}</SuccessText>,
+    <Heading>{heading}</Heading>,
+    <Text>{subheading}</Text>,
   ];
 
   const trail = useTrail(components.length, {
@@ -52,7 +53,7 @@ const IconContainer = styled.div`
   text-align: center;
 `;
 
-const SuccessHeading = styled.h3`
+const Heading = styled.h3`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-weight: 500;
   font-size: 22px;
@@ -62,27 +63,10 @@ const SuccessHeading = styled.h3`
   margin-bottom: 18px;
 `;
 
-const SuccessText = styled.p`
+const Text = styled.p`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   max-width: 338px;
   font-size: 16px;
   line-height: 120%;
   text-align: center;
 `;
-
-const IconConfirmation = () => (
-  <svg
-    width="52"
-    height="52"
-    viewBox="0 0 52 52"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <circle cx="26" cy="26" r="26" fill="#E6E6E6" />
-    <path
-      d="M14.4856 27.4263L22.9885 34.9143L37.5142 17.0857"
-      stroke="black"
-      stroke-width="3"
-    />
-  </svg>
-);

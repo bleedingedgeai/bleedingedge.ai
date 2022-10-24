@@ -1,11 +1,10 @@
-import { useRouter } from "next/router";
 import { useContext } from "react";
 import styled from "styled-components";
-import IconGoTo from "../components/Icons/IconGoTo";
+import IconGoTo from "./Icons/IconGoTo";
 import { OverlayContext, OverlayType } from "./Overlay";
 import Subscribe from "./Subscribe";
 
-export default function Conenct() {
+export default function Contact() {
   const { showOverlay } = useContext(OverlayContext);
 
   return (

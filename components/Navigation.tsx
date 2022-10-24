@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { mq } from "../styles/mediaqueries";
 import Bounds from "./Bounds";
 import IconArrowLeft from "./Icons/IconArrowLeft";
+import IconEx from "./Icons/IconEx";
 import IconLogo from "./Icons/IconLogo";
 import { OverlayContext, OverlayType } from "./Overlay";
 import Portal from "./Portal";
@@ -13,6 +14,8 @@ export default function Navigation() {
   const router = useRouter();
   const { showOverlay, hideOverlay } = useContext(OverlayContext);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const tag = router.query?.tag as string;
 
   const menuInvisibleStyles = (
     menuOpen
@@ -25,102 +28,112 @@ export default function Navigation() {
     : { transform: "translateX(100%)" };
 
   return (
-    <Nav>
-      <Bounds>
-        <Content>
-          <LogoContainer>
-            <Link href="/">
-              <a>
-                <IconLogo />
-              </a>
-            </Link>
-          </LogoContainer>
-          <DesktopLinks>
-            <SubscribButton>Subscribe</SubscribButton>
-            <Link href="/about">About</Link>
-          </DesktopLinks>
-          <MenuButton
-            onClick={() => {
-              setMenuOpen((prev) => !prev);
-              hideOverlay();
-            }}
-          >
-            Menu
-          </MenuButton>
-        </Content>
-      </Bounds>
-      <MenuInvisible
-        style={menuInvisibleStyles}
-        onClick={() => setMenuOpen(false)}
-      />
-      <Portal>
-        <Menu style={menuStyles}>
-          <BlueGradientContainer>
-            <BlueGradient />
-          </BlueGradientContainer>
-          <MenuContent>
-            <div>
-              <BackButton
-                onClick={() => {
-                  hideOverlay();
-                  setMenuOpen(false);
-                }}
-              >
-                <IconArrowLeft />
-              </BackButton>
-              <List>
-                <Item>
-                  {router.pathname === "/" ? (
-                    <Link href="/about">About</Link>
-                  ) : (
-                    <Link href="/">Home</Link>
-                  )}
-                </Item>
-                <Item>
-                  <a href="mailto:lachygroom@gmail.com">Email</a>
-                </Item>
-                <Item>
-                  <a
-                    href="https://twitter.com/bleedingedgeai"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Twitter
-                  </a>
-                </Item>
-              </List>
-              <Divider />
-              <List>
-                <Item>
-                  <button
-                    onClick={() => {
-                      setMenuOpen(false);
-                      showOverlay(OverlayType.SUBSCRIBE);
-                    }}
-                  >
-                    Subscribe
-                  </button>
-                </Item>
-                <Item>
-                  <button
-                    onClick={() => {
-                      setMenuOpen(false);
-                      showOverlay(OverlayType.SUGGESTION);
-                    }}
-                  >
-                    Contribute
-                  </button>
-                </Item>
-              </List>
-            </div>
-            <Signature>
-              A Project by
-              <br /> Lachy Groom
-            </Signature>
-          </MenuContent>
-        </Menu>
-      </Portal>
-    </Nav>
+    <>
+      <Nav>
+        <Bounds>
+          <Content>
+            <LogoContainer>
+              <Link href="/">
+                <a>
+                  <IconLogo />
+                </a>
+              </Link>
+            </LogoContainer>
+            <DesktopLinks>
+              <SubscribButton>Subscribe</SubscribButton>
+              <Link href="/about">About</Link>
+            </DesktopLinks>
+            <MenuButton
+              onClick={() => {
+                setMenuOpen((prev) => !prev);
+                hideOverlay();
+              }}
+            >
+              Menu
+            </MenuButton>
+          </Content>
+        </Bounds>
+        {tag && (
+          <Bounds>
+            <Tag onClick={() => router.replace("/")}>
+              {tag}
+              <IconEx size={16} />
+            </Tag>
+          </Bounds>
+        )}
+        <Portal>
+          <MenuInvisible
+            style={menuInvisibleStyles}
+            onClick={() => setMenuOpen(false)}
+          />
+          <Menu style={menuStyles}>
+            <BlueGradientContainer>
+              <BlueGradient />
+            </BlueGradientContainer>
+            <MenuContent>
+              <div>
+                <BackButton
+                  onClick={() => {
+                    hideOverlay();
+                    setMenuOpen(false);
+                  }}
+                >
+                  <IconArrowLeft />
+                </BackButton>
+                <List>
+                  <Item>
+                    {router.pathname === "/" ? (
+                      <Link href="/about">About</Link>
+                    ) : (
+                      <Link href="/">Home</Link>
+                    )}
+                  </Item>
+                  <Item>
+                    <a href="mailto:lachygroom@gmail.com">Email</a>
+                  </Item>
+                  <Item>
+                    <a
+                      href="https://twitter.com/bleedingedgeai"
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      Twitter
+                    </a>
+                  </Item>
+                </List>
+                <Divider />
+                <List>
+                  <Item>
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false);
+                        showOverlay(OverlayType.SUBSCRIBE);
+                      }}
+                    >
+                      Subscribe
+                    </button>
+                  </Item>
+                  <Item>
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false);
+                        showOverlay(OverlayType.SUGGESTION);
+                      }}
+                    >
+                      Contribute
+                    </button>
+                  </Item>
+                </List>
+              </div>
+              <Signature>
+                A Project by
+                <br /> Lachy Groom
+              </Signature>
+            </MenuContent>
+          </Menu>
+        </Portal>
+      </Nav>
+    </>
   );
 }
 
@@ -146,6 +159,33 @@ const Nav = styled.nav`
   }
 `;
 
+const Tag = styled.button`
+  border-radius: 6px;
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 120%;
+  text-align: center;
+  color: ${(p) => p.theme.colors.light_grey};
+  background: rgba(133, 133, 133, 0.16);
+  border: 1px solid rgba(133, 133, 133, 0.52);
+  border-radius: 6px;
+  padding: 4px 7px 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 4px;
+  position: relative;
+  top: -4px;
+
+  svg {
+    margin-left: 9px;
+  }
+
+  ${mq.phabletUp} {
+    display: none;
+  }
+`;
+
 const Menu = styled.div`
   position: fixed;
   height: 100%;
@@ -165,7 +205,7 @@ const MenuInvisible = styled.div`
   height: 100%;
   top: 0;
   left: 0;
-  z-index: 2147483646;
+  z-index: 2147483647;
   background: rgba(0, 0, 0, 0.9);
   transition: opacity 0.3s;
 `;

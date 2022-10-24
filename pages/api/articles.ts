@@ -18,41 +18,45 @@ export interface Article {
 }
 
 export default async function handler(req: NextApiRequest, res) {
-  const tags = (req.query.tags as string)?.split(",");
+  try {
+    const tags = (req.query.tags as string)?.split(",");
 
-  const articles = await new Promise((resolve) => {
-    const articles = [];
-    const select = {
-      filterByFormula: ``,
-      offset: 0,
-    };
+    const articles = await new Promise((resolve) => {
+      const articles = [];
+      const select = {
+        filterByFormula: ``,
+        offset: 0,
+      };
 
-    if (tags) {
-      if (tags.length === 1) {
-        select.filterByFormula = `FIND("${tags[0]}", tags)`;
-      } else {
-        select.filterByFormula = `OR(${tags
-          .map((tag) => `FIND("${tag}", tags)`)
-          .join(",")})`;
+      if (tags) {
+        if (tags.length === 1) {
+          select.filterByFormula = `FIND("${tags[0]}", tags)`;
+        } else {
+          select.filterByFormula = `OR(${tags
+            .map((tag) => `FIND("${tag}", tags)`)
+            .join(",")})`;
+        }
       }
-    }
 
-    base("articles")
-      .select(select)
-      .eachPage(function page(records) {
-        records.map((record) => {
-          articles.push({
-            title: record.get("title"),
-            blurb: record.get("blurb") || null,
-            posted_at: record.get("posted_at"),
-            url: record.get("url"),
-            tags: record.get("tags") || null,
-            format: record.get("format") || null,
+      base("articles")
+        .select(select)
+        .eachPage(function page(records) {
+          records.map((record) => {
+            articles.push({
+              title: record.get("title"),
+              blurb: record.get("blurb") || null,
+              posted_at: record.get("posted_at"),
+              url: record.get("url"),
+              tags: record.get("tags") || null,
+              format: record.get("format") || null,
+            });
           });
+          resolve(articles.filter((a) => a.title && a.posted_at));
         });
-        resolve(articles.filter((a) => a.title && a.posted_at));
-      });
-  });
+    });
 
-  res.status(200).json(articles);
+    res.status(200).json(articles);
+  } catch (error) {
+    res.status(500);
+  }
 }

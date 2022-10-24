@@ -34,7 +34,7 @@ export default function Input({
     if (autoFocus) {
       queueMicrotask(() => inputRef.current.focus());
     }
-  }, [autoFocus]);
+  }, [autoFocus, inputRef]);
 
   return (
     <Container>

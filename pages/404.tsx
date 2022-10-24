@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styled from "styled-components";
 import Bounds from "../components/Bounds";
-import Conenct from "../components/Connect";
+import Contact from "../components/Contact";
 import IconLogo from "../components/Icons/IconLogo";
 import Navigation from "../components/Navigation";
 import { mq } from "../styles/mediaqueries";
@@ -51,7 +51,7 @@ export default function NotFound() {
         </Middle>
         <Bottom>
           <AdjustedBounds>
-            <Conenct />
+            <Contact />
           </AdjustedBounds>
         </Bottom>
       </Container>

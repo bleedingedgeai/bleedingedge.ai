@@ -80,7 +80,7 @@ export default function About() {
                     <span>What is this?</span> This is me scratching my own
                     itch. The pace of development in AI right now is staggering
                     and there’s been no easy way to keep up with all of the
-                    interesting developments. bleeding sdge is my attempt at
+                    interesting developments. bleeding edge is my attempt at
                     solving that. It’s a chronological collation of all the most
                     noteworthy developments (as decided by me… for now). I hope
                     to have a more developed criteria for what gets included in
@@ -91,7 +91,7 @@ export default function About() {
                   <Paragraph>
                     <span>Who am I?</span> My name’s Lachy. I’m not an AI
                     researcher, but I would like to better stay on top of
-                    everything going on. That’s why I started Bleeding Edge.
+                    everything going on. That’s why I started bleeding edge.
                   </Paragraph>
                 </div>
                 <Footer>
