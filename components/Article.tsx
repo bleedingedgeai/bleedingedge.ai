@@ -3,14 +3,8 @@ import React, { useCallback } from "react";
 import styled from "styled-components";
 import IconStar from "../components/Icons/IconStar";
 import { IArticle } from "../db/articles";
-import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 import { today, yesterday } from "./Timeline";
-
-const getPrettyHostname = (urlString: string) => {
-  const { hostname } = new URL(urlString);
-  return hostname.replace("www.", "");
-};
 
 interface ArticleProps {
   article: IArticle;
@@ -21,13 +15,16 @@ interface ArticleProps {
 }
 
 export default function Article(props: ArticleProps) {
-  const formats = {
-    featured: ArticleFeatured,
-    highlight: ArticleHighlight,
-  };
-  const ArticleComponent = formats[props.article.format] || ArticleDefault;
+  const ArticleComponent = props.article.format
+    ? ArticleHighlightOrFeature
+    : ArticleDefault;
   return <ArticleComponent {...props} />;
 }
+
+const getPrettyHostname = (urlString: string) => {
+  // https://www.example.com -> example.com
+  return new URL(urlString).hostname.replace("www.", "");
+};
 
 ////////////////////////////////////////////////////////////////////
 // Default article with basic styles
@@ -59,7 +56,6 @@ function ArticleDefault({
 const TextContainer = styled.div`
   position: relative;
   overflow: hidden;
-  width: 100%;
 `;
 
 const Host = styled.div`
@@ -84,7 +80,6 @@ const Title = styled.h3`
   width: 100%;
   padding-right: 6px;
   transition: color 0.15s ease;
-  ${ellipsis}
 
   ${mq.tablet} {
     font-size: 16px;
@@ -168,10 +163,10 @@ const ArticleDefaultContent = styled.div`
 `;
 
 ////////////////////////////////////////////////////////////////////
-// Featured article with gradient background
+// Featured article with gradient or grey background
 ////////////////////////////////////////////////////////////////////
 
-function ArticleFeatured({
+function ArticleHighlightOrFeature({
   article,
   dateKey,
   nextArticleIsDefault,
@@ -179,6 +174,7 @@ function ArticleFeatured({
   withMarginBottom,
 }: ArticleProps) {
   const host = getPrettyHostname(article.url);
+  const feature = article.format === "feature";
 
   return (
     <ArticleWithBackgroundContainer
@@ -189,16 +185,24 @@ function ArticleFeatured({
       withMarginTop={withMarginTop}
       withMarginBottom={withMarginBottom}
     >
-      <StarContainer>
-        <IconStar />
-      </StarContainer>
+      {feature ? (
+        <StarContainer>
+          <IconStar />
+        </StarContainer>
+      ) : (
+        <Dot />
+      )}
       <ArticleWithBackgroundContent>
-        <OrangeGradientContainer>
-          <OrangeGradient />
-        </OrangeGradientContainer>
-        <BlueGradientContainer>
-          <BlueGradient />
-        </BlueGradientContainer>
+        {feature && (
+          <>
+            <BlueGradientContainer>
+              <BlueGradient />
+            </BlueGradientContainer>
+            <OrangeGradientContainer>
+              <OrangeGradient />
+            </OrangeGradientContainer>
+          </>
+        )}
         <TextContainer>
           <Title>{article.title}</Title>
           <ArticleFeaturedSourceDesktop>
@@ -206,57 +210,11 @@ function ArticleFeatured({
           </ArticleFeaturedSourceDesktop>
           <Blurb>{article.blurb}</Blurb>
         </TextContainer>
-        <ArticleMetadata article={article} dateKey={dateKey} showSource />
+        <ArticleMetadata article={article} dateKey={dateKey} />
       </ArticleWithBackgroundContent>
     </ArticleWithBackgroundContainer>
   );
 }
-
-////////////////////////////////////////////////////////////////////
-// Featured article with grey background
-////////////////////////////////////////////////////////////////////
-
-function ArticleHighlight({
-  article,
-  dateKey,
-  nextArticleIsDefault,
-  withMarginTop,
-  withMarginBottom,
-}: ArticleProps) {
-  const host = getPrettyHostname(article.url);
-
-  return (
-    <ArticleWithBackgroundContainer
-      href={article.url}
-      target="_blank"
-      rel="noopener"
-      nextArticleIsDefault={nextArticleIsDefault}
-      withMarginTop={withMarginTop}
-      withMarginBottom={withMarginBottom}
-    >
-      <Dot />
-      <ArticleWithBackgroundContent>
-        <TextContainer>
-          <Title>{article.title}</Title>
-          <ArticleFeaturedSourceDesktop style={{ marginTop: 2 }}>
-            <span>{host}</span>
-          </ArticleFeaturedSourceDesktop>
-          <Blurb>{article.blurb}</Blurb>
-        </TextContainer>
-        <ArticleMetadata article={article} dateKey={dateKey} showSource />
-      </ArticleWithBackgroundContent>
-    </ArticleWithBackgroundContainer>
-  );
-}
-
-const Top = styled.div`
-  display: flex;
-  justify-content: space-between;
-
-  ${mq.desktopSmall} {
-    flex-direction: column;
-  }
-`;
 
 const Dot = styled.div`
   position: absolute;
@@ -296,14 +254,12 @@ const formatDateStringMethod = (dateKey: string) => {
 };
 
 interface ArticleMetadataProps extends ArticleProps {
-  showSource?: boolean;
   defaultArticle?: boolean;
   dateKey: string;
 }
 
 function ArticleMetadata({
   article,
-  showSource,
   dateKey,
   defaultArticle,
 }: ArticleMetadataProps) {
@@ -538,6 +494,18 @@ const OrangeGradientContainer = styled.div`
   left: 0;
   filter: blur(66px);
   pointer-events: none;
+  width: 452px;
+  height: 116px;
+
+  ${mq.tablet} {
+    left: -15%;
+  }
+
+  ${mq.phablet} {
+    left: 0;
+    width: 271px;
+    height: 103px;
+  }
 `;
 
 const BlueGradientContainer = styled.div`
@@ -546,64 +514,45 @@ const BlueGradientContainer = styled.div`
   right: 0;
   filter: blur(62px);
   pointer-events: none;
+  width: 288px;
+  height: 77px;
+
+  ${mq.tablet} {
+    right: -15%;
+  }
+
+  ${mq.phablet} {
+    right: -10%;
+  }
 `;
 
 const OrangeGradient = () => (
   <svg
-    width="452"
-    height="116"
+    width="100%"
+    height="100%"
     viewBox="0 0 452 116"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
       d="M318.269 41.6454L275.03 4.94254C275.014 4.92902 275 4.91388 274.987 4.89735L271.29 0.116481C271.233 0.0430133 271.146 0 271.053 0H0.3C0.134315 0 0 0.134312 0 0.299998V49.597C0 49.7552 0.122869 49.8863 0.280756 49.8964L112.249 57.0952C112.274 57.0968 112.298 57.1015 112.322 57.1091L200.733 85.6303C200.766 85.6409 200.801 85.6458 200.836 85.6446L285.431 82.6946C285.459 82.6936 285.488 82.6966 285.515 82.7037L416.21 115.973C416.279 115.991 416.35 115.983 416.414 115.953L451.403 99.222C451.635 99.1108 451.628 98.7772 451.391 98.6756L318.345 41.6925C318.317 41.6807 318.292 41.6648 318.269 41.6454Z"
-      fill="url(#paint0_linear_115_3464)"
+      fill="url(#ArticleOrange)"
       fillOpacity="0.58"
     />
-    <defs>
-      <linearGradient
-        id="paint0_linear_115_3464"
-        x1="113.714"
-        y1="2.46111"
-        x2="180.287"
-        y2="198.413"
-        gradientUnits="userSpaceOnUse"
-      >
-        <stop stopColor="#A56645" />
-        <stop offset="0.335547" stopColor="#D98B63" />
-        <stop offset="0.642442" stopColor="#C77B53" />
-        <stop offset="1" stopColor="#D08067" />
-      </linearGradient>
-    </defs>
   </svg>
 );
 
 const BlueGradient = () => (
   <svg
-    width="288"
-    height="77"
+    width="100%"
+    height="100%"
     viewBox="0 0 288 77"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
       d="M197.873 50.2333L288 0H75.2188L50.8235 24.3833L0 65.8167L75.2188 77L197.873 50.2333Z"
-      fill="url(#paint0_linear_115_3465)"
+      fill="url(#ArticleBlue)"
     />
-    <defs>
-      <linearGradient
-        id="paint0_linear_115_3465"
-        x1="144"
-        y1="0"
-        x2="135.111"
-        y2="87.0586"
-        gradientUnits="userSpaceOnUse"
-      >
-        <stop stopColor="#072839" />
-        <stop offset="0.525533" stopColor="#033151" />
-        <stop offset="1" stopColor="#28445C" />
-      </linearGradient>
-    </defs>
   </svg>
 );

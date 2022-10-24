@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
 import styled from "styled-components";
-import Button from "./Forms/Button";
+import Button from "./Button";
 import Input from "./Forms/Input";
-import Success from "./Success";
+import OverlaySuccess from "./OverlaySuccess";
 
 enum FormSteps {
   "Initial" = "Initial",
@@ -41,7 +41,7 @@ export default function SubscribeOverlay() {
 
   if (formStep === FormSteps.Success) {
     return (
-      <Success
+      <OverlaySuccess
         heading="You have been subscribed"
         subheading={`I’ll send news about AI and Machine learning to ${value}`}
       />

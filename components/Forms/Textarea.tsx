@@ -7,12 +7,16 @@ interface TextareaProps {
   placeholder?: string;
 }
 
-export default function Textarea({ value, onChange }: TextareaProps) {
+export default function Textarea({
+  value,
+  onChange,
+  placeholder,
+}: TextareaProps) {
   return (
     <StyledTextarea
       value={value}
       onChange={onChange}
-      placeholder="Type your suggestion"
+      placeholder={placeholder}
     />
   );
 }

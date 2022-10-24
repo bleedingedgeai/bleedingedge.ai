@@ -26,7 +26,6 @@ export default function Portal(
 
   useEffect(() => {
     document.body.appendChild(defaultNode);
-
     return () => {
       document.body.removeChild(defaultNode);
     };

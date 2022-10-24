@@ -51,11 +51,8 @@ export const GlobalStyle = createGlobalStyle`
   }
 
 
-  ::selection {
-    background: rgba(72, 158, 250, 0.2);
-  }
-
-  ::-moz-selection {
+  ::selection,
+  ::-moz-selection  {
     background: rgba(72, 158, 250, 0.2);
   }
 
@@ -199,7 +196,7 @@ export const GlobalStyle = createGlobalStyle`
   input {
     border: none;
     background: transparent;
-    color: #fff;
+    color: ${theme.colors.white};
     max-width: 100%;
 
     &::-webkit-input-placeholder {
