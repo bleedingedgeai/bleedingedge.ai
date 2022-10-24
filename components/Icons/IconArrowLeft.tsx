@@ -1,7 +1,12 @@
 import React from "react";
+import { theme } from "../../styles/theme";
 import { IconProps } from "./types";
 
-const IconArrowLeft = ({ fill = "#fff", size = 36, ...rest }: IconProps) => (
+const IconArrowLeft = ({
+  fill = theme.colors.white,
+  size = 36,
+  ...rest
+}: IconProps) => (
   <svg
     width={size}
     height={size}

@@ -3,8 +3,6 @@ import SEO from "../../components/SEO";
 import { getArticles } from "../../db/articles";
 import { getTags } from "../../db/tags";
 
-export type Sort = "Earliest" | "Latest";
-
 export async function getStaticPaths() {
   const tags = await getTags();
   const paths = tags.map((tag) => ({ params: { tag } }));

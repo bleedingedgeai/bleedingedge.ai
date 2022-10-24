@@ -36,10 +36,6 @@ export default function Select({ options: initialOptions }: SelectProps) {
     setValue("");
   }, [setHighlighted, setOpen, setValue]);
 
-  const handleRemove = useCallback((value) => {
-    setSelected(value);
-  }, []);
-
   const handleSelect = useCallback(
     (value) => {
       if (value) {
@@ -146,12 +142,14 @@ export default function Select({ options: initialOptions }: SelectProps) {
   // Dropdown animation styles
   ////////////////////////////////////////////////////////////////
 
+  const INPUT_HEIGHT = 31;
+  const OPTION_HEIGHT = 28;
   const [dropdownStyles] = useSpring(
     {
       height:
         filteredOptions?.length === 0
-          ? 31 + 10
-          : filteredOptions?.length * 28.5 + 31 + 13,
+          ? INPUT_HEIGHT + 10
+          : filteredOptions?.length * OPTION_HEIGHT + INPUT_HEIGHT + 13,
       config: { tension: 2650, friction: 100 },
     },
     [filteredOptions]

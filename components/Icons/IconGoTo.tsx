@@ -1,7 +1,12 @@
 import React from "react";
+import { theme } from "../../styles/theme";
 import { IconProps } from "./types";
 
-const IconGoTo = ({ fill = "#CECECE", size = 16, ...rest }: IconProps) => (
+const IconGoTo = ({
+  fill = theme.colors.off_white,
+  size = 16,
+  ...rest
+}: IconProps) => (
   <svg
     width={size}
     height={size}

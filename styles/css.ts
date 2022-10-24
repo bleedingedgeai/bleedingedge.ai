@@ -14,12 +14,6 @@ export const hideScrollBar = css`
   }
 `;
 
-export const tabular = css`
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.4px;
-  padding-right: 1px;
-`;
-
 export const removeScroll = css`
   width: 100%;
   height: 100%;

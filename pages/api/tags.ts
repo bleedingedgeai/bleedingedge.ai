@@ -12,25 +12,29 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const response = (await new Promise((resolve, reject) => {
-    const tags = [];
-    const select = { filterByFormula: ``, offset: 0 };
-    base("articles")
-      .select(select)
-      .eachPage(function page(records) {
-        records.map((record) => {
-          tags.push(record.get("tags") || []);
+  try {
+    const response = (await new Promise((resolve) => {
+      const tags = [];
+      const select = { filterByFormula: ``, offset: 0 };
+      base("articles")
+        .select(select)
+        .eachPage(function page(records) {
+          records.map((record) => {
+            tags.push(record.get("tags") || []);
+          });
+          resolve(tags);
         });
-        resolve(tags);
-      });
-  })) as string[][];
+    })) as string[][];
 
-  // Flatten the list of arrays
-  const allTags = response.reduce((prev, tags) => [...prev, ...tags], []);
+    // Flatten the list of arrays
+    const allTags = response.reduce((prev, tags) => [...prev, ...tags], []);
 
-  const tags = allTags
-    .filter((item, pos) => allTags.indexOf(item) == pos) // Remove duplicates
-    .sort((a, b) => a.localeCompare(b)); // sort tags alphabetically
+    const tags = allTags
+      .filter((item, pos) => allTags.indexOf(item) == pos) // Remove duplicates
+      .sort((a, b) => a.localeCompare(b)); // sort tags alphabetically
 
-  res.status(200).json(tags);
+    res.status(200).json(tags);
+  } catch (error) {
+    res.status(500);
+  }
 }

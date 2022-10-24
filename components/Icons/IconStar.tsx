@@ -1,7 +1,12 @@
 import React from "react";
+import { theme } from "../../styles/theme";
 import { IconProps } from "./types";
 
-const IconStar = ({ fill = "#CECECE", size = 8, ...rest }: IconProps) => (
+const IconStar = ({
+  fill = theme.colors.off_white,
+  size = 8,
+  ...rest
+}: IconProps) => (
   <svg
     width={size}
     height={size}
