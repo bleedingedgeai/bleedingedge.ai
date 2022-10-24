@@ -15,42 +15,36 @@ const specialThanks = [
     name: "Brock Whittaker",
     href: "https://twitter.com/____brock____",
   },
-
   {
     name: "David Song",
     href: "https://twitter.com/davidtsong",
   },
-
-  {
-    name: "Thiago Costa",
-    href: "https://twitter.com/tcosta_co",
-  },
-
   {
     name: "Dennis Brotzky",
     href: "ttps://twitter.com/brotzky_",
+  },
+  {
+    name: "Thiago Costa",
+    href: "https://twitter.com/tcosta_co",
   },
 ];
 
 const additionalThanks = [
   {
-    name: "roon",
-    href: "https://twitter.com/tszzl",
+    name: "Evan Conrad",
+    href: "https://www.twitter.com/evanjconrad",
   },
-
-  {
-    name: "Marco Mascorro",
-    href: "https://twitter.com/Mascobot",
-  },
-
   {
     name: "Joseph Nelson",
     href: "https://www.twitter.com/josephofiowa",
   },
-
   {
-    name: "Evan Conrad",
-    href: "https://www.twitter.com/evanjconrad",
+    name: "Marco Mascorro",
+    href: "https://twitter.com/Mascobot",
+  },
+  {
+    name: "roon",
+    href: "https://twitter.com/tszzl",
   },
 ];
 
