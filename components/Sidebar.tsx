@@ -18,8 +18,8 @@ export default function Sidebar() {
           </Link>
         </LogoContainer>
         <Description>
-          Bleeding Edge is a feed of noteworthy — or novel — developments in AI.
-          this site is very much a work in progress. Please send feedback!
+          bleeding edge is a feed of noteworthy developments in AI. this site is
+          very much a work in progress. please send suggestions and feedback!
         </Description>
         {router.pathname !== "/about" && (
           <Link href="/about">

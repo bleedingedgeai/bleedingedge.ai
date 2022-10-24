@@ -1,6 +1,6 @@
 # bleedingedge.ai
 
-Bleeding edge is a feed of noteworthy developments in AI and machine learning. this site is very much a work in progress. please send feedback!
+bleeding edge is a feed of noteworthy developments in AI. this site is very much a work in progress. please send suggestions and feedback!
 
 ### Getting started
 
@@ -18,7 +18,7 @@ yarn dev # or npm run dev
 
 ### What is this?
 
-This is me scratching my own itch. The pace of development in AI right now is staggering and there’s been no easy way to keep up with all of the interesting developments. Bleeding Edge is my attempt at solving that. It’s a chronological collation of all the most noteworthy developments (as decided by me… for now). I hope to have a more developed criteria for what gets included in the future, and a better way to err on the side of including more niche content without diluting the usefulness of the homepage.
+This is me scratching my own itch. The pace of development in AI right now is staggering and there’s been no easy way to keep up with all of the interesting developments. bleeding edge is my attempt at solving that. It’s a chronological collation of all the most noteworthy developments (as decided by me… for now). I hope to have a more developed criteria for what gets included in the future, and a better way to err on the side of including more niche content without diluting the usefulness of the homepage.
 
 ### Who am I??
 
