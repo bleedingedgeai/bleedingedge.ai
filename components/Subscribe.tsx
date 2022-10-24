@@ -17,9 +17,9 @@ export default function Subscribe() {
   const [showForm, setShowForm] = useState(false);
   const [inputWidth, setInputWidth] = useState(0);
   const [formStep, setFormStep] = useState(FormSteps.Initial);
-  const buttonRef = useRef<HTMLButtonElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const hiddenInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     function handleResize() {
@@ -95,6 +95,12 @@ export default function Subscribe() {
         onSubmit={handleSubmit}
       >
         <Input
+          value={value}
+          ref={inputRef}
+          onChange={(event) => setValue(event.target.value)}
+          placeholder="enter your email"
+        />
+        <HiddenInput
           value={value}
           ref={inputRef}
           onChange={(event) => setValue(event.target.value)}
@@ -192,6 +198,13 @@ const Input = styled.input`
   line-height: 130%;
   width: 204px;
   padding-right: 6px;
+`;
+
+const HiddenInput = styled(Input)`
+  position: absolute;
+  opacity: 0;
+  visibility: none;
+  pointer-events: none;
 `;
 
 const IconContainer = styled.button`

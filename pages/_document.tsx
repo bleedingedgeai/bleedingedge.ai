@@ -61,7 +61,7 @@ export default class MyDocument extends Document {
 
 function SvgDefs() {
   return (
-    <svg>
+    <svg style={{ height: 0, width: 0 }}>
       <defs>
         <linearGradient
           id="ArticleOrange"
