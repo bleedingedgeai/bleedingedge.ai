@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Bounds from "../components/Bounds";
-import Controls from "../components/Controls";
 import Navigation from "../components/Navigation";
-import SEO from "../components/SEO";
 import Sidebar from "../components/Sidebar";
 import Timeline from "../components/Timeline";
 import { IArticle } from "../db/articles";
 import { mq } from "../styles/mediaqueries";
+import FilterAndSort from "./FilterAndSort";
+import FilterAndSortMobile from "./FilterAndSortMobile";
 
 export type Sort = "Latest" | "Earliest";
 
@@ -29,13 +29,14 @@ export default function Feed(props: FeedProps) {
             <Sidebar />
           </Left>
           <Right>
-            <ControlsContainer>
-              <Controls tags={props.tags} sort={sort} setSort={setSort} />
-            </ControlsContainer>
+            <FilterAndSortSticky>
+              <FilterAndSort tags={props.tags} sort={sort} setSort={setSort} />
+            </FilterAndSortSticky>
             <Timeline articles={props.articles} sort={sort} />
           </Right>
         </Container>
       </Bounds>
+      <FilterAndSortMobile tags={props.tags} sort={sort} setSort={setSort} />
     </>
   );
 }
@@ -45,7 +46,7 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const ControlsContainer = styled.div`
+const FilterAndSortSticky = styled.div`
   position: sticky;
   top: 40px;
   z-index: 210000;
@@ -82,6 +83,7 @@ const Right = styled.div`
   max-width: 896px;
 
   ${mq.desktopSmall} {
+    max-width: 100%;
     padding-top: 0;
   }
 

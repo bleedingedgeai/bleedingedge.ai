@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import IconLogo from "../components/Icons/IconLogo";
-import Conenct from "./Connect";
+import Contact from "./Contact";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -32,7 +32,7 @@ export default function Sidebar() {
           </Link>
         )}
       </div>
-      <Conenct />
+      <Contact />
     </Container>
   );
 }

@@ -37,12 +37,8 @@ export default async function handler(
       method: "PUT" as HttpMethod,
       url: "/v3/marketing/contacts",
       body: JSON.stringify({
-        list_ids: ["89e0ddb1-caa4-489a-a168-686a4f4e406f"], // Bleeding Edge contact list
-        contacts: [
-          {
-            email: body.email,
-          },
-        ],
+        list_ids: ["89e0ddb1-caa4-489a-a168-686a4f4e406f"], // bleeding edge contact list
+        contacts: [{ email: body.email }],
       }),
     };
     const [response] = await Client.request(request);

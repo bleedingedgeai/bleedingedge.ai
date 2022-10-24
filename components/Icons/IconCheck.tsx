@@ -1,7 +1,12 @@
 import React from "react";
+import { theme } from "../../styles/theme";
 import { IconProps } from "./types";
 
-const IconCheck = ({ fill = "#D19F64", size = 16, ...rest }: IconProps) => (
+const IconCheck = ({
+  fill = theme.colors.orange,
+  size = 16,
+  ...rest
+}: IconProps) => (
   <svg
     width={size}
     height={size}

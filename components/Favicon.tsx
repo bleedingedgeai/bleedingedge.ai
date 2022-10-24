@@ -3,7 +3,7 @@ import { Environment, currentEnvironment } from "../helpers/environment";
 
 const dev = currentEnvironment === Environment.dev ? "development-" : "";
 
-function Favicon() {
+export default function Favicon() {
   const [theme, setTheme] = useState("");
 
   useEffect(() => {
@@ -58,5 +58,3 @@ function Favicon() {
 
   return null;
 }
-
-export default Favicon;

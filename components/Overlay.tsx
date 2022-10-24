@@ -9,7 +9,7 @@ import IconEx from "./Icons/IconEx";
 import Slidein from "./OverlaySlidein";
 import Portal from "./Portal";
 import SubscribeOverlay from "./SubscribeOverlay";
-import Suggestion from "./SuggestionOverlay";
+import SuggestionOverlay from "./SuggestionOverlay";
 
 export enum OverlayType {
   SUGGESTION = "SUGGESTION",
@@ -17,7 +17,7 @@ export enum OverlayType {
 }
 
 const OverlayComponentMap = {
-  [OverlayType.SUGGESTION]: <Suggestion />,
+  [OverlayType.SUGGESTION]: <SuggestionOverlay />,
   [OverlayType.SUBSCRIBE]: <SubscribeOverlay />,
 };
 

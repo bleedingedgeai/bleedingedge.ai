@@ -22,7 +22,7 @@ This is me scratching my own itch. The pace of development in AI right now is st
 
 ### Who am I??
 
-My name’s Lachy. I’m not an AI researcher, but I would like to better stay on top of everything going on. That’s why I started Bleeding Edge.
+My name’s Lachy. I’m not an AI researcher, but I would like to better stay on top of everything going on. That’s why I started bleeding edge.
 
 ### Contributions
 
