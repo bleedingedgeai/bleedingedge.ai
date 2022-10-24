@@ -81,7 +81,7 @@ export default function Navigation() {
                 </Item>
                 <Item>
                   <a
-                    href="/https://twitter.com/bleedingedgeai"
+                    href="https://twitter.com/bleedingedgeai"
                     target="_blank"
                     rel="noopener"
                   >
