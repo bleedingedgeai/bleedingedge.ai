@@ -108,10 +108,10 @@ const Container = styled.div`
   left: 0;
   right: 0;
   margin: 0 auto;
-  background: rgba(133, 133, 133, 0.16);
-  border: 1px solid rgba(133, 133, 133, 0.32);
+  background: rgba(133, 133, 133, 0.21);
+  border: 1px solid rgba(255, 255, 255, 0.21);
   box-shadow: 0px 4px 35px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(13px);
   border-radius: 47px;
 
   ${mq.phabletUp} {
@@ -124,9 +124,10 @@ const Button = styled.button`
   place-items: center;
   width: 100%;
   height: 100%;
+  font-size: 14px;
 
   &:not(:last-of-type) {
-    border-right: 1px solid #313131;
+    border-right: 1px solid rgba(255, 255, 255, 0.21);
   }
 `;
 
