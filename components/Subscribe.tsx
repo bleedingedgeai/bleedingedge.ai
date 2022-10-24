@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { inputIsFocused } from "../helpers/input";
+import { clamp } from "../helpers/numbers";
 import { theme } from "../styles/theme";
 import IconCheck from "./Icons/IconCheck";
 import IconEx from "./Icons/IconEx";
@@ -15,21 +16,9 @@ enum FormSteps {
 export default function Subscribe() {
   const [value, setValue] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [inputWidth, setInputWidth] = useState(0);
   const [formStep, setFormStep] = useState(FormSteps.Initial);
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const hiddenInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    function handleResize() {
-      setInputWidth(inputRef.current?.getBoundingClientRect().width);
-    }
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const handleSubscribeClick = useCallback(() => {
     setFormStep(FormSteps.Initial);
@@ -82,6 +71,10 @@ export default function Subscribe() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleSubscribeClick]);
 
+  const inputWidth = useMemo(() => {
+    return clamp(value.length * 8, 124, 180);
+  }, [value]);
+
   return (
     <Contiainer>
       <SubscribeButton onClick={handleSubscribeClick}>
@@ -99,12 +92,7 @@ export default function Subscribe() {
           ref={inputRef}
           onChange={(event) => setValue(event.target.value)}
           placeholder="enter your email"
-        />
-        <HiddenInput
-          value={value}
-          ref={hiddenInputRef}
-          onChange={(event) => setValue(event.target.value)}
-          placeholder="enter your email"
+          style={{ width: inputWidth }}
         />
         <Mask
           style={{
@@ -196,18 +184,11 @@ const Input = styled.input`
   caret-color: ${(p) => p.theme.colors.orange};
   font-size: 12px;
   line-height: 130%;
-  width: 204px;
   padding-right: 6px;
 `;
 
-const HiddenInput = styled(Input)`
-  position: absolute;
-  opacity: 0;
-  visibility: none;
-  pointer-events: none;
-`;
-
 const IconContainer = styled.button`
+  display: flex;
   transition: opacity 0.1s ease, transform 0.67s cubic-bezier(0.45, 0, 0.55, 1);
 `;
 
