@@ -109,7 +109,7 @@ const Container = styled.div`
   right: 0;
   margin: 0 auto;
   background: rgba(133, 133, 133, 0.21);
-  border-top: 1px solid rgba(255, 255, 255, 0.21);
+  border: 1px solid rgba(255, 255, 255, 0.21);
   box-shadow: 0px 4px 35px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(13px);
   border-radius: 47px;
@@ -221,7 +221,7 @@ const ContainerSlidein = styled(animated.div)`
   width: 100%;
   height: 277px;
   background: #0a0a0a;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: 0px -6px 24px rgba(0, 0, 0, 0.6);
   padding: 0 16px;
   z-index: 2147483647;
