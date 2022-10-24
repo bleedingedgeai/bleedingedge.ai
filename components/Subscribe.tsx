@@ -102,7 +102,7 @@ export default function Subscribe() {
         />
         <HiddenInput
           value={value}
-          ref={inputRef}
+          ref={hiddenInputRef}
           onChange={(event) => setValue(event.target.value)}
           placeholder="enter your email"
         />
