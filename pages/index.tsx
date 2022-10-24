@@ -21,7 +21,7 @@ export async function getStaticProps() {
 export default function Home(props) {
   return (
     <>
-      <SEO title="bleeding edge | Home" />
+      <SEO title="bleeding edge" />
       <Feed tags={props.tags} articles={props.articles} />
     </>
   );
