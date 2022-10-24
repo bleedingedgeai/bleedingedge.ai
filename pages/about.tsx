@@ -72,15 +72,15 @@ export default function About() {
                     </a>
                   </Link>
                   <MobileAboutText>
-                    Bleeding Edge is a feed of noteworthy — or novel —
-                    developments in AI. this site is very much a work in
-                    progress. Please send feedback!
+                    bleeding edge is a feed of noteworthy developments in AI.
+                    this site is very much a work in progress. please send
+                    suggestions and feedback!
                   </MobileAboutText>
                   <Paragraph>
                     <span>What is this?</span> This is me scratching my own
                     itch. The pace of development in AI right now is staggering
                     and there’s been no easy way to keep up with all of the
-                    interesting developments. Bleeding Edge is my attempt at
+                    interesting developments. bleeding sdge is my attempt at
                     solving that. It’s a chronological collation of all the most
                     noteworthy developments (as decided by me… for now). I hope
                     to have a more developed criteria for what gets included in
