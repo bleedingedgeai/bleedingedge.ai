@@ -174,7 +174,7 @@ function ArticleHighlightOrFeature({
   withMarginBottom,
 }: ArticleProps) {
   const host = getPrettyHostname(article.url);
-  const feature = article.format === "feature";
+  const feature = article.format === "featured";
 
   return (
     <ArticleWithBackgroundContainer
