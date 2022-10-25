@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res) {
   try {
     const tags = (req.query.tags as string)?.split(",");
 
-    const articles = await new Promise((resolve) => {
+    const articles = await new Promise((resolve, reject) => {
       const articles = [];
       const select = {
         filterByFormula: ``,
@@ -40,19 +40,29 @@ export default async function handler(req: NextApiRequest, res) {
 
       base("articles")
         .select(select)
-        .eachPage(function page(records) {
-          records.map((record) => {
-            articles.push({
-              title: record.get("title"),
-              blurb: record.get("blurb") || null,
-              posted_at: record.get("posted_at"),
-              url: record.get("url"),
-              tags: record.get("tags") || null,
-              format: record.get("format") || null,
+        .eachPage(
+          (records, fetchNextPage) => {
+            records.map((record) => {
+              articles.push({
+                title: record.get("title"),
+                blurb: record.get("blurb") || null,
+                posted_at: record.get("posted_at"),
+                url: record.get("url"),
+                tags: record.get("tags") || null,
+                format: record.get("format") || null,
+              });
             });
-          });
-          resolve(articles.filter((a) => a.title && a.posted_at));
-        });
+            fetchNextPage();
+          },
+          function done(err) {
+            if (err) {
+              console.error(err);
+              reject();
+              return;
+            }
+            resolve(articles.filter((a) => a.title && a.posted_at));
+          }
+        );
     });
 
     res.status(200).json(articles);
