@@ -154,6 +154,7 @@ const Middle = styled.div`
   background: #080808;
   height: 63vh;
   margin: 36px 0;
+  min-height: 570px;
 
   ${mq.tablet} {
     height: 355px;
