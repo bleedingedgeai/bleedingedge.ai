@@ -70,6 +70,12 @@ export default class MyDocument extends Document {
           />
           <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+          <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="RSS"
+            href="/rss/feed.xml"
+          />
         </Head>
         <body>
           <Main />
