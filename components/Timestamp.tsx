@@ -10,19 +10,22 @@ interface TimestampProps {
 const formatDateString = (dateString: string) => {
   // will format to: "Oct 2022", "Sept 2022"
   const shortDate = new Intl.DateTimeFormat("en", {
-    year: "numeric",
+    day: "numeric",
     month: "short",
   }).format(new Date(dateString));
 
   switch (dateString) {
     case today:
-      return `Today, ${shortDate.split(" ").join(", ")}`;
+      return `Today, ${shortDate}`;
     case yesterday:
-      return `Yesterday, ${shortDate.split(" ").join(", ")}`;
+      return `Yesterday, ${shortDate}`;
     case lastWeek:
       return "Last week";
     default:
-      return shortDate;
+      return new Intl.DateTimeFormat("en", {
+        year: "numeric",
+        month: "short",
+      }).format(new Date(dateString));
   }
 };
 
