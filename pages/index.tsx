@@ -14,7 +14,7 @@ async function generateFeed(articles: IArticle[]) {
     description: "bleeding edge is a feed of noteworthy developments in AI.n",
     id: siteURL,
     link: siteURL,
-    image: `${siteURL}/favicon/favicon-light@2x.png`,
+    image: `${siteURL}/assets/meta/be-meta.jpg`,
     favicon: `${siteURL}/favicon/favicon-light@2x.png`,
     copyright: `All rights reserved ${date.getFullYear()}, Jatin Sharma`,
     updated: date,
