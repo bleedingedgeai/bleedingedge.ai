@@ -48,6 +48,23 @@ export default class MyDocument extends Document {
           />
           <link href="/fonts/fonts.css" rel="stylesheet" />
           <meta name="theme-color" content={theme.colors.black} />
+          <link
+            rel="mask-icon"
+            color={theme.colors.light_grey}
+            href="/favicon/favicon-grey.svg"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="16x16"
+            href="/favicon/favicon-16.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="32x32"
+            href="/favicon/favicon-32.png"
+          />
+          <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
         </Head>
         <body>
           <Main />

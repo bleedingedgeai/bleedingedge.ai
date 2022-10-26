@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useReducer } from "react";
 import OutsideClickHandler from "react-outside-click-handler";
 import { animated, useTransition } from "react-spring";
 import styled from "styled-components";
+import { scrollable } from "../helpers/dom";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
@@ -70,12 +71,14 @@ export function OerlayProvider(props: React.PropsWithChildren<{}>) {
   const showOverlay = useCallback(
     (type) => {
       dispatch({ action: Action.SHOW, type });
+      scrollable(false);
     },
     [dispatch]
   );
 
   const hideOverlay = useCallback(() => {
     dispatch({ action: Action.HIDE });
+    scrollable(true);
   }, [dispatch]);
 
   return (
@@ -156,6 +159,7 @@ const Fixed = styled.div`
   padding-bottom: 10vh;
   top: 0;
   left: 0;
+  z-index: 2147483647;
 `;
 
 const Container = styled(animated.div)`
