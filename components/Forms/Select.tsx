@@ -32,25 +32,16 @@ export default function Select({ options: initialOptions }: SelectProps) {
   // Event handlers and utility methods
   ////////////////////////////////////////////////////////////////
 
-  const reset = useCallback(() => {
+  const handleSelect = useCallback((value) => {
+    if (value) {
+      router.replace(`/tags/${value}`);
+    } else {
+      router.replace(`/`);
+    }
+
+    setSelected(value);
     setOpen(false);
-    setHighlighted(0);
-    setValue("");
-  }, [setHighlighted, setOpen, setValue]);
-
-  const handleSelect = useCallback(
-    (value) => {
-      if (value) {
-        router.replace(`/tags/${value}`);
-      } else {
-        router.replace(`/`);
-      }
-
-      setSelected(value);
-      reset();
-    },
-    [reset]
-  );
+  }, []);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,7 +91,7 @@ export default function Select({ options: initialOptions }: SelectProps) {
           handleSelect(options[highlighted]);
           break;
         case "Escape":
-          reset();
+          setOpen(false);
           break;
       }
     };
@@ -160,10 +151,14 @@ export default function Select({ options: initialOptions }: SelectProps) {
     enter: { transform: "translate(0px, 0px) scale(1)", opacity: 1 },
     leave: { transform: "translate(0px, -4px) scale(0.98)", opacity: 0 },
     config: { tension: 1000, friction: 40 },
+    onRest: () => {
+      setHighlighted(0);
+      setValue("");
+    },
   });
 
   return (
-    <OutsideClickHandler onOutsideClick={reset}>
+    <OutsideClickHandler onOutsideClick={() => setOpen(false)}>
       <Container>
         {tag && (
           <Tag onClick={() => handleSelect(null)} key={tag}>
