@@ -56,12 +56,17 @@ export default class MyDocument extends Document {
           <link
             rel="apple-touch-icon"
             sizes="16x16"
-            href="/favicon/favicon-16.png"
+            href="/favicon/favicon-16x16.png"
           />
           <link
             rel="apple-touch-icon"
             sizes="32x32"
-            href="/favicon/favicon-32.png"
+            href="/favicon/favicon-32x32.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="192x192"
+            href="/favicon/favicon-192x192.png"
           />
           <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
