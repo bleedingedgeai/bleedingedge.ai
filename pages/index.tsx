@@ -6,7 +6,7 @@ import { IArticle, getArticles } from "../db/articles";
 import { getTags } from "../db/tags";
 
 async function generateFeed(articles: IArticle[]) {
-  const siteURL = process.env.VERCEL_URL;
+  const siteURL = process.env.NEXT_PUBLIC_URL;
 
   const date = new Date();
   const feed = new RSSFeed({
