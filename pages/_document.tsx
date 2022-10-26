@@ -73,7 +73,7 @@ export default class MyDocument extends Document {
           <link
             rel="alternate"
             type="application/rss+xml"
-            title="RSS"
+            title="bleeding edge ai"
             href="/rss/feed.xml"
           />
         </Head>
