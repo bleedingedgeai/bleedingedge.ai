@@ -36,7 +36,6 @@ async function generateFeed(articles: IArticle[]) {
       id: article.url,
       link: article.url,
       description: article.blurb,
-      content: article.blurb,
       date: new Date(article.posted_at),
     });
   });
