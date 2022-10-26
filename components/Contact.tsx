@@ -11,8 +11,8 @@ export default function Contact() {
     <div>
       <Row>
         <Label>email</Label>
-        <ContactLink href="mailto:lachygroom@gmail.com">
-          lachygroom@gmail.com
+        <ContactLink href="mailto:lachy@bleedingedge.ai">
+          lachy@bleedingedge.ai
         </ContactLink>
         <IconGoTo />
       </Row>
