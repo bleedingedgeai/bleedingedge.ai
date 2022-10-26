@@ -89,7 +89,7 @@ export default function Navigation() {
                     )}
                   </Item>
                   <Item>
-                    <a href="mailto:lachygroom@gmail.com">Email</a>
+                    <a href="mailto:lachy@bleedingedge.ai">Email</a>
                   </Item>
                   <Item>
                     <a
