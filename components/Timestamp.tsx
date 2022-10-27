@@ -22,10 +22,7 @@ const formatDateString = (dateString: string) => {
     case lastWeek:
       return "Last week";
     default:
-      return new Intl.DateTimeFormat("en", {
-        year: "numeric",
-        month: "short",
-      }).format(new Date(dateString));
+      return shortDate;
   }
 };
 

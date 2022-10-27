@@ -6,6 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "^1.9.2",
     "@sendgrid/client": "^7.7.0",
     "airtable": "^0.11.5",
     "feed": "^4.2.2",

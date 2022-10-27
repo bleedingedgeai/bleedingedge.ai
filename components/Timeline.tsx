@@ -7,7 +7,10 @@ import { Sort } from "./Feed";
 import Timestamp from "./Timestamp";
 
 const getDateMinusDays = (days: number) => {
-  return getDateKey(new Date(new Date().setDate(new Date().getDate() - days)));
+  const today = new Date();
+  const subtractedDaysTime = today.getDate() - days;
+  const subtractedDaysDate = new Date(today.setDate(subtractedDaysTime));
+  return getDateKey(subtractedDaysDate);
 };
 
 function checkIfDateIsBeforeOtherDate(time1: string, time2: string) {
@@ -27,7 +30,7 @@ const getMonthDateKey = (d: Date) => {
   return `${yyyy}/${mm}/01`;
 };
 
-export const today = getDateKey(new Date());
+export const today = getDateMinusDays(0);
 export const yesterday = getDateMinusDays(1);
 export const lastWeek = getDateMinusDays(7);
 

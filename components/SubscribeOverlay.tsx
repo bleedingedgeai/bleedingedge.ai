@@ -57,10 +57,10 @@ export default function SubscribeOverlay() {
       <Form onSubmit={handleSubmit}>
         <InputContainer>
           <Input
+            name="email"
+            label="Email address"
             value={value}
             onChange={(event) => setValue(event.target.value)}
-            label="Email address"
-            name="email"
             error={formStep === FormSteps.Error ? "Invalid email" : ""}
           />
         </InputContainer>
