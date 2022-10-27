@@ -14,7 +14,6 @@ export default function Navigation() {
   const router = useRouter();
   const { showOverlay, hideOverlay } = useContext(OverlayContext);
   const [menuOpen, setMenuOpen] = useState(false);
-
   const tag = router.query?.tag as string;
 
   const menuInvisibleStyles = (
