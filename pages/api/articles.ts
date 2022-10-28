@@ -50,6 +50,7 @@ export default async function handler(req: NextApiRequest, res) {
                 url: record.get("url"),
                 tags: record.get("tags") || null,
                 format: record.get("format") || null,
+                thanks_to: record.get("thanks_to") || null,
               });
             });
             fetchNextPage();
