@@ -5,6 +5,7 @@ export interface IArticle {
   url: string;
   tags: string[];
   format: string;
+  thanks_to: string;
 }
 
 export const getArticles = async ({
