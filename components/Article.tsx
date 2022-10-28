@@ -27,6 +27,7 @@ const getPrettyHostname = (urlString: string) => {
   return new URL(urlString).hostname.replace("www.", "");
 };
 
+// When someone suggests an article we want to give them credit
 function ThanksTo({ twitterUrl }: { twitterUrl?: string }) {
   if (!twitterUrl) {
     return null;
