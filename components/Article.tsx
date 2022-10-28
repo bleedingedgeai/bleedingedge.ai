@@ -98,6 +98,7 @@ const TextContainer = styled.div`
 `;
 
 const Host = styled.div`
+  display: flex;
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-weight: 500;
   font-size: 9px;
@@ -321,7 +322,9 @@ function ArticleMetadata({
             </Tag>
           ))}
         </Tags>
-        <ThanksTo twitterUrl={article.thanks_to} />
+        <HideOnDesktop>
+          <ThanksTo twitterUrl={article.thanks_to} />
+        </HideOnDesktop>
         <PostedAt>{format(new Date(article.posted_at))}</PostedAt>
         <DotDividerMobile>·</DotDividerMobile>
         <ArticleMetadataMobile>
@@ -347,6 +350,11 @@ const ArticleMetadataContainer = styled.div<{ defaultArticle?: boolean }>`
   }
 `;
 
+const HideOnDesktop = styled.span`
+  ${mq.phabletUp} {
+    display: none;
+  }
+`;
 const ArticleMetadataMobile = styled.div`
   font-size: 12px;
   color: ${(p) => p.theme.colors.light_grey};
