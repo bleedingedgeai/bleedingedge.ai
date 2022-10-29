@@ -93,6 +93,7 @@ export default function Subscribe() {
           onChange={(event) => setValue(event.target.value)}
           placeholder="enter your email"
           style={{ width: inputWidth }}
+          type="email"
         />
         <Mask
           style={{
