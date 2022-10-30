@@ -1,7 +1,9 @@
 import fs from "fs";
 import { Feed as RSSFeed } from "feed";
-import Feed from "../components/Feed";
+import { useState } from "react";
+import Layout from "../components/Layout";
 import SEO from "../components/SEO";
+import Timeline from "../components/Timeline";
 import { IArticle, getArticles } from "../db/articles";
 import { getTags } from "../db/tags";
 import prisma from "../lib/prisma";
@@ -72,11 +74,17 @@ export async function getStaticProps() {
   };
 }
 
-export default function Home(props) {
+export type Sort = "Latest" | "Earliest";
+
+export default function Home({ tags, articles }) {
+  const [sort, setSort] = useState<Sort>("Latest");
+
   return (
     <>
       <SEO title="bleeding edge" />
-      <Feed tags={props.tags} articles={props.articles} />
+      <Layout tags={tags} articles={articles} sort={sort} setSort={setSort}>
+        <Timeline sort={sort} articles={articles} />
+      </Layout>
     </>
   );
 }

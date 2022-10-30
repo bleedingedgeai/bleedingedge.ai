@@ -20,7 +20,7 @@ const formatDateString = (dateString: string) => {
     case yesterday:
       return `Yesterday, ${shortDate}`;
     case lastWeek:
-      return "Last week";
+      return "Past week";
     default:
       return shortDate;
   }

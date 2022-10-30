@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Bounds from "../components/Bounds";
 import Navigation from "../components/Navigation";
 import Sidebar from "../components/Sidebar";
-import Timeline from "../components/Timeline";
 import { IArticle } from "../db/articles";
 import { mq } from "../styles/mediaqueries";
 import FilterAndSort from "./FilterAndSort";
@@ -11,14 +10,19 @@ import FilterAndSortMobile from "./FilterAndSortMobile";
 
 export type Sort = "Latest" | "Earliest";
 
-interface FeedProps {
+interface LayoutProps {
   tags: string[];
   articles: IArticle[];
+  sort: Sort;
+  setSort: React.Dispatch<React.SetStateAction<Sort>>;
 }
 
-export default function Feed(props: FeedProps) {
-  const [sort, setSort] = useState<Sort>("Latest");
-
+export default function Layout({
+  tags,
+  children,
+  sort,
+  setSort,
+}: React.PropsWithChildren<LayoutProps>) {
   return (
     <>
       <Glow />
@@ -30,13 +34,13 @@ export default function Feed(props: FeedProps) {
           </Left>
           <Right>
             <FilterAndSortSticky>
-              <FilterAndSort tags={props.tags} sort={sort} setSort={setSort} />
+              <FilterAndSort tags={tags} sort={sort} setSort={setSort} />
             </FilterAndSortSticky>
-            <Timeline articles={props.articles} sort={sort} />
+            {children}
           </Right>
         </Container>
       </Bounds>
-      <FilterAndSortMobile tags={props.tags} sort={sort} setSort={setSort} />
+      <FilterAndSortMobile tags={tags} sort={sort} setSort={setSort} />
     </>
   );
 }

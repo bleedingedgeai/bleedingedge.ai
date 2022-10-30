@@ -57,6 +57,7 @@ export default function SubscribeOverlay() {
       <Form onSubmit={handleSubmit}>
         <InputContainer>
           <Input
+            type="email"
             name="email"
             label="Email address"
             value={value}

@@ -3,6 +3,7 @@ import React, { useCallback } from "react";
 import styled from "styled-components";
 import IconStar from "../components/Icons/IconStar";
 import { IArticle } from "../db/articles";
+import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 import { today, yesterday } from "./Timeline";
 
@@ -26,6 +27,42 @@ const getPrettyHostname = (urlString: string) => {
   return new URL(urlString).hostname.replace("www.", "");
 };
 
+// When someone suggests an article we want to give them credit
+function ThanksTo({ twitterUrl }: { twitterUrl?: string }) {
+  if (!twitterUrl) {
+    return null;
+  }
+
+  const url = new URL(twitterUrl);
+  const handleClick = (event) => {
+    event.preventDefault();
+    window.open(twitterUrl, "_blank").focus();
+  };
+  return (
+    <ThanksContainer>
+      <DotDivider>·</DotDivider>
+      <ThanksToAnchor onClick={handleClick}>
+        Submitted by @{url.pathname.split("/")[1]}
+      </ThanksToAnchor>
+    </ThanksContainer>
+  );
+}
+
+const ThanksContainer = styled.span`
+  display: flex;
+  ${ellipsis}
+`;
+
+const ThanksToAnchor = styled.button`
+  color: ${(p) => p.theme.colors.light_grey};
+  transition: color 0.25s ease;
+  ${ellipsis}
+
+  &:hover {
+    color: ${(p) => p.theme.colors.off_white};
+  }
+`;
+
 ////////////////////////////////////////////////////////////////////
 // Default article with basic styles
 ////////////////////////////////////////////////////////////////////
@@ -45,7 +82,10 @@ function ArticleDefault({
       <ArticleDefaultContent>
         <TextContainer>
           <Title>{article.title}</Title>
-          <Host>{getPrettyHostname(article.source)}</Host>
+          <Host>
+            {getPrettyHostname(article.source)}{" "}
+            <ThanksTo twitterUrl={article.thanks_to} />
+          </Host>
         </TextContainer>
         <ArticleMetadata article={article} dateKey={dateKey} defaultArticle />
       </ArticleDefaultContent>
@@ -59,6 +99,7 @@ const TextContainer = styled.div`
 `;
 
 const Host = styled.div`
+  display: flex;
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-weight: 500;
   font-size: 9px;
@@ -282,8 +323,11 @@ function ArticleMetadata({
             </Tag>
           ))}
         </Tags>
+        <HideOnDesktop>
+          <ThanksTo twitterUrl={article.thanks_to} />
+        </HideOnDesktop>
         <PostedAt>{format(new Date(article.postedAt))}</PostedAt>
-        <DotDivider>·</DotDivider>
+        <DotDividerMobile>·</DotDividerMobile>
         <ArticleMetadataMobile>
           {getPrettyHostname(article.source)}
         </ArticleMetadataMobile>
@@ -307,6 +351,11 @@ const ArticleMetadataContainer = styled.div<{ defaultArticle?: boolean }>`
   }
 `;
 
+const HideOnDesktop = styled.span`
+  ${mq.phabletUp} {
+    display: none;
+  }
+`;
 const ArticleMetadataMobile = styled.div`
   font-size: 12px;
   color: ${(p) => p.theme.colors.light_grey};
@@ -319,7 +368,9 @@ const ArticleMetadataMobile = styled.div`
 const DotDivider = styled.span`
   margin: 0 6px;
   color: ${(p) => p.theme.colors.light_grey};
+`;
 
+const DotDividerMobile = styled(DotDivider)`
   ${mq.phabletUp} {
     display: none;
   }
@@ -329,6 +380,7 @@ const ArticleMetadataContent = styled.div`
   position: relative;
   display: flex;
   align-items: center;
+  ${ellipsis}
 
   ${mq.desktopSmall} {
     flex-direction: row-reverse;

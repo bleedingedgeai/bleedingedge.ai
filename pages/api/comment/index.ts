@@ -39,11 +39,11 @@ export default async function handle(req: NextApiRequest, res) {
             email: "brotzky@gmail.com",
           },
         },
-        // parent: {
-        //   connect: {
-        //     id: req.body.parentId as string,
-        //   },
-        // },
+        parent: {
+          connect: {
+            id: req.body.parentId as string,
+          },
+        },
         post: {
           connect: {
             id: req.body.postId as string,

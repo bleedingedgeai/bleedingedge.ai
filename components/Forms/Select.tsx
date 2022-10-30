@@ -110,7 +110,7 @@ export default function Select({ options: initialOptions }: SelectProps) {
         return;
       }
 
-      if (event.code === "KeyF") {
+      if (event.code === "KeyF" && !event.metaKey) {
         setOpen(true);
         event.stopPropagation();
         event.preventDefault();
