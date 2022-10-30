@@ -1,10 +1,12 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { inputIsFocused } from "../helpers/input";
 import { mq } from "../styles/mediaqueries";
+import Banner from "./Banner";
 import { Sort } from "./Feed";
 import Select from "./Forms/Select";
 import IconArrow from "./Icons/IconArrow";
+import { OverlayContext, OverlayType } from "./Overlay";
 
 interface FilterAndSortProps {
   tags: string[];
@@ -17,6 +19,8 @@ export default function FilterAndSort({
   sort,
   setSort,
 }: FilterAndSortProps) {
+  const { showOverlay } = useContext(OverlayContext);
+
   const handleSortClick = useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
@@ -41,21 +45,56 @@ export default function FilterAndSort({
   }, [setSort]);
 
   return (
-    <Container>
-      <SortContainer onClick={handleSortClick}>
-        <SortArrow
-          style={sort === "Latest" ? {} : { transform: "rotate(180deg" }}
-        >
-          <IconArrow />
-        </SortArrow>
-        <SortButton>
-          Sort by <span>:: {sort}</span>
-        </SortButton>
-      </SortContainer>
-      <Select options={tags} />
-    </Container>
+    <>
+      <Banner />
+      <Container>
+        <SortContainer onClick={handleSortClick}>
+          <SortArrow
+            style={sort === "Latest" ? {} : { transform: "rotate(180deg" }}
+          >
+            <IconArrow />
+          </SortArrow>
+          <SortButton>
+            Sort by <span>:: {sort}</span>
+          </SortButton>
+        </SortContainer>
+        <Right>
+          <Select options={tags} />
+          <DotDivider>·</DotDivider>
+          <SubmitButton onClick={() => showOverlay(OverlayType.SUGGESTION)}>
+            Submit
+          </SubmitButton>
+        </Right>
+      </Container>
+    </>
   );
 }
+
+const Right = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const DotDivider = styled.span`
+  margin: 0 16px;
+`;
+
+const SubmitButton = styled.button`
+  margin-left: 7px;
+  padding: 4px 7px 5px;
+  margin: 0 -7px;
+  background: rgba(255, 255, 255, 0);
+  border-radius: 5px;
+  transition: background 0.25s ease;
+
+  span {
+    color: ${(p) => p.theme.colors.light_grey};
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+`;
 
 const Container = styled.div`
   display: flex;

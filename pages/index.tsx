@@ -4,6 +4,7 @@ import Feed from "../components/Feed";
 import SEO from "../components/SEO";
 import { IArticle, getArticles } from "../db/articles";
 import { getTags } from "../db/tags";
+import prisma from "../lib/prisma";
 
 async function generateFeed(articles: IArticle[]) {
   const siteURL = process.env.NEXT_PUBLIC_URL;
@@ -33,10 +34,10 @@ async function generateFeed(articles: IArticle[]) {
   articles.forEach((article) => {
     feed.addItem({
       title: article.title,
-      id: article.url,
-      link: article.url,
-      description: article.blurb,
-      date: new Date(article.posted_at),
+      id: article.source,
+      link: article.source,
+      description: article.summary,
+      date: new Date(article.postedAt),
     });
   });
 
@@ -51,11 +52,20 @@ export async function getStaticProps() {
 
   const [articles, tags] = await Promise.all([articlesRequest, tagsRequest]);
 
+  const feed = await prisma.post.findMany({
+    where: { published: true },
+    include: {
+      author: {
+        select: { name: true },
+      },
+    },
+  });
+
   await generateFeed(articles);
 
   return {
     props: {
-      articles,
+      articles: JSON.parse(JSON.stringify(feed)),
       tags,
     },
     revalidate: 60, // In seconds

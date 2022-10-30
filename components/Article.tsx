@@ -37,7 +37,7 @@ function ArticleDefault({
 }: ArticleProps) {
   return (
     <ArticleDefaultContainer
-      href={article.url}
+      href={article.source}
       target="_blank"
       rel="noopener"
       nextArticleIsDefault={!nextArticleIsDefault}
@@ -45,7 +45,7 @@ function ArticleDefault({
       <ArticleDefaultContent>
         <TextContainer>
           <Title>{article.title}</Title>
-          <Host>{getPrettyHostname(article.url)}</Host>
+          <Host>{getPrettyHostname(article.source)}</Host>
         </TextContainer>
         <ArticleMetadata article={article} dateKey={dateKey} defaultArticle />
       </ArticleDefaultContent>
@@ -173,12 +173,12 @@ function ArticleHighlightOrFeature({
   withMarginTop,
   withMarginBottom,
 }: ArticleProps) {
-  const host = getPrettyHostname(article.url);
+  const host = getPrettyHostname(article.source);
   const feature = article.format === "featured";
 
   return (
     <ArticleWithBackgroundContainer
-      href={article.url}
+      href={article.source}
       target="_blank"
       rel="noopener"
       nextArticleIsDefault={nextArticleIsDefault}
@@ -208,7 +208,7 @@ function ArticleHighlightOrFeature({
           <ArticleFeaturedSourceDesktop>
             <span>{host}</span>
           </ArticleFeaturedSourceDesktop>
-          <Blurb>{article.blurb}</Blurb>
+          <Blurb>{article.summary}</Blurb>
         </TextContainer>
         <ArticleMetadata article={article} dateKey={dateKey} />
       </ArticleWithBackgroundContent>
@@ -282,10 +282,10 @@ function ArticleMetadata({
             </Tag>
           ))}
         </Tags>
-        <PostedAt>{format(new Date(article.posted_at))}</PostedAt>
+        <PostedAt>{format(new Date(article.postedAt))}</PostedAt>
         <DotDivider>·</DotDivider>
         <ArticleMetadataMobile>
-          {getPrettyHostname(article.url)}
+          {getPrettyHostname(article.source)}
         </ArticleMetadataMobile>
       </ArticleMetadataContent>
     </ArticleMetadataContainer>

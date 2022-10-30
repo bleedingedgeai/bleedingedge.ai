@@ -11,7 +11,7 @@ const base: Airtable.Base = Airtable.base(process.env.AIRTABLE_BASE_ID);
 export interface Article {
   title: string;
   blurb: string;
-  posted_at: Date;
+  postedAt: Date;
   url: string;
   tags: string[];
   format: string[];
@@ -46,7 +46,7 @@ export default async function handler(req: NextApiRequest, res) {
               articles.push({
                 title: record.get("title"),
                 blurb: record.get("blurb") || null,
-                posted_at: record.get("posted_at"),
+                postedAt: record.get("postedAt"),
                 url: record.get("url"),
                 tags: record.get("tags") || null,
                 format: record.get("format") || null,
@@ -60,7 +60,7 @@ export default async function handler(req: NextApiRequest, res) {
               reject();
               return;
             }
-            resolve(articles.filter((a) => a.title && a.posted_at));
+            resolve(articles.filter((a) => a.title && a.postedAt));
           }
         );
     });

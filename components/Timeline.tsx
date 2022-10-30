@@ -36,7 +36,7 @@ export const lastWeek = getDateMinusDays(7);
 
 const groupArticlesByDate = (articles) => {
   return articles.reduce((prev, article) => {
-    const postedAt = new Date(article.posted_at);
+    const postedAt = new Date(article.postedAt);
     const podatedAtKey = getDateKey(postedAt);
 
     // TODAY
@@ -110,7 +110,7 @@ export default function Timeline({ articles, sort }: TimelineProps) {
         .sort(sortMethod)
         .map((date, index) => {
           const sortedArticles = [...groupedArticles[date]].sort((a, b) =>
-            sortMethod(a.posted_at, b.posted_at)
+            sortMethod(a.postedAt, b.postedAt)
           );
 
           return (

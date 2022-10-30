@@ -77,7 +77,7 @@ export default function Subscribe() {
 
   return (
     <Contiainer>
-      <SubscribeButton onClick={handleSubscribeClick}>
+      <SubscribeButton onClick={handleSubscribeClick} showForm={showForm}>
         Subscribe
       </SubscribeButton>
       <Form
@@ -163,13 +163,20 @@ const Contiainer = styled.div`
   overflow: hidden;
 `;
 
-const SubscribeButton = styled.button`
+const SubscribeButton = styled.button<{ showForm: boolean }>`
   position: relative;
   font-weight: 400;
   font-size: 12px;
   line-height: 130%;
   margin-right: 12px;
   z-index: 1;
+  color: ${(p) =>
+    p.showForm ? p.theme.colors.white : p.theme.colors.light_grey};
+  transition: color 0.25s ease;
+
+  &:hover {
+    color: ${(p) => p.theme.colors.off_white};
+  }
 `;
 
 const Form = styled.form`
