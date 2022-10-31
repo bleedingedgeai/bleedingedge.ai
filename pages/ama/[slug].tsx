@@ -12,13 +12,10 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       slug: String(params?.slug),
     },
     include: {
-      author: {
-        select: { name: true },
-      },
+      author: true,
     },
   });
 
-  console.log(post.id);
   const comments = await prisma.comment.findMany({
     where: {
       postId: post.id,
@@ -27,6 +24,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       author: true,
       children: {
         include: {
+          author: true,
           children: {
             include: {
               author: true,
@@ -38,7 +36,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
               },
             },
           },
-          author: true,
         },
       },
     },
@@ -46,25 +43,20 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
   return {
     props: {
-      post: JSON.parse(JSON.stringify(post)),
+      article: JSON.parse(JSON.stringify(post)),
       comments: JSON.parse(JSON.stringify(comments)),
     },
   };
 };
 
-export default function AmaPage(props) {
+export default function AmaPage({ tags, comments, article }) {
   const [sort, setSort] = useState<Sort>("Latest");
 
   return (
     <>
       <SEO title="bleeding edge" />
-      <Layout
-        tags={props.tags}
-        articles={props.articles}
-        sort={sort}
-        setSort={setSort}
-      >
-        <Ama post={props.post} comments={props.comments} />
+      <Layout tags={tags} sort={sort} setSort={setSort}>
+        <Ama article={article} comments={comments} />
       </Layout>
     </>
   );

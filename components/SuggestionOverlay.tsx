@@ -36,6 +36,7 @@ export default function Suggestion() {
     },
     [setSuggestion]
   );
+
   const handleSubmit = useCallback(
     async (event) => {
       event.preventDefault();

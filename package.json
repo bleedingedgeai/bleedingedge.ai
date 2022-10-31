@@ -15,6 +15,7 @@
     "airtable": "^0.11.5",
     "feed": "^4.2.2",
     "fuse.js": "^6.6.2",
+    "javascript-time-ago": "^2.5.7",
     "next": "latest",
     "next-auth": "^4.15.0",
     "next-use-posthog": "^1.16.0",

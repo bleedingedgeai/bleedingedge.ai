@@ -7,6 +7,7 @@ import { slugify } from "../helpers/string";
 import { Sort } from "../pages";
 import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
+import Avatar from "./Avatar";
 import IconAma from "./Icons/IconAma";
 import IconShare from "./Icons/IconShare";
 import IconUpvote from "./Icons/IconUpvotes";
@@ -35,25 +36,25 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
     event.preventDefault();
     event.stopPropagation();
   }, []);
+
   return (
     <>
       {articles.map((article) => {
         const amaHref = `/ama/${slugify(article.title)}`;
+        const live = article.live;
 
         return (
-          <Container onClick={() => router.push(amaHref)}>
+          <Container onClick={() => router.push(amaHref)} live={live}>
             <div>
               {article.author.map((author) => (
-                <AvatarContainer>
-                  <Avatar src={author.image} />
-                </AvatarContainer>
+                <Avatar src={author.image} highlight={live} />
               ))}
             </div>
-            <div>
+            <Main>
               <Top>
                 <div>
                   {article.author.map((author) => (
-                    <Authors>{author.name}</Authors>
+                    <Authors>{author.name} </Authors>
                   ))}
                 </div>
                 <div>{article.postedAt}</div>
@@ -73,7 +74,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                     <Link href={amaHref}>
                       <StyledLink>
                         <IconAma fill={theme.colors.light_grey} />{" "}
-                        <span>{article.comments?.length || 0}</span> comments
+                        <span>{article._count.comments}</span> comments
                       </StyledLink>
                     </Link>
                   </Action>
@@ -84,7 +85,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                   </Action>
                 </Actions>
               </Bottom>
-            </div>
+            </Main>
           </Container>
         );
       })}
@@ -92,11 +93,42 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
   );
 }
 
-const Container = styled.div`
+const Main = styled.div`
+  position: relative;
+`;
+
+const Container = styled.div<{ live: boolean }>`
   display: grid;
   grid-template-columns: 18px 1fr;
   grid-gap: 36px;
   margin-right: 21px;
+
+  &:not(:last-of-type) {
+    margin-bottom: 18px;
+
+    ${Main} {
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+
+      ${(p) =>
+        p.live &&
+        `&::before {
+        content: "";
+        position: absolute;
+        height: 1px;
+        width: 100%;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(
+          269.71deg,
+          #fa2162 5.75%,
+          #d0a06a 35.19%,
+          #c69660 67.12%,
+          #fbea9e 98.41%
+        );
+      }`}
+    }
+  }
 `;
 
 const Top = styled.div`
@@ -125,32 +157,6 @@ const Content = styled.p`
   line-height: 120%;
   color: #969696;
   max-width: 612px;
-`;
-
-const AvatarContainer = styled.div`
-  position: relative;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  margin-right: 36px;
-  display: grid;
-  place-items: center;
-
-  &::after {
-    content: "";
-    position: absolute;
-    left: -2px;
-    top: -2px;
-    width: calc(100% + 4px);
-    height: calc(100% + 4px);
-    border-radius: 50%;
-    border: 1px solid ${(p) => p.theme.colors.light_grey};
-  }
-`;
-
-const Avatar = styled.img`
-  width: 100%;
-  border-radius: 50%;
 `;
 
 const Authors = styled.div`

@@ -82,7 +82,7 @@ export default function Home({ tags, articles }) {
   return (
     <>
       <SEO title="bleeding edge" />
-      <Layout tags={tags} articles={articles} sort={sort} setSort={setSort}>
+      <Layout tags={tags} sort={sort} setSort={setSort}>
         <Timeline sort={sort} articles={articles} />
       </Layout>
     </>

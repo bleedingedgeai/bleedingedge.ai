@@ -1,23 +1,28 @@
 import Link from "next/link";
 import styled from "styled-components";
 import { slugify } from "../helpers/string";
+import Avatar from "./Avatar";
 import IconAma from "./Icons/IconAma";
+
+const placeholderTitle =
+  "Lex Friedman interviews Andrej Karpathy (formerly AI Lead at Tesla)";
 
 export default function Banner() {
   return (
     <Container>
-      <Author></Author>
-      <Link
-        href={`/ama/${slugify(
-          "Shutterstock announces DALL·E integration and fund to compensate contributors"
-        )}`}
-      >
+      <Author>
+        <Avatar
+          src="https://pbs.twimg.com/profile_images/1352704374217183233/84TK-amU_normal.jpg"
+          size={28}
+          highlight
+        />
+      </Author>
+      <Link href={`/ama/${slugify(placeholderTitle)}`}>
         <BannerContainer>
           <BlueGraidnet />
           <OrangeGradient />
           <Title>
-            Shutterstock announces DALL·E integration and fund to compensate
-            contributors
+            {placeholderTitle}
             <IconAma />
           </Title>
           <span>
@@ -91,22 +96,7 @@ const Title = styled.span`
 `;
 
 const Author = styled.span`
-  position: relative;
-  width: 28px;
-  height: 28px;
   margin-right: 8px;
-  border-radius: 50%;
-
-  &::after {
-    content: "";
-    position: absolute;
-    left: -2px;
-    top: -2px;
-    width: calc(100% + 4px);
-    height: calc(100% + 4px);
-    border-radius: 50%;
-    border: 1px solid ${(p) => p.theme.colors.orange};
-  }
 `;
 
 const BlueGraidnet = styled.span`

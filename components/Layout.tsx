@@ -12,7 +12,6 @@ export type Sort = "Latest" | "Earliest";
 
 interface LayoutProps {
   tags: string[];
-  articles: IArticle[];
   sort: Sort;
   setSort: React.Dispatch<React.SetStateAction<Sort>>;
 }
@@ -85,6 +84,7 @@ const Right = styled.div`
   padding-top: 40px;
   width: 100%;
   max-width: 896px;
+  position: relative;
 
   ${mq.desktopSmall} {
     max-width: 100%;

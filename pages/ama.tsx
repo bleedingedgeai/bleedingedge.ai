@@ -15,16 +15,20 @@ export async function getStaticProps() {
 
   const [tags] = await Promise.all([articlesRequest, tagsRequest]);
 
-  const feed = await prisma.post.findMany({
+  const article = await prisma.post.findMany({
     where: { author: { some: {} } },
     include: {
       author: true,
+      _count: {
+        select: { comments: true },
+      },
     },
   });
 
+  console.log(article);
   return {
     props: {
-      articles: JSON.parse(JSON.stringify(feed)),
+      articles: JSON.parse(JSON.stringify(article)),
       tags,
     },
     revalidate: 60, // In seconds
@@ -37,12 +41,7 @@ export default function Ama(props) {
   return (
     <>
       <SEO title="bleeding edge" />
-      <Layout
-        tags={props.tags}
-        articles={props.articles}
-        sort={sort}
-        setSort={setSort}
-      >
+      <Layout tags={props.tags} sort={sort} setSort={setSort}>
         <TimelineAma sort={sort} articles={props.articles} />
       </Layout>
     </>

@@ -5,6 +5,7 @@ import IconStar from "../components/Icons/IconStar";
 import { IArticle } from "../db/articles";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
+import IconAma from "./Icons/IconAma";
 import { today, yesterday } from "./Timeline";
 
 interface ArticleProps {
@@ -81,7 +82,9 @@ function ArticleDefault({
     >
       <ArticleDefaultContent>
         <TextContainer>
-          <Title>{article.title}</Title>
+          <Title>
+            {article.title} {article.author.length > 0 && <IconAma />}
+          </Title>
           <Host>
             {getPrettyHostname(article.source)}{" "}
             <ThanksTo twitterUrl={article.thanks_to} />
@@ -113,6 +116,8 @@ const Host = styled.div`
 `;
 
 const Title = styled.h3`
+  display: flex;
+  align-items: center;
   font-weight: 500;
   font-size: 14px;
   line-height: 120%;
@@ -126,6 +131,10 @@ const Title = styled.h3`
     font-size: 16px;
     white-space: normal;
     overflow: visible;
+  }
+
+  svg {
+    margin-left: 6px;
   }
 `;
 
