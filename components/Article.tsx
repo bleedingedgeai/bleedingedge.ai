@@ -102,7 +102,7 @@ const Host = styled.div`
   display: flex;
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-weight: 500;
-  font-size: 9px;
+  font-size: 10px;
   line-height: 120%;
   color: ${(p) => p.theme.colors.light_grey};
   margin-top: 2px;
@@ -215,6 +215,7 @@ function ArticleHighlightOrFeature({
   withMarginBottom,
 }: ArticleProps) {
   const host = getPrettyHostname(article.url);
+  const highlight = article.format === "highlight";
   const feature = article.format === "featured";
 
   return (
@@ -234,6 +235,13 @@ function ArticleHighlightOrFeature({
         <Dot />
       )}
       <ArticleWithBackgroundContent>
+        {highlight && (
+          <>
+            <BlueGradientHighlightContainer>
+              <BlueGradientHighlight />
+            </BlueGradientHighlightContainer>
+          </>
+        )}
         {feature && (
           <>
             <BlueGradientContainer>
@@ -399,7 +407,7 @@ const Tags = styled.div`
 const Tag = styled.button`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-weight: 500;
-  font-size: 9px;
+  font-size: 10px;
   line-height: 120%;
   text-align: center;
   color: ${(p) => p.theme.colors.light_grey};
@@ -433,7 +441,7 @@ const Tag = styled.button`
 `;
 
 const PostedAt = styled.div`
-  font-size: 9px;
+  font-size: 10px;
   text-align: right;
   color: ${(p) => p.theme.colors.light_grey};
   min-width: 55px;
@@ -503,9 +511,9 @@ const ArticleWithBackgroundContainer = styled.a<{
 
 const ArticleWithBackgroundContent = styled.div`
   position: relative;
-  background: #090808;
+  background: ${(p) => p.theme.colors.dark_grey};
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 7px;
+  border-radius: 12px;
   padding: 18px 21px 16px;
   width: 100%;
   display: flex;
@@ -529,7 +537,7 @@ const ArticleWithBackgroundContent = styled.div`
 const ArticleFeaturedSourceDesktop = styled.div`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-weight: 400;
-  font-size: 9px;
+  font-size: 10px;
   line-height: 120%;
   color: ${(p) => p.theme.colors.light_grey};
   margin-top: 2px;
@@ -558,6 +566,13 @@ const OrangeGradientContainer = styled.div`
     width: 271px;
     height: 103px;
   }
+`;
+
+const BlueGradientHighlightContainer = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 7px;
+  pointer-events: none;
 `;
 
 const BlueGradientContainer = styled.div`
@@ -606,5 +621,57 @@ const BlueGradient = () => (
       d="M197.873 50.2333L288 0H75.2188L50.8235 24.3833L0 65.8167L75.2188 77L197.873 50.2333Z"
       fill="url(#ArticleBlue)"
     />
+  </svg>
+);
+
+const BlueGradientHighlight = () => (
+  <svg
+    width="551"
+    height="98"
+    viewBox="0 0 551 98"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g filter="url(#filter0_f_746_4774)">
+      <path
+        d="M138.435 69.9476L7 98H317.306L352.882 84.3833L427 61.2452L317.306 55L138.435 69.9476Z"
+        fill="url(#paint0_linear_746_4774)"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_f_746_4774"
+        x="-117"
+        y="-69"
+        width="668"
+        height="291"
+        filterUnits="userSpaceOnUse"
+        color-interpolation-filters="sRGB"
+      >
+        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="BackgroundImageFix"
+          result="shape"
+        />
+        <feGaussianBlur
+          stdDeviation="62"
+          result="effect1_foregroundBlur_746_4774"
+        />
+      </filter>
+      <linearGradient
+        id="paint0_linear_746_4774"
+        x1="217"
+        y1="98"
+        x2="218.918"
+        y2="48.9511"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stop-color="#072839" />
+        <stop offset="0.525533" stop-color="#033151" />
+        <stop offset="1" stop-color="#28445C" />
+      </linearGradient>
+    </defs>
   </svg>
 );
