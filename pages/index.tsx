@@ -2,10 +2,15 @@
 // import { Feed as RSSFeed } from "feed";
 import { unstable_getServerSession } from "next-auth";
 import { useState } from "react";
+import styled from "styled-components";
+import Banner from "../components/Banner";
+import FilterAndSort from "../components/FilterAndSort";
+import FilterAndSortMobile from "../components/FilterAndSortMobile";
 import Layout from "../components/Layout";
 import SEO from "../components/SEO";
 import Timeline from "../components/Timeline";
 import prisma from "../lib/prisma";
+import { mq } from "../styles/mediaqueries";
 import { authOptions } from "./api/auth/[...nextauth]";
 
 // async function generateFeed(articles: IArticle[]) {
@@ -67,9 +72,17 @@ export async function getServerSideProps(context) {
   });
   const tagsRequest = prisma.tag.findMany();
 
-  const [session, articles, tags] = await Promise.all([
+  const liveArticleRequest = await prisma.post.findFirst({
+    where: { live: true },
+    include: {
+      authors: true,
+    },
+  });
+
+  const [session, articles, liveArticle, tags] = await Promise.all([
     sessionRequest,
     articlesRequest,
+    liveArticleRequest,
     tagsRequest,
   ]);
 
@@ -77,6 +90,7 @@ export async function getServerSideProps(context) {
     props: {
       session,
       articles: JSON.parse(JSON.stringify(articles)),
+      liveArticle: JSON.parse(JSON.stringify(liveArticle)),
       tags,
     },
   };
@@ -84,15 +98,34 @@ export async function getServerSideProps(context) {
 
 export type Sort = "Latest" | "Earliest";
 
-export default function Home({ tags, articles }) {
+export default function Home({ tags, articles, liveArticle }) {
   const [sort, setSort] = useState<Sort>("Latest");
 
   return (
     <>
       <SEO title="bleeding edge" />
-      <Layout tags={tags} sort={sort} setSort={setSort}>
+      <Layout>
+        {Boolean(liveArticle) && <Banner article={liveArticle} />}
+        <FilterAndSortSticky>
+          <FilterAndSort tags={tags} sort={sort} setSort={setSort} />
+        </FilterAndSortSticky>
         <Timeline sort={sort} articles={articles} />
       </Layout>
+      <FilterAndSortMobile tags={tags} sort={sort} setSort={setSort} />
     </>
   );
 }
+
+const FilterAndSortSticky = styled.div`
+  position: sticky;
+  top: 40px;
+  z-index: 210000;
+
+  ${mq.desktopSmall} {
+    top: 121px;
+  }
+
+  ${mq.phablet} {
+    top: 112px;
+  }
+`;

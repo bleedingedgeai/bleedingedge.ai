@@ -1,8 +1,10 @@
-import { Fragment, useCallback, useState } from "react";
+import { useSession } from "next-auth/react";
+import { Fragment, useCallback, useContext, useState } from "react";
 import styled from "styled-components";
 import Avatar from "./Avatar";
 import Comments from "./Comments";
 import CommentBox from "./Forms/CommentBox";
+import { OverlayContext, OverlayType } from "./Overlay";
 
 const placeholderContent =
   "Hello! My name is Lachy and I created this site! bleeding edge is a feed of noteworthy developments in AI. this site is very much a work in progress. please send suggestions and feedback!";
@@ -10,6 +12,9 @@ const placeholderContent =
 export default function Ama({ article, comments }) {
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState("");
+  const [parentId, setParentId] = useState(null);
+  const { showOverlay } = useContext(OverlayContext);
+  const session = useSession();
 
   const handleCommentChange = useCallback(
     (event: React.FormEvent<HTMLTextAreaElement>) => {
@@ -21,17 +26,32 @@ export default function Ama({ article, comments }) {
   const handleSubmit = useCallback(
     async (event) => {
       event.preventDefault();
+
+      if (session.status === "unauthenticated") {
+        return showOverlay(OverlayType.AUTHENTICATION);
+      }
+
       setLoading(true);
       try {
-        const response = await fetch("/api/comment", {
+        const response = await fetch("/api/comments", {
           method: "post",
-          body: JSON.stringify({ content: comment }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: comment,
+            postId: article.id,
+            parentId,
+            userId: session.data.user.id,
+          }),
         });
         const res = await response.json();
         if (res.error) {
           throw Error;
         }
         setLoading(false);
+        setComment("");
+        setParentId("");
       } catch (error) {
         setLoading(false);
       }
@@ -47,7 +67,7 @@ export default function Ama({ article, comments }) {
             <Avatar key={author.id} src={author.image} highlight />
           ))}
         </div>
-        <div>
+        <Details>
           <Top>
             <div>
               {article.authors.map((author) => (
@@ -62,22 +82,27 @@ export default function Ama({ article, comments }) {
             <Title>{article.title}</Title>
             <Content>{article.content || placeholderContent}</Content>
           </Middle>
-          <Comments comments={comments} />
-        </div>
+        </Details>
       </Container>
-      <CommentBoxContainer>
-        <CommentBox value={comment} onChange={handleCommentChange} />
-      </CommentBoxContainer>
+      {/* <CommentBoxContainer> */}
+      {/* </CommentBoxContainer> */}
+      <div style={{ marginTop: 24, paddingLeft: 54 }}>
+        <Comments comments={comments} setParentId={setParentId} />
+      </div>
+
+      <div style={{ paddingBottom: 120 }}>
+        <form onSubmit={handleSubmit}>
+          <CommentBox value={comment} onChange={handleCommentChange} />
+          <button>Submit {parentId && `reply to ${parentId}`}</button>
+        </form>
+      </div>
     </>
   );
 }
 
-const CommentBoxContainer = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  z-index: 10;
+const Details = styled.div`
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding-bottom: 24px;
 `;
 
 const PostedAt = styled.div`
@@ -91,6 +116,10 @@ const Container = styled.div`
   grid-template-columns: 18px 1fr;
   grid-gap: 36px;
   margin-right: 21px;
+  z-index: 3;
+  position: sticky;
+  top: 40px;
+  background: ${(p) => p.theme.colors.black};
 `;
 
 const Top = styled.div`
@@ -101,9 +130,7 @@ const Top = styled.div`
   justify-content: space-between;
 `;
 
-const Middle = styled.div`
-  margin-bottom: 50px;
-`;
+const Middle = styled.div``;
 
 const Title = styled.h2`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};

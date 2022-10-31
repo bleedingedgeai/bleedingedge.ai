@@ -1,24 +1,24 @@
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
-import { useCallback } from "react";
+import { useSession } from "next-auth/react";
+import { useCallback, useContext, useState } from "react";
 import styled from "styled-components";
 import { theme } from "../styles/theme";
 import Avatar from "./Avatar";
 import IconAma from "./Icons/IconAma";
 import IconUpvote from "./Icons/IconUpvotes";
+import { OverlayContext, OverlayType } from "./Overlay";
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
-export default function Comments({ comments }) {
-  return <CommentsRecursive comments={comments} />;
+export default function Comments(props) {
+  return <CommentsRecursive {...props} />;
 }
 
-function CommentsRecursive({ comments, index: parentIndex = 0 }) {
-  const handleUpvoteClick = useCallback((event: React.MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-  }, []);
+function CommentsRecursive({ comments, index: parentIndex = 0, setParentId }) {
+  const session = useSession();
+  const { showOverlay } = useContext(OverlayContext);
 
   if (!comments) {
     return null;
@@ -27,6 +27,28 @@ function CommentsRecursive({ comments, index: parentIndex = 0 }) {
   return (
     <>
       {comments.map((comment) => {
+        const handleUpvoteClick = useCallback(
+          (event: React.MouseEvent) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (session.status === "unauthenticated") {
+              return showOverlay(OverlayType.AUTHENTICATION);
+            }
+
+            fetch("/api/comments/vote", {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              method: "POST",
+              body: JSON.stringify({
+                userId: session.data.user.id,
+                commentId: comment.id,
+              }),
+            });
+          },
+          [comment, session]
+        );
+
         return (
           <>
             <Container
@@ -45,8 +67,14 @@ function CommentsRecursive({ comments, index: parentIndex = 0 }) {
                 <Bottom>
                   <Actions>
                     <Action>
+                      <StyledButton onClick={() => setParentId(comment.id)}>
+                        <IconAma /> <span>reply</span>
+                      </StyledButton>
+                    </Action>
+                    <Action>
                       <StyledButton onClick={handleUpvoteClick}>
-                        <IconUpvote /> <span>{comment.score}</span> upvotes
+                        <IconUpvote /> <span>{comment._count.votes}</span>{" "}
+                        upvotes
                       </StyledButton>
                     </Action>
                     <Action>
@@ -62,6 +90,7 @@ function CommentsRecursive({ comments, index: parentIndex = 0 }) {
             <CommentsRecursive
               comments={comment.children}
               index={parentIndex + 1}
+              setParentId={setParentId}
             />
           </>
         );
@@ -92,6 +121,7 @@ const Container = styled.div`
   grid-gap: 16px;
 `;
 
+const Details = styled.div``;
 const Actions = styled.div`
   display: flex;
   align-items: center;

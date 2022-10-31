@@ -4,25 +4,24 @@ import { slugify } from "../helpers/string";
 import Avatar from "./Avatar";
 import IconAma from "./Icons/IconAma";
 
-const placeholderTitle =
-  "Lex Friedman interviews Andrej Karpathy (formerly AI Lead at Tesla)";
+export default function Banner({ article }) {
+  if (!article) {
+    return null;
+  }
 
-export default function Banner() {
+  const author = article.authors[0];
+
   return (
     <Container>
       <Author>
-        <Avatar
-          src="https://pbs.twimg.com/profile_images/1352704374217183233/84TK-amU_normal.jpg"
-          size={28}
-          highlight
-        />
+        <Avatar src={author.image} size={28} highlight />
       </Author>
-      <Link href={`/ama/${slugify(placeholderTitle)}`}>
+      <Link href={`/ama/${slugify(article.title)}`}>
         <BannerContainer>
           <BlueGraidnet />
           <OrangeGradient />
           <Title>
-            {placeholderTitle}
+            {article.title}
             <IconAma />
           </Title>
           <span>
@@ -35,10 +34,12 @@ export default function Banner() {
   );
 }
 
-const Container = styled.span`
+const Container = styled.div`
   margin-bottom: 50px;
   display: flex;
   align-items: center;
+  z-index: 3;
+  position: relative;
 `;
 
 const AmaText = styled.span`

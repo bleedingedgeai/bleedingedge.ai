@@ -1,6 +1,7 @@
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import styled from "styled-components";
 import { slugify } from "../helpers/string";
 import { Sort } from "../pages";
@@ -9,6 +10,7 @@ import Avatar from "./Avatar";
 import IconAma from "./Icons/IconAma";
 import IconShare from "./Icons/IconShare";
 import IconUpvote from "./Icons/IconUpvotes";
+import { OverlayContext, OverlayType } from "./Overlay";
 
 const placeholderContent =
   "Hello! My name is Lachy and I created this site! bleeding edge is a feed of noteworthy developments in AI. this site is very much a work in progress. please send suggestions and feedback!";
@@ -28,18 +30,38 @@ interface TimelineProps {
 
 export default function TimelineAma({ articles, sort }: TimelineProps) {
   const router = useRouter();
+  const session = useSession();
+  const { showOverlay } = useContext(OverlayContext);
   const sortMethod = sort === "Latest" ? sortByLatest : sortByEarliest;
-
-  const handleUpvoteClick = useCallback((event: React.MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-  }, []);
 
   return (
     <>
       {articles.map((article) => {
         const amaHref = `/ama/${slugify(article.title)}`;
         const live = article.live;
+
+        const handleUpvoteClick = useCallback(
+          (event: React.MouseEvent) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (session.status === "unauthenticated") {
+              return showOverlay(OverlayType.AUTHENTICATION);
+            }
+
+            fetch("/api/posts/vote", {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              method: "POST",
+              body: JSON.stringify({
+                userId: session.data.user.id,
+                postId: article.id,
+              }),
+            });
+          },
+          [article, session]
+        );
 
         return (
           <Container
@@ -59,7 +81,9 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                     <Authors key={author.id}>{author.name} </Authors>
                   ))}
                 </div>
-                <div>{article.postedAt}</div>
+                <div>
+                  {article.id} | {article.postedAt}
+                </div>
               </Top>
               <Middle>
                 <Title>{article.title}</Title>
@@ -69,7 +93,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                 <Actions>
                   <Action>
                     <StyledButton onClick={handleUpvoteClick}>
-                      <IconUpvote /> <span>{article.score}</span> upvotes
+                      <IconUpvote /> <span>{article._count.votes}</span> upvotes
                     </StyledButton>
                   </Action>
                   <Action>

@@ -6,6 +6,7 @@ import { scrollable } from "../helpers/dom";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
+import AuthenticationOverlay from "./AuthenticationOverlay";
 import IconEx from "./Icons/IconEx";
 import Slidein from "./OverlaySlidein";
 import Portal from "./Portal";
@@ -15,11 +16,13 @@ import SuggestionOverlay from "./SuggestionOverlay";
 export enum OverlayType {
   SUGGESTION = "SUGGESTION",
   SUBSCRIBE = "SUBSCRIBE",
+  AUTHENTICATION = "AUTHENTICATION",
 }
 
 const OverlayComponentMap = {
   [OverlayType.SUGGESTION]: <SuggestionOverlay />,
   [OverlayType.SUBSCRIBE]: <SubscribeOverlay />,
+  [OverlayType.AUTHENTICATION]: <AuthenticationOverlay />,
 };
 
 enum Action {
@@ -164,7 +167,6 @@ const Fixed = styled.div`
 
 const Container = styled(animated.div)`
   width: 444px;
-  min-height: 480px;
   margin: 0 auto;
   padding: 0 48px 46px;
   background: rgba(22, 22, 22, 0.52);

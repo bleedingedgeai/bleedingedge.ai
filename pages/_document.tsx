@@ -89,7 +89,7 @@ export default class MyDocument extends Document {
 
 function SvgDefs() {
   return (
-    <svg style={{ height: 0, width: 0 }}>
+    <svg style={{ height: 0, width: 0, position: "absolute" }}>
       <defs>
         <linearGradient
           id="ArticleOrange"

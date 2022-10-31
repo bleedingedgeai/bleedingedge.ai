@@ -1,10 +1,14 @@
 import { unstable_getServerSession } from "next-auth";
 import { useState } from "react";
+import styled from "styled-components";
+import FilterAndSort from "../components/FilterAndSort";
+import FilterAndSortMobile from "../components/FilterAndSortMobile";
 import Layout from "../components/Layout";
 import SEO from "../components/SEO";
 import TimelineAma from "../components/TimelineAma";
 import { getTags } from "../db/tags";
 import prisma from "../lib/prisma";
+import { mq } from "../styles/mediaqueries";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { Sort } from ".";
 
@@ -22,7 +26,7 @@ export async function getServerSideProps(context) {
     include: {
       authors: true,
       _count: {
-        select: { comments: true },
+        select: { comments: true, votes: true },
       },
     },
   });
@@ -42,15 +46,33 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default function Ama(props) {
+export default function Ama({ tags, articles }) {
   const [sort, setSort] = useState<Sort>("Latest");
 
   return (
     <>
-      <SEO title="bleeding edge" />
-      <Layout tags={props.tags} sort={sort} setSort={setSort}>
-        <TimelineAma sort={sort} articles={props.articles} />
+      <SEO title="bleeding edge | Ask me anything" />
+      <Layout>
+        <FilterAndSortSticky>
+          <FilterAndSort tags={tags} sort={sort} setSort={setSort} />
+        </FilterAndSortSticky>
+        <TimelineAma sort={sort} articles={articles} />
       </Layout>
+      <FilterAndSortMobile tags={tags} sort={sort} setSort={setSort} />
     </>
   );
 }
+
+const FilterAndSortSticky = styled.div`
+  position: sticky;
+  top: 40px;
+  z-index: 210000;
+
+  ${mq.desktopSmall} {
+    top: 121px;
+  }
+
+  ${mq.phablet} {
+    top: 112px;
+  }
+`;

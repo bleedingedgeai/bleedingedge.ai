@@ -1,26 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Bounds from "../components/Bounds";
 import Navigation from "../components/Navigation";
 import Sidebar from "../components/Sidebar";
-import { IArticle } from "../db/articles";
 import { mq } from "../styles/mediaqueries";
-import FilterAndSort from "./FilterAndSort";
-import FilterAndSortMobile from "./FilterAndSortMobile";
 
 export type Sort = "Latest" | "Earliest";
 
-interface LayoutProps {
-  tags: string[];
-  sort: Sort;
-  setSort: React.Dispatch<React.SetStateAction<Sort>>;
-}
+interface LayoutProps {}
 
 export default function Layout({
-  tags,
   children,
-  sort,
-  setSort,
 }: React.PropsWithChildren<LayoutProps>) {
   return (
     <>
@@ -31,15 +21,9 @@ export default function Layout({
           <Left>
             <Sidebar />
           </Left>
-          <Right>
-            <FilterAndSortSticky>
-              <FilterAndSort tags={tags} sort={sort} setSort={setSort} />
-            </FilterAndSortSticky>
-            {children}
-          </Right>
+          <Right>{children}</Right>
         </Container>
       </Bounds>
-      <FilterAndSortMobile tags={tags} sort={sort} setSort={setSort} />
     </>
   );
 }
@@ -47,20 +31,6 @@ export default function Layout({
 const Container = styled.div`
   display: flex;
   justify-content: center;
-`;
-
-const FilterAndSortSticky = styled.div`
-  position: sticky;
-  top: 40px;
-  z-index: 210000;
-
-  ${mq.desktopSmall} {
-    top: 121px;
-  }
-
-  ${mq.phablet} {
-    top: 112px;
-  }
 `;
 
 const Left = styled.div`

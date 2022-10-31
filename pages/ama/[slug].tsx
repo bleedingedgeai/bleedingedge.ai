@@ -56,6 +56,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
     include: {
       author: true,
+      _count: {
+        select: { votes: true },
+      },
     },
   });
 
@@ -69,12 +72,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const likes = await prisma.commentVote.findMany({
     where: {
-      userId: (session.user as any).id,
+      userId: (session?.user as any)?.id,
       commentId: { in: comments.map((comment) => comment.id) },
     },
   });
-
-  console.log(likes);
 
   return {
     props: {

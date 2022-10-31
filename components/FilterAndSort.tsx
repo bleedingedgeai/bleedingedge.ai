@@ -2,7 +2,6 @@ import { useCallback, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { inputIsFocused } from "../helpers/input";
 import { mq } from "../styles/mediaqueries";
-import Banner from "./Banner";
 import Select from "./Forms/Select";
 import IconArrow from "./Icons/IconArrow";
 import { Sort } from "./Layout";
@@ -46,7 +45,6 @@ export default function FilterAndSort({
 
   return (
     <>
-      <Banner />
       <Container>
         <SortContainer onClick={handleSortClick}>
           <SortArrow

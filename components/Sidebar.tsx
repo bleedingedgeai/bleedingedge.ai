@@ -22,7 +22,6 @@ export default function Sidebar() {
   const router = useRouter();
   const session = useSession();
 
-  console.log(session);
   return (
     <Container>
       <div>
@@ -58,9 +57,9 @@ export default function Sidebar() {
           <Subscribe />
         </Row>
         {!session.data ? (
-          <StyledButton onClick={() => signIn("twitter")}>Log in</StyledButton>
+          <StyledButton onClick={() => signIn("twitter")}>Sign in</StyledButton>
         ) : (
-          <StyledButton onClick={() => signOut()}>Log out</StyledButton>
+          <StyledButton onClick={() => signOut()}>Sign out</StyledButton>
         )}
       </div>
       <div>
