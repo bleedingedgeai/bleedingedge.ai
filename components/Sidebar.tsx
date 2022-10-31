@@ -20,8 +20,9 @@ const links = [
 
 export default function Sidebar() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const session = useSession();
 
+  console.log(session);
   return (
     <Container>
       <div>
@@ -33,7 +34,10 @@ export default function Sidebar() {
           </Link>
         </LogoContainer>
         {links.map((link) => {
-          const active = router.pathname === link.path;
+          const active =
+            link.path === "/"
+              ? router.pathname === link.path
+              : router.pathname.includes(link.path);
 
           return (
             <Row key={link.path}>
@@ -53,7 +57,7 @@ export default function Sidebar() {
         <Row>
           <Subscribe />
         </Row>
-        {!session ? (
+        {!session.data ? (
           <StyledButton onClick={() => signIn("twitter")}>Log in</StyledButton>
         ) : (
           <StyledButton onClick={() => signOut()}>Log out</StyledButton>
@@ -66,12 +70,15 @@ export default function Sidebar() {
         </Description>
         <div>
           <Link href="/about">
-            <StyledLink>About this project</StyledLink>
+            <StyledLinkBottom>About this project</StyledLinkBottom>
           </Link>
           <DotDivider>·</DotDivider>
-          <StyledLink href="https://twitter.com/bleedingedgeai" target="_blank">
-            Twitter <IconGoTo fill={theme.colors.light_grey} />
-          </StyledLink>
+          <StyledLinkBottom
+            href="https://twitter.com/bleedingedgeai"
+            target="_blank"
+          >
+            Twitter <IconGoTo fill={theme.colors.off_white} />
+          </StyledLinkBottom>
         </div>
       </div>
     </Container>
@@ -111,6 +118,15 @@ const StyledLink = styled.a`
 
   &:hover {
     color: ${(p) => p.theme.colors.off_white};
+  }
+`;
+
+const StyledLinkBottom = styled.a`
+  color: ${(p) => p.theme.colors.off_white};
+  transition: color 0.25s ease;
+
+  &:hover {
+    color: ${(p) => p.theme.colors.white};
   }
 `;
 

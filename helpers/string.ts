@@ -16,3 +16,20 @@ export function slugify(string) {
     .replace(/^-+/, "") // Trim - from start of text
     .replace(/-+$/, ""); // Trim - from end of text
 }
+
+// Tiny util that's not perfect but okay for now.
+// We check if the word 'day' will become pluarl and then apply the same rule to the passed in word.
+export function pluralize(word: string, number) {
+  const formatted = new Intl.NumberFormat("en-US", {
+    style: "unit",
+    // @ts-ignore
+    unit: "day",
+    unitDisplay: "long",
+  }).format(number);
+
+  if (formatted.substr(-1) === "s") {
+    return word + "s";
+  } else {
+    return word;
+  }
+}

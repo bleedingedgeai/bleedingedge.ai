@@ -43,15 +43,15 @@ export default function Ama({ article, comments }) {
     <>
       <Container>
         <div>
-          {article.author.map((author) => (
-            <Avatar src={author.image} highlight />
+          {article.authors.map((author) => (
+            <Avatar key={author.id} src={author.image} highlight />
           ))}
         </div>
         <div>
           <Top>
             <div>
-              {article.author.map((author) => (
-                <Authors>{author.name}</Authors>
+              {article.authors.map((author) => (
+                <Authors key={author.id}>{author.name}</Authors>
               ))}
             </div>
             <PostedAt>

@@ -53,34 +53,39 @@ model VerificationToken {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?       @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
   comments      Comment[]
   posts         Post[]
+  postVotes     PostVote[]
+  commentVotes  CommentVote[]
 }
 
 model Post {
-  id        String    @id @default(cuid())
-  slug      String    @unique
-  published Boolean   @default(true)
-  live      Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  published Boolean  @default(true)
+  live      Boolean  @default(false)
+  format    String?
   postedAt  DateTime
   title     String
-  summary   String?   @db.Text
-  content   String?   @db.Text
-  format    String?
+  summary   String?  @db.Text
+  content   String?  @db.Text
   source    String
-  score     Int       @default(1)
-  author    User[]
-  tags      Tag[]
-  comments  Comment[]
+  score     Int      @default(1)
+
+  authors  User[]
+  tags     Tag[]
+  comments Comment[]
+  votes    PostVote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 }
 
 model Tag {
@@ -90,19 +95,37 @@ model Tag {
 }
 
 model Comment {
-  id        String    @id @default(cuid())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
-  author    User      @relation(fields: [authorId], references: [id])
-  authorId  String
-  content   String    @db.Text
-  post      Post      @relation(fields: [postId], references: [id])
-  postId    String
-  children  Comment[] @relation("CommentToChildren")
-  parent    Comment?  @relation("CommentToChildren", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  parentId  String?
-  score     Int       @default(1)
+  id      String @id @default(cuid())
+  content String @db.Text
 
-  @@index([parentId])
-  @@map(name: "children")
+  author   User      @relation(fields: [authorId], references: [id])
+  authorId String
+  post     Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId   String
+  parent   Comment?  @relation("ParentChild", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  parentId String?
+  children Comment[] @relation("ParentChild")
+
+  votes CommentVote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model PostVote {
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String
+
+  @@id([userId, postId])
+}
+
+model CommentVote {
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String
+
+  @@id([userId, commentId])
 }

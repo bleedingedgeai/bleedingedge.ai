@@ -1,42 +1,36 @@
 // pages/api/post/index.ts
 
 import { NextApiRequest } from "next";
-import { unstable_getServerSession } from "next-auth";
 import prisma from "../../../lib/prisma";
-import { authOptions } from "../auth/[...nextauth]";
 
 export default async function handle(req: NextApiRequest, res) {
   if (req.method === "POST") {
-    const result = await prisma.comment.create({
+    const { content, postId, userId, parentId } = req.body;
+
+    const comment = await prisma.comment.create({
       data: {
-        content: req.body.content,
-        score: 1,
-        author: {
-          connect: {
-            id: req.body.userId,
-          },
-        },
-        parent: {
-          connect: {
-            id: req.body.parentId || req.body.postId,
-          },
-        },
+        content: content,
         post: {
           connect: {
-            id: req.body.postId,
+            id: postId,
           },
         },
-      },
-      include: {
-        children: {
-          include: {
-            children: true,
+        author: {
+          connect: {
+            id: userId,
           },
         },
+        ...(parentId && {
+          parent: {
+            connect: {
+              id: parentId,
+            },
+          },
+        }),
       },
     });
 
-    res.json(result);
+    res.json(comment);
     return;
   }
 }

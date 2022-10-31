@@ -1,25 +1,40 @@
-import Feed from "../../components/Feed";
+import { useState } from "react";
+import Layout from "../../components/Layout";
 import SEO from "../../components/SEO";
-import { getArticles } from "../../db/articles";
-import { getTags } from "../../db/tags";
+import Timeline from "../../components/Timeline";
+import prisma from "../../lib/prisma";
+import { Sort } from "..";
 
 export async function getStaticPaths() {
-  const tags = await getTags();
-  const paths = tags.map((tag) => ({ params: { tag } }));
+  const tags = await prisma.tag.findMany();
+  const paths = tags.map((tag) => ({ params: { tag: tag.name } }));
 
   return { paths, fallback: false };
 }
 
 // This also gets called at build time
 export async function getStaticProps({ params }) {
+  const getArticles = prisma.post.findMany({
+    where: {
+      tags: { some: { name: params.tag } },
+    },
+    include: {
+      _count: {
+        select: {
+          comments: true,
+        },
+      },
+      authors: true,
+    },
+  });
+
+  const getTags = prisma.tag.findMany();
+
   try {
-    const [articles, tags] = await Promise.all([
-      getArticles({ tags: [params.tag] }),
-      getTags(),
-    ]);
+    const [articles, tags] = await Promise.all([getArticles, getTags]);
     return {
       props: {
-        articles,
+        articles: JSON.parse(JSON.stringify(articles)),
         tags,
         tag: params.tag,
       },
@@ -37,11 +52,15 @@ export async function getStaticProps({ params }) {
   }
 }
 
-export default function Home(props) {
+export default function Home({ tag, tags, articles }) {
+  const [sort, setSort] = useState<Sort>("Latest");
+
   return (
     <>
-      <SEO title={`bleeding edge | ${props.tag}`} />
-      <Feed tags={props.tags} articles={props.articles} />
+      <SEO title={`bleeding edge | ${tag}`} />
+      <Layout tags={tags} sort={sort} setSort={setSort}>
+        <Timeline sort={sort} articles={articles} />
+      </Layout>
     </>
   );
 }

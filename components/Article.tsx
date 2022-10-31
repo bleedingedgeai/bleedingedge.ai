@@ -1,8 +1,10 @@
-import { useRouter } from "next/router";
+import Link from "next/link";
+import Router, { useRouter } from "next/router";
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import IconStar from "../components/Icons/IconStar";
 import { IArticle } from "../db/articles";
+import { pluralize, slugify } from "../helpers/string";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 import IconAma from "./Icons/IconAma";
@@ -29,6 +31,30 @@ const getPrettyHostname = (urlString: string) => {
 };
 
 // When someone suggests an article we want to give them credit
+function CommentsLink({ article }: { article: any }) {
+  const comments = article._count.comments;
+  const router = useRouter();
+
+  if (comments === 0) {
+    return null;
+  }
+
+  const handleClick = (event) => {
+    event.preventDefault();
+    router.push(`/ama/${slugify(article.title)}`);
+  };
+
+  return (
+    <ThanksContainer>
+      <DotDivider>·</DotDivider>
+      <ThanksToAnchor onClick={handleClick}>
+        {comments}{" "}
+        <span style={{ marginLeft: 2 }}>{pluralize("comment", comments)}</span>
+      </ThanksToAnchor>
+    </ThanksContainer>
+  );
+}
+
 function ThanksTo({ twitterUrl }: { twitterUrl?: string }) {
   if (!twitterUrl) {
     return null;
@@ -39,6 +65,7 @@ function ThanksTo({ twitterUrl }: { twitterUrl?: string }) {
     event.preventDefault();
     window.open(twitterUrl, "_blank").focus();
   };
+
   return (
     <ThanksContainer>
       <DotDivider>·</DotDivider>
@@ -73,6 +100,13 @@ function ArticleDefault({
   dateKey,
   nextArticleIsDefault,
 }: ArticleProps) {
+  const router = useRouter();
+
+  const handleClick = (event) => {
+    event.preventDefault();
+    router.push(`/ama/${slugify(article.title)}`);
+  };
+
   return (
     <ArticleDefaultContainer
       href={article.source}
@@ -83,10 +117,16 @@ function ArticleDefault({
       <ArticleDefaultContent>
         <TextContainer>
           <Title>
-            {article.title} {article.author.length > 0 && <IconAma />}
+            {article.title}{" "}
+            {article.authors.length > 0 && (
+              <ThanksToAnchor onClick={handleClick}>
+                <IconAma />
+              </ThanksToAnchor>
+            )}
           </Title>
           <Host>
             {getPrettyHostname(article.source)}{" "}
+            <CommentsLink article={article} />
             <ThanksTo twitterUrl={article.thanks_to} />
           </Host>
         </TextContainer>
@@ -255,10 +295,11 @@ function ArticleHighlightOrFeature({
         )}
         <TextContainer>
           <Title>{article.title}</Title>
+          <Blurb>{article.summary}</Blurb>
           <ArticleFeaturedSourceDesktop>
             <span>{host}</span>
+            <CommentsLink article={article} />
           </ArticleFeaturedSourceDesktop>
-          <Blurb>{article.summary}</Blurb>
         </TextContainer>
         <ArticleMetadata article={article} dateKey={dateKey} />
       </ArticleWithBackgroundContent>

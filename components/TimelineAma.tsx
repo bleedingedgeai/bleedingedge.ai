@@ -2,10 +2,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 import styled from "styled-components";
-import { IArticle } from "../db/articles";
 import { slugify } from "../helpers/string";
 import { Sort } from "../pages";
-import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
 import Avatar from "./Avatar";
 import IconAma from "./Icons/IconAma";
@@ -44,17 +42,21 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
         const live = article.live;
 
         return (
-          <Container onClick={() => router.push(amaHref)} live={live}>
+          <Container
+            key={article.id}
+            onClick={() => router.push(amaHref)}
+            live={live}
+          >
             <div>
-              {article.author.map((author) => (
-                <Avatar src={author.image} highlight={live} />
+              {article.authors.map((author) => (
+                <Avatar key={author.id} src={author.image} highlight={live} />
               ))}
             </div>
             <Main>
               <Top>
                 <div>
-                  {article.author.map((author) => (
-                    <Authors>{author.name} </Authors>
+                  {article.authors.map((author) => (
+                    <Authors key={author.id}>{author.name} </Authors>
                   ))}
                 </div>
                 <div>{article.postedAt}</div>

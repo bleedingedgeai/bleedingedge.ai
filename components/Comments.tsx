@@ -39,7 +39,9 @@ function CommentsRecursive({ comments, index: parentIndex = 0 }) {
                   <span>{comment.author.name}</span> ·{" "}
                   {timeAgo.format(new Date(comment.updatedAt))}
                 </Author>
-                <Content>{comment.content}</Content>
+                <Content>
+                  {comment.id} | {comment.content}
+                </Content>
                 <Bottom>
                   <Actions>
                     <Action>
@@ -50,7 +52,7 @@ function CommentsRecursive({ comments, index: parentIndex = 0 }) {
                     <Action>
                       <StyledLink>
                         <IconAma fill={theme.colors.light_grey} />{" "}
-                        <span>{comment.children.length || 0}</span> comments
+                        <span>{comment.children?.length || 0}</span> comments
                       </StyledLink>
                     </Action>
                   </Actions>

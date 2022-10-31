@@ -3,13 +3,13 @@ import styled from "styled-components";
 import { inputIsFocused } from "../helpers/input";
 import { mq } from "../styles/mediaqueries";
 import Banner from "./Banner";
-import { Sort } from "./Feed";
 import Select from "./Forms/Select";
 import IconArrow from "./Icons/IconArrow";
+import { Sort } from "./Layout";
 import { OverlayContext, OverlayType } from "./Overlay";
 
 interface FilterAndSortProps {
-  tags: string[];
+  tags: { id: string; name: string }[];
   sort: Sort;
   setSort: React.Dispatch<React.SetStateAction<Sort>>;
 }
@@ -59,7 +59,7 @@ export default function FilterAndSort({
           </SortButton>
         </SortContainer>
         <Right>
-          <Select options={tags} />
+          <Select options={tags.map((t) => t.name)} />
           <DotDivider>·</DotDivider>
           <SubmitButton onClick={() => showOverlay(OverlayType.SUGGESTION)}>
             Submit

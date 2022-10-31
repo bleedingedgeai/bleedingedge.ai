@@ -1,37 +1,44 @@
-import fs from "fs";
-import { Feed as RSSFeed } from "feed";
+import { unstable_getServerSession } from "next-auth";
 import { useState } from "react";
 import Layout from "../components/Layout";
 import SEO from "../components/SEO";
 import TimelineAma from "../components/TimelineAma";
-import { IArticle, getArticles } from "../db/articles";
 import { getTags } from "../db/tags";
 import prisma from "../lib/prisma";
+import { authOptions } from "./api/auth/[...nextauth]";
 import { Sort } from ".";
 
-export async function getStaticProps() {
-  const articlesRequest = getArticles({ tags: [] });
-  const tagsRequest = getTags();
+export async function getServerSideProps(context) {
+  const sessionRequest = unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
 
-  const [tags] = await Promise.all([articlesRequest, tagsRequest]);
+  const tagsRequest = prisma.tag.findMany({});
 
-  const article = await prisma.post.findMany({
-    where: { author: { some: {} } },
+  const articlesRequest = prisma.post.findMany({
+    where: { authors: { some: {} } },
     include: {
-      author: true,
+      authors: true,
       _count: {
         select: { comments: true },
       },
     },
   });
 
-  console.log(article);
+  const [session, articles, tags] = await Promise.all([
+    sessionRequest,
+    articlesRequest,
+    tagsRequest,
+  ]);
+
   return {
     props: {
-      articles: JSON.parse(JSON.stringify(article)),
+      session,
+      articles: JSON.parse(JSON.stringify(articles)),
       tags,
     },
-    revalidate: 60, // In seconds
   };
 }
 
