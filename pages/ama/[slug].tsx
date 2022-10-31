@@ -1,12 +1,11 @@
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
-import React, { useState } from "react";
+import React from "react";
 import Ama from "../../components/Ama";
 import Layout from "../../components/Layout";
 import SEO from "../../components/SEO";
 import prisma from "../../lib/prisma";
 import { authOptions } from "../api/auth/[...nextauth]";
-import { Sort } from "..";
 
 function formComments(comments: Array<any>) {
   const map = new Map();
@@ -62,38 +61,32 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   });
 
-  const tagsRequest = prisma.tag.findMany();
-
-  const [session, comments, tags] = await Promise.all([
+  const [session, comments] = await Promise.all([
     sessionRequest,
     commentsRequest,
-    tagsRequest,
   ]);
 
-  const likes = await prisma.commentVote.findMany({
-    where: {
-      userId: (session?.user as any)?.id,
-      commentId: { in: comments.map((comment) => comment.id) },
-    },
-  });
+  // const likes = await prisma.commentVote.findMany({
+  //   where: {
+  //     userId: (session?.user as any)?.id,
+  //     commentId: { in: comments.map((comment) => comment.id) },
+  //   },
+  // });
 
   return {
     props: {
       session,
-      tags,
       article: JSON.parse(JSON.stringify(post)),
       comments: JSON.parse(JSON.stringify(formComments(comments))),
     },
   };
 };
 
-export default function AmaPage({ tags, comments, article }) {
-  const [sort, setSort] = useState<Sort>("Latest");
-
+export default function AmaPage({ comments, article }) {
   return (
     <>
       <SEO title="bleeding edge" />
-      <Layout tags={tags} sort={sort} setSort={setSort}>
+      <Layout>
         <Ama article={article} comments={comments} />
       </Layout>
     </>

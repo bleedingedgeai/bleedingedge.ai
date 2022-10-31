@@ -3,7 +3,6 @@ import Router, { useRouter } from "next/router";
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import IconStar from "../components/Icons/IconStar";
-import { IArticle } from "../db/articles";
 import { pluralize, slugify } from "../helpers/string";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
@@ -11,7 +10,7 @@ import IconAma from "./Icons/IconAma";
 import { today, yesterday } from "./Timeline";
 
 interface ArticleProps {
-  article: IArticle;
+  article: any;
   dateKey: string;
   nextArticleIsDefault?: boolean;
   withMarginTop?: boolean;

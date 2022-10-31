@@ -1,8 +1,13 @@
 import { useState } from "react";
+import styled from "styled-components";
+import Banner from "../../components/Banner";
+import FilterAndSort from "../../components/FilterAndSort";
+import FilterAndSortMobile from "../../components/FilterAndSortMobile";
 import Layout from "../../components/Layout";
 import SEO from "../../components/SEO";
 import Timeline from "../../components/Timeline";
 import prisma from "../../lib/prisma";
+import { mq } from "../../styles/mediaqueries";
 import { Sort } from "..";
 
 export async function getStaticPaths() {
@@ -58,9 +63,28 @@ export default function Home({ tag, tags, articles }) {
   return (
     <>
       <SEO title={`bleeding edge | ${tag}`} />
-      <Layout tags={tags} sort={sort} setSort={setSort}>
+      <Layout>
+        {/* {Boolean(liveArticle) && <Banner article={liveArticle} />} */}
+        <FilterAndSortSticky>
+          <FilterAndSort tags={tags} sort={sort} setSort={setSort} />
+        </FilterAndSortSticky>
         <Timeline sort={sort} articles={articles} />
       </Layout>
+      <FilterAndSortMobile tags={tags} sort={sort} setSort={setSort} />
     </>
   );
 }
+
+const FilterAndSortSticky = styled.div`
+  position: sticky;
+  top: 40px;
+  z-index: 210000;
+
+  ${mq.desktopSmall} {
+    top: 121px;
+  }
+
+  ${mq.phablet} {
+    top: 112px;
+  }
+`;

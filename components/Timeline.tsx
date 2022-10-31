@@ -1,9 +1,8 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
-import { IArticle } from "../db/articles";
 import { mq } from "../styles/mediaqueries";
 import Article from "./Article";
-import { Sort } from "./Feed";
+import { Sort } from "./Layout";
 import Timestamp from "./Timestamp";
 
 const getDateMinusDays = (days: number) => {
@@ -93,7 +92,7 @@ const sortByEarliest = (date1, date2) => {
 };
 
 interface TimelineProps {
-  articles: IArticle[];
+  articles: any[];
   sort: Sort;
 }
 
@@ -118,7 +117,7 @@ export default function Timeline({ articles, sort }: TimelineProps) {
               <Timestamp first={index === 0} dateKey={date} />
               {sortedArticles.map((article, index) => {
                 const firstArticle = index === 0;
-                const nextArticle = sortedArticles[index + 1] as IArticle;
+                const nextArticle = sortedArticles[index + 1];
                 const withMarginTop = firstArticle && Boolean(article?.format);
                 const withMarginBottom =
                   Boolean(article?.format) && Boolean(nextArticle?.format);

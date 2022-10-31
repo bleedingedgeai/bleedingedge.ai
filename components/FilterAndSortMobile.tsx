@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { scrollable } from "../helpers/dom";
 import { hideScrollBar } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
-import { Sort } from "./Feed";
+import { Sort } from "./Layout";
 import Portal from "./Portal";
 
 interface FilterAndSortMobileProps {
