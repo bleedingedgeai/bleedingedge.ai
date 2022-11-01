@@ -1,4 +1,7 @@
 module.exports = {
+  images: {
+    domains: ["pbs.twimg.com"],
+  },
   headers() {
     return [
       {

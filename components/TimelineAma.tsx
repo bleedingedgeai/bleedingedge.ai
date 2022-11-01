@@ -81,9 +81,6 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                     <Authors key={author.id}>{author.name} </Authors>
                   ))}
                 </div>
-                <div>
-                  {article.id} | {article.postedAt}
-                </div>
               </Top>
               <Middle>
                 <Title>{article.title}</Title>

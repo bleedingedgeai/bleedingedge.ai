@@ -1,3 +1,4 @@
+import Image from "next/image";
 import styled from "styled-components";
 
 interface AvatarProps {
@@ -5,6 +6,7 @@ interface AvatarProps {
   size?: number;
   highlight?: boolean;
   outline?: boolean;
+  grey?: boolean;
 }
 
 export default function Avatar({
@@ -12,10 +14,16 @@ export default function Avatar({
   highlight,
   size = 18,
   outline = true,
+  grey,
 }: AvatarProps) {
   return (
-    <AvatarContainer size={size} outline={outline} highlight={highlight}>
-      <Image src={src} />
+    <AvatarContainer
+      size={size}
+      outline={outline}
+      highlight={highlight}
+      grey={grey}
+    >
+      <StyledImage src={src} width={size} height={size} />
     </AvatarContainer>
   );
 }
@@ -24,6 +32,7 @@ const AvatarContainer = styled.div<{
   size: number;
   outline?: boolean;
   highlight?: boolean;
+  grey?: boolean;
 }>`
   position: relative;
   width: ${(p) => p.size}px;
@@ -31,6 +40,7 @@ const AvatarContainer = styled.div<{
   border-radius: 50%;
   display: grid;
   place-items: center;
+  ${(p) => p.grey && `filter: grayscale(1);`}
 
   ${(p) =>
     p.outline &&
@@ -64,7 +74,7 @@ background: linear-gradient(217.16deg, rgba(209, 159, 100, 0.24) -7.44%, rgba(20
   }`}
 `;
 
-const Image = styled.img`
+const StyledImage = styled(Image)`
   width: 100%;
   border-radius: 50%;
   position: relative;

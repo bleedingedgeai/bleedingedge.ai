@@ -1,13 +1,14 @@
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
 import React from "react";
+import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
 import Ama from "../../components/Ama";
 import Layout from "../../components/Layout";
 import SEO from "../../components/SEO";
 import prisma from "../../lib/prisma";
 import { authOptions } from "../api/auth/[...nextauth]";
 
-function formComments(comments: Array<any>) {
+export function formatNestedComments(comments: Array<any>) {
   const map = new Map();
 
   const roots = [];
@@ -34,12 +35,17 @@ function formComments(comments: Array<any>) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const queryClient = new QueryClient();
+
   const post = await prisma.post.findUnique({
     where: {
       slug: String(context.params?.slug),
     },
     include: {
       authors: true,
+      _count: {
+        select: { comments: true, votes: true },
+      },
     },
   });
 
@@ -49,22 +55,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     authOptions
   );
 
-  const commentsRequest = prisma.comment.findMany({
-    where: {
-      postId: post.id,
-    },
-    include: {
-      author: true,
-      _count: {
-        select: { votes: true },
-      },
-    },
-  });
-
-  const [session, comments] = await Promise.all([
-    sessionRequest,
-    commentsRequest,
-  ]);
+  const [session] = await Promise.all([sessionRequest]);
 
   // const likes = await prisma.commentVote.findMany({
   //   where: {
@@ -73,21 +64,42 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   //   },
   // });
 
+  await queryClient.fetchQuery(["comments", post.id], async () => {
+    const result = await prisma.comment.findMany({
+      where: {
+        postId: post.id,
+      },
+      include: {
+        author: true,
+        _count: {
+          select: { votes: true },
+        },
+      },
+    });
+
+    return JSON.parse(JSON.stringify(result));
+  });
+
   return {
     props: {
       session,
       article: JSON.parse(JSON.stringify(post)),
-      comments: JSON.parse(JSON.stringify(formComments(comments))),
+      dehydratedState: dehydrate(queryClient),
     },
   };
 };
 
-export default function AmaPage({ comments, article }) {
+export default function AmaPage({ article }) {
+  const test = useQuery({
+    queryKey: ["comments", article.id],
+    queryFn: async () => {},
+  });
+
   return (
     <>
       <SEO title="bleeding edge" />
       <Layout>
-        <Ama article={article} comments={comments} />
+        <Ama article={article} comments={test.data} />
       </Layout>
     </>
   );

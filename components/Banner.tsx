@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { slugify } from "../helpers/string";
 import Avatar from "./Avatar";
 import IconAma from "./Icons/IconAma";
+import Stacked from "./Stacked";
 
 export default function Banner({ article }) {
   if (!article) {
@@ -10,6 +11,9 @@ export default function Banner({ article }) {
   }
 
   const author = article.authors[0];
+  const totalPartipants = article.comments.length;
+  const particpantsToShow = article.comments?.slice(0, 4);
+  const overflowParticpants = totalPartipants - particpantsToShow.length;
 
   return (
     <Container>
@@ -24,15 +28,27 @@ export default function Banner({ article }) {
             {article.title}
             <IconAma />
           </Title>
-          <span>
-            <AmaText>Live AMA</AmaText>
-            <span></span>
-          </span>
+          <Right>
+            <Live>Live AMA</Live>
+            {overflowParticpants ? <Extra>+{overflowParticpants}</Extra> : null}
+            <Stacked
+              size={18}
+              direction="right"
+              elements={particpantsToShow.map((comment) => (
+                <Avatar src={comment.author.image} size={18} outline={false} />
+              ))}
+            />
+          </Right>
         </BannerContainer>
       </Link>
     </Container>
   );
 }
+
+const Right = styled.span`
+  display: flex;
+  align-items: center;
+`;
 
 const Container = styled.div`
   margin-bottom: 50px;
@@ -42,11 +58,17 @@ const Container = styled.div`
   position: relative;
 `;
 
-const AmaText = styled.span`
+const Live = styled.span`
   color: ${(p) => p.theme.colors.orange};
-  font-family: "Space Mono";
   font-size: 10px;
   line-height: 135%;
+  margin-right: 8px;
+`;
+
+const Extra = styled.span`
+  font-size: 10px;
+  margin-right: 5px;
+  color: ${(p) => p.theme.colors.light_grey};
 `;
 
 const BannerContainer = styled.a`

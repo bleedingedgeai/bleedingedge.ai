@@ -695,9 +695,9 @@ const BlueGradientHighlight = () => (
         width="668"
         height="291"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feBlend
           mode="normal"
           in="SourceGraphic"
@@ -717,9 +717,9 @@ const BlueGradientHighlight = () => (
         y2="48.9511"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#072839" />
-        <stop offset="0.525533" stop-color="#033151" />
-        <stop offset="1" stop-color="#28445C" />
+        <stop stopColor="#072839" />
+        <stop offset="0.525533" stopColor="#033151" />
+        <stop offset="1" stopColor="#28445C" />
       </linearGradient>
     </defs>
   </svg>

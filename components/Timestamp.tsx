@@ -8,7 +8,7 @@ interface TimestampProps {
 }
 
 const formatDateString = (dateString: string) => {
-  // will format to: "Oct 2022", "Sept 2022"
+  // will format to: "Oct 1", "Sept 2"
   const shortDate = new Intl.DateTimeFormat("en", {
     day: "numeric",
     month: "short",
@@ -22,6 +22,7 @@ const formatDateString = (dateString: string) => {
     case lastWeek:
       return "Past week";
     default:
+      // will format to: "Oct 2022", "Sept 2022"
       return new Intl.DateTimeFormat("en", {
         year: "numeric",
         month: "short",
