@@ -10,7 +10,7 @@ import { Sort } from "./Layout";
 import Portal from "./Portal";
 
 interface FilterAndSortMobileProps {
-  tags: string[];
+  tags: { id: string; name: string }[];
   sort: Sort;
   setSort: React.Dispatch<React.SetStateAction<Sort>>;
 }
@@ -56,7 +56,7 @@ export default function FilterAndSortMobile({
       scrollable(false);
       setSlidein({
         title: "Filter by",
-        options: tags.filter((t) => t !== tag),
+        options: tags.filter((t) => t.name !== tag).map((t) => t.name),
         type: "Filter",
       });
     },

@@ -12,7 +12,7 @@ import FilterAndSortMobile from "./FilterAndSortMobile";
 export type Sort = "Latest" | "Earliest";
 
 interface FeedProps {
-  tags: string[];
+  tags: { id: string; name: string }[];
   articles: IArticle[];
 }
 

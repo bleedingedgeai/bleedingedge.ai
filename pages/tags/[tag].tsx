@@ -51,7 +51,7 @@ export async function getStaticProps({ params }) {
     return {
       props: {
         articles: JSON.parse(JSON.stringify(articles)),
-        liveArticle,
+        liveArticle: JSON.parse(JSON.stringify(liveArticle)),
         tags,
         tag: params.tag,
       },
