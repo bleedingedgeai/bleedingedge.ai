@@ -77,7 +77,11 @@ export default function Subscribe() {
 
   return (
     <Contiainer>
+<<<<<<< HEAD
       <SubscribeButton onClick={handleSubscribeClick} showForm={showForm}>
+=======
+      <SubscribeButton onClick={handleSubscribeClick}>
+>>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
         Subscribe
       </SubscribeButton>
       <Form
@@ -164,13 +168,18 @@ const Contiainer = styled.div`
   overflow: hidden;
 `;
 
+<<<<<<< HEAD
 const SubscribeButton = styled.button<{ showForm: boolean }>`
+=======
+const SubscribeButton = styled.button`
+>>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
   position: relative;
   font-weight: 400;
   font-size: 12px;
   line-height: 130%;
   margin-right: 12px;
   z-index: 1;
+<<<<<<< HEAD
   color: ${(p) =>
     p.showForm ? p.theme.colors.white : p.theme.colors.light_grey};
   transition: color 0.25s ease;
@@ -178,6 +187,8 @@ const SubscribeButton = styled.button<{ showForm: boolean }>`
   &:hover {
     color: ${(p) => p.theme.colors.off_white};
   }
+=======
+>>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
 `;
 
 const Form = styled.form`
