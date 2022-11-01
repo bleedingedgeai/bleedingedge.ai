@@ -35,11 +35,23 @@ export async function getStaticProps({ params }) {
 
   const getTags = prisma.tag.findMany();
 
+  const liveArticleRequest = await prisma.post.findFirst({
+    where: { live: true },
+    include: {
+      authors: true,
+    },
+  });
+
   try {
-    const [articles, tags] = await Promise.all([getArticles, getTags]);
+    const [articles, liveArticle, tags] = await Promise.all([
+      getArticles,
+      liveArticleRequest,
+      getTags,
+    ]);
     return {
       props: {
         articles: JSON.parse(JSON.stringify(articles)),
+        liveArticle,
         tags,
         tag: params.tag,
       },
@@ -57,14 +69,14 @@ export async function getStaticProps({ params }) {
   }
 }
 
-export default function Home({ tag, tags, articles }) {
+export default function Tag({ tag, tags, articles, liveArticle }) {
   const [sort, setSort] = useState<Sort>("Latest");
 
   return (
     <>
       <SEO title={`bleeding edge | ${tag}`} />
       <Layout>
-        {/* {Boolean(liveArticle) && <Banner article={liveArticle} />} */}
+        {Boolean(liveArticle) && <Banner article={liveArticle} />}
         <FilterAndSortSticky>
           <FilterAndSort tags={tags} sort={sort} setSort={setSort} />
         </FilterAndSortSticky>
