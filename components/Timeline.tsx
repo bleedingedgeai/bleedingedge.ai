@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
-<<<<<<< HEAD
 import { mq } from "../styles/mediaqueries";
 import Article from "./Article";
 import { Sort } from "./Layout";
@@ -11,16 +10,6 @@ const getDateMinusDays = (days: number) => {
   const subtractedDaysTime = today.getDate() - days;
   const subtractedDaysDate = new Date(today.setDate(subtractedDaysTime));
   return getDateKey(subtractedDaysDate);
-=======
-import { IArticle } from "../db/articles";
-import { mq } from "../styles/mediaqueries";
-import Article from "./Article";
-import { Sort } from "./Feed";
-import Timestamp from "./Timestamp";
-
-const getDateMinusDays = (days: number) => {
-  return getDateKey(new Date(new Date().setDate(new Date().getDate() - days)));
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
 };
 
 function checkIfDateIsBeforeOtherDate(time1: string, time2: string) {
@@ -40,21 +29,13 @@ const getMonthDateKey = (d: Date) => {
   return `${yyyy}/${mm}/01`;
 };
 
-<<<<<<< HEAD
 export const today = getDateMinusDays(0);
-=======
-export const today = getDateKey(new Date());
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
 export const yesterday = getDateMinusDays(1);
 export const lastWeek = getDateMinusDays(7);
 
 const groupArticlesByDate = (articles) => {
   return articles.reduce((prev, article) => {
-<<<<<<< HEAD
     const postedAt = new Date(article.postedAt);
-=======
-    const postedAt = new Date(article.posted_at);
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
     const podatedAtKey = getDateKey(postedAt);
 
     // TODAY
@@ -111,11 +92,7 @@ const sortByEarliest = (date1, date2) => {
 };
 
 interface TimelineProps {
-<<<<<<< HEAD
   articles: any[];
-=======
-  articles: IArticle[];
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
   sort: Sort;
 }
 
@@ -132,11 +109,7 @@ export default function Timeline({ articles, sort }: TimelineProps) {
         .sort(sortMethod)
         .map((date, index) => {
           const sortedArticles = [...groupedArticles[date]].sort((a, b) =>
-<<<<<<< HEAD
             sortMethod(a.postedAt, b.postedAt)
-=======
-            sortMethod(a.posted_at, b.posted_at)
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
           );
 
           return (
@@ -144,11 +117,7 @@ export default function Timeline({ articles, sort }: TimelineProps) {
               <Timestamp first={index === 0} dateKey={date} />
               {sortedArticles.map((article, index) => {
                 const firstArticle = index === 0;
-<<<<<<< HEAD
                 const nextArticle = sortedArticles[index + 1];
-=======
-                const nextArticle = sortedArticles[index + 1] as IArticle;
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
                 const withMarginTop = firstArticle && Boolean(article?.format);
                 const withMarginBottom =
                   Boolean(article?.format) && Boolean(nextArticle?.format);

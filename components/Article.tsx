@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import Link from "next/link";
 import Router, { useRouter } from "next/router";
 import React, { useCallback } from "react";
@@ -12,19 +11,6 @@ import { today, yesterday } from "./Timeline";
 
 interface ArticleProps {
   article: any;
-=======
-import { useRouter } from "next/router";
-import React, { useCallback } from "react";
-import styled from "styled-components";
-import IconStar from "../components/Icons/IconStar";
-import { IArticle } from "../db/articles";
-import { ellipsis } from "../styles/css";
-import { mq } from "../styles/mediaqueries";
-import { today, yesterday } from "./Timeline";
-
-interface ArticleProps {
-  article: IArticle;
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
   dateKey: string;
   nextArticleIsDefault?: boolean;
   withMarginTop?: boolean;
@@ -44,7 +30,6 @@ const getPrettyHostname = (urlString: string) => {
 };
 
 // When someone suggests an article we want to give them credit
-<<<<<<< HEAD
 function CommentsLink({ article }: { article: any }) {
   const comments = article._count.comments;
   const router = useRouter();
@@ -69,8 +54,6 @@ function CommentsLink({ article }: { article: any }) {
   );
 }
 
-=======
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
 function ThanksTo({ twitterUrl }: { twitterUrl?: string }) {
   if (!twitterUrl) {
     return null;
@@ -81,10 +64,7 @@ function ThanksTo({ twitterUrl }: { twitterUrl?: string }) {
     event.preventDefault();
     window.open(twitterUrl, "_blank").focus();
   };
-<<<<<<< HEAD
 
-=======
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
   return (
     <ThanksContainer>
       <DotDivider>·</DotDivider>
@@ -119,7 +99,6 @@ function ArticleDefault({
   dateKey,
   nextArticleIsDefault,
 }: ArticleProps) {
-<<<<<<< HEAD
   const router = useRouter();
 
   const handleClick = (event) => {
@@ -130,18 +109,12 @@ function ArticleDefault({
   return (
     <ArticleDefaultContainer
       href={article.source}
-=======
-  return (
-    <ArticleDefaultContainer
-      href={article.url}
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
       target="_blank"
       rel="noopener"
       nextArticleIsDefault={!nextArticleIsDefault}
     >
       <ArticleDefaultContent>
         <TextContainer>
-<<<<<<< HEAD
           <Title>
             {article.title}{" "}
             {article.authors.length > 0 && (
@@ -153,11 +126,6 @@ function ArticleDefault({
           <Host>
             {getPrettyHostname(article.source)}{" "}
             <CommentsLink article={article} />
-=======
-          <Title>{article.title}</Title>
-          <Host>
-            {getPrettyHostname(article.url)}{" "}
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
             <ThanksTo twitterUrl={article.thanks_to} />
           </Host>
         </TextContainer>
@@ -176,11 +144,7 @@ const Host = styled.div`
   display: flex;
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-weight: 500;
-<<<<<<< HEAD
-  font-size: 9px;
-=======
   font-size: 10px;
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
   line-height: 120%;
   color: ${(p) => p.theme.colors.light_grey};
   margin-top: 2px;
@@ -191,11 +155,8 @@ const Host = styled.div`
 `;
 
 const Title = styled.h3`
-<<<<<<< HEAD
   display: flex;
   align-items: center;
-=======
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
   font-weight: 500;
   font-size: 14px;
   line-height: 120%;
@@ -210,13 +171,10 @@ const Title = styled.h3`
     white-space: normal;
     overflow: visible;
   }
-<<<<<<< HEAD
 
   svg {
     margin-left: 6px;
   }
-=======
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
 `;
 
 const Blurb = styled.p`
@@ -304,21 +262,13 @@ function ArticleHighlightOrFeature({
   withMarginTop,
   withMarginBottom,
 }: ArticleProps) {
-<<<<<<< HEAD
   const host = getPrettyHostname(article.source);
-=======
-  const host = getPrettyHostname(article.url);
-  const highlight = article.format === "highlight";
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
   const feature = article.format === "featured";
+  const highlight = article.format === "highlight";
 
   return (
     <ArticleWithBackgroundContainer
-<<<<<<< HEAD
       href={article.source}
-=======
-      href={article.url}
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
       target="_blank"
       rel="noopener"
       nextArticleIsDefault={nextArticleIsDefault}
@@ -333,8 +283,6 @@ function ArticleHighlightOrFeature({
         <Dot />
       )}
       <ArticleWithBackgroundContent>
-<<<<<<< HEAD
-=======
         {highlight && (
           <>
             <BlueGradientHighlightContainer>
@@ -342,7 +290,6 @@ function ArticleHighlightOrFeature({
             </BlueGradientHighlightContainer>
           </>
         )}
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
         {feature && (
           <>
             <BlueGradientContainer>
@@ -355,18 +302,11 @@ function ArticleHighlightOrFeature({
         )}
         <TextContainer>
           <Title>{article.title}</Title>
-<<<<<<< HEAD
           <Blurb>{article.summary}</Blurb>
           <ArticleFeaturedSourceDesktop>
             <span>{host}</span>
             <CommentsLink article={article} />
           </ArticleFeaturedSourceDesktop>
-=======
-          <ArticleFeaturedSourceDesktop>
-            <span>{host}</span>
-          </ArticleFeaturedSourceDesktop>
-          <Blurb>{article.blurb}</Blurb>
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
         </TextContainer>
         <ArticleMetadata article={article} dateKey={dateKey} />
       </ArticleWithBackgroundContent>
@@ -443,17 +383,10 @@ function ArticleMetadata({
         <HideOnDesktop>
           <ThanksTo twitterUrl={article.thanks_to} />
         </HideOnDesktop>
-<<<<<<< HEAD
         <PostedAt>{format(new Date(article.postedAt))}</PostedAt>
         <DotDividerMobile>·</DotDividerMobile>
         <ArticleMetadataMobile>
           {getPrettyHostname(article.source)}
-=======
-        <PostedAt>{format(new Date(article.posted_at))}</PostedAt>
-        <DotDividerMobile>·</DotDividerMobile>
-        <ArticleMetadataMobile>
-          {getPrettyHostname(article.url)}
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
         </ArticleMetadataMobile>
       </ArticleMetadataContent>
     </ArticleMetadataContainer>
@@ -523,11 +456,7 @@ const Tags = styled.div`
 const Tag = styled.button`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-weight: 500;
-<<<<<<< HEAD
-  font-size: 9px;
-=======
   font-size: 10px;
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
   line-height: 120%;
   text-align: center;
   color: ${(p) => p.theme.colors.light_grey};
@@ -561,11 +490,7 @@ const Tag = styled.button`
 `;
 
 const PostedAt = styled.div`
-<<<<<<< HEAD
-  font-size: 9px;
-=======
   font-size: 10px;
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
   text-align: right;
   color: ${(p) => p.theme.colors.light_grey};
   min-width: 55px;
@@ -635,15 +560,9 @@ const ArticleWithBackgroundContainer = styled.a<{
 
 const ArticleWithBackgroundContent = styled.div`
   position: relative;
-<<<<<<< HEAD
-  background: #090808;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 7px;
-=======
   background: ${(p) => p.theme.colors.dark_grey};
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
   padding: 18px 21px 16px;
   width: 100%;
   display: flex;
@@ -667,11 +586,7 @@ const ArticleWithBackgroundContent = styled.div`
 const ArticleFeaturedSourceDesktop = styled.div`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-weight: 400;
-<<<<<<< HEAD
-  font-size: 9px;
-=======
   font-size: 10px;
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
   line-height: 120%;
   color: ${(p) => p.theme.colors.light_grey};
   margin-top: 2px;
@@ -702,8 +617,6 @@ const OrangeGradientContainer = styled.div`
   }
 `;
 
-<<<<<<< HEAD
-=======
 const BlueGradientHighlightContainer = styled.div`
   position: absolute;
   bottom: 0;
@@ -711,7 +624,6 @@ const BlueGradientHighlightContainer = styled.div`
   pointer-events: none;
 `;
 
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
 const BlueGradientContainer = styled.div`
   position: absolute;
   top: 0;
@@ -760,8 +672,6 @@ const BlueGradient = () => (
     />
   </svg>
 );
-<<<<<<< HEAD
-=======
 
 const BlueGradientHighlight = () => (
   <svg
@@ -814,4 +724,3 @@ const BlueGradientHighlight = () => (
     </defs>
   </svg>
 );
->>>>>>> 10f57a2021271330ad35f9d0df39bb867288f16e
