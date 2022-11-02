@@ -18,7 +18,12 @@ export default function Participants({ article }) {
         size={18}
         direction="right"
         elements={particpantsToShow.map((comment) => (
-          <Avatar src={comment.author.image} size={18} outline={false} grey />
+          <Avatar
+            src={comment.author.image}
+            size={18}
+            outline={false}
+            greyScale
+          />
         ))}
       />
     </>

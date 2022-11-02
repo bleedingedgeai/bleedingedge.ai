@@ -6,7 +6,7 @@ interface AvatarProps {
   size?: number;
   highlight?: boolean;
   outline?: boolean;
-  grey?: boolean;
+  greyScale?: boolean;
 }
 
 export default function Avatar({
@@ -14,14 +14,14 @@ export default function Avatar({
   highlight,
   size = 18,
   outline = true,
-  grey,
+  greyScale,
 }: AvatarProps) {
   return (
     <AvatarContainer
       size={size}
       outline={outline}
       highlight={highlight}
-      grey={grey}
+      greyScale={greyScale}
     >
       <StyledImage src={src} width={size} height={size} />
     </AvatarContainer>
@@ -32,7 +32,7 @@ const AvatarContainer = styled.div<{
   size: number;
   outline?: boolean;
   highlight?: boolean;
-  grey?: boolean;
+  greyScale?: boolean;
 }>`
   position: relative;
   width: ${(p) => p.size}px;
@@ -40,7 +40,7 @@ const AvatarContainer = styled.div<{
   border-radius: 50%;
   display: grid;
   place-items: center;
-  ${(p) => p.grey && `filter: grayscale(1);`}
+  ${(p) => p.greyScale && `filter: grayscale(1);`}
 
   ${(p) =>
     p.outline &&

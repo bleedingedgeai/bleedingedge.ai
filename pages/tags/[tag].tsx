@@ -39,6 +39,12 @@ export async function getStaticProps({ params }) {
     where: { live: true },
     include: {
       authors: true,
+      comments: {
+        distinct: ["authorId"],
+        select: {
+          author: true,
+        },
+      },
     },
   });
 

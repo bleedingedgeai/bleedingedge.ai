@@ -1,18 +1,23 @@
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback, useContext, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatNestedComments } from "../pages/ama/[slug]";
+import { ellipsis } from "../styles/css";
+import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
+import AmaSort from "./AmaSort";
 import Avatar from "./Avatar";
 import CommentBox from "./CommentBox";
 import Comments from "./Comments";
+import IconArrowLeft from "./Icons/IconArrowLeft";
 import IconArticle from "./Icons/IconArticle";
-import IconHosts from "./Icons/IconHosts";
 import IconLike from "./Icons/IconLike";
 import IconLiked from "./Icons/IconLiked";
 import IconShare from "./Icons/IconShare";
+import Live from "./Live";
 import Names from "./Names";
 import { OverlayContext, OverlayType } from "./Overlay";
 import Stacked from "./Stacked";
@@ -20,10 +25,13 @@ import Stacked from "./Stacked";
 const placeholderContent =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas non dignissim nisi. Quisque imperdiet ornare nunc nec dapibus. In scelerisque turpis eget purus pharetra commodo.";
 
+export type Sort = "Top questions" | "New questions";
+
 export default function Ama({ article, comments }) {
   const [parentId, setParentId] = useState(null);
   const { showOverlay } = useContext(OverlayContext);
   const session = useSession();
+  const [sort, setSort] = useState<Sort>("Top questions");
 
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -91,99 +99,250 @@ export default function Ama({ article, comments }) {
     });
   };
 
-  const conatinerRef = useRef<HTMLDivElement>(null);
+  const conatinerRef = useRef<HTMLDivElement>();
+
+  const groupedComments = useMemo(() => {
+    const sortByLikes = (a, b) => {
+      return b._count.likes - a._count.likes;
+    };
+
+    const sortByEarliest = (date1, date2) => {
+      return (
+        new Date(date2.createdAt).getTime() -
+        new Date(date1.createdAt).getTime()
+      );
+    };
+
+    const sortMethod = sort === "Top questions" ? sortByLikes : sortByEarliest;
+
+    return formatNestedComments(comments).sort(sortMethod);
+  }, [sort, comments]);
+
+  const [showStick, setShowSticky] = useState(false);
+  const stickyRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleScroll = () => {
+      const { top } = stickyRef.current.getBoundingClientRect();
+      setShowSticky(top === 0);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
-    <>
-      <Container>
-        <div />
-        <Details ref={conatinerRef}>
-          <FlexBetween>
-            <Authors>
-              <Names authors={article.authors} />
-              <DotDivider>·</DotDivider>
-              <Flex>
-                <span>
-                  {new Intl.DateTimeFormat("en", {
-                    day: "numeric",
-                    month: "short",
-                  }).format(new Date(article.postedAt))}
-                </span>
-                {article.live && <LiveDot />}{" "}
-              </Flex>
-            </Authors>
-            <Hosts>
-              Hosts <span>{article.authors.length}</span>
-              <StackedContainer>
-                <Stacked
-                  size={18}
-                  direction="right"
-                  elements={article.authors.map((author) => (
-                    <Avatar src={author.image} size={18} outline={false} />
-                  ))}
-                />
-              </StackedContainer>
-            </Hosts>
-          </FlexBetween>
-          <Title>{article.title}</Title>
-          <Content>{article.content || placeholderContent}</Content>
-          <FlexBetween>
-            <Actions>
-              <Action>
-                <StyledButton
-                  onClick={(event) => handleLike(event, article)}
-                  style={article.liked ? { color: theme.colors.white } : {}}
-                >
-                  {article.liked ? <IconLiked /> : <IconLike />}
-                  {article._count.likes + 1}
-                </StyledButton>
-              </Action>
-              <Action>
-                <StyledLink
-                  href={article.source}
-                  target="_blank"
-                  rel="noopener"
-                >
-                  <IconArticle /> View article
-                </StyledLink>
-              </Action>
-              <Action>
-                <StyledButton>
-                  <IconHosts /> Hosts
-                </StyledButton>
-              </Action>
-              <Action>
-                <StyledButton>
-                  <IconShare /> Share
-                </StyledButton>
-              </Action>
-            </Actions>
-          </FlexBetween>
-        </Details>
-      </Container>
-      <CommentsContainer>
-        <Comments
-          comments={formatNestedComments(comments)}
+    <Test>
+      <Shadows />
+      <div>
+        <Link href="/ama">
+          <BackLink>
+            <IconArrowLeft />
+          </BackLink>
+        </Link>
+      </div>
+      <div>
+        <Container>
+          <Details ref={conatinerRef}>
+            <FlexBetween>
+              <Authors>
+                <Names authors={article.authors} />
+                <DotDivider>·</DotDivider>
+                <Flex>
+                  <DateContainer>
+                    {new Intl.DateTimeFormat("en", {
+                      day: "numeric",
+                      month: "short",
+                    }).format(new Date(article.updatedAt))}
+                  </DateContainer>
+                  {article.live && <Live onlyDot />}{" "}
+                </Flex>
+              </Authors>
+              <Hosts>
+                Hosts <span>{article.authors.length}</span>
+                <StackedContainer>
+                  <Stacked
+                    size={18}
+                    direction="right"
+                    elements={article.authors.map((author) => (
+                      <Avatar src={author.image} size={18} outline={false} />
+                    ))}
+                  />
+                </StackedContainer>
+              </Hosts>
+            </FlexBetween>
+            <Title>{article.title}</Title>
+            <Content>{article.content || placeholderContent}</Content>
+          </Details>
+        </Container>
+        <Container
+          style={{ position: "sticky", top: 0, paddingTop: 12 }}
+          ref={stickyRef}
+        >
+          <div />
+          <div>
+            <FlexBetween>
+              <Absolute
+                style={{
+                  opacity: showStick ? 1 : 0,
+                  pointerEvents: showStick ? "initial" : "none",
+                }}
+              >
+                <AbsoluteTitle>{article.title}</AbsoluteTitle>
+                <StackedContainer>
+                  <Stacked
+                    size={18}
+                    direction="right"
+                    elements={article.authors.map((author) => (
+                      <Avatar src={author.image} size={18} outline={false} />
+                    ))}
+                  />
+                </StackedContainer>
+              </Absolute>
+              <Actions
+                style={{
+                  opacity: showStick ? 0 : 1,
+                  pointerEvents: showStick ? "none" : "initial",
+                }}
+              >
+                <Action>
+                  <StyledButton
+                    onClick={(event) => handleLike(event, article)}
+                    style={article.liked ? { color: theme.colors.white } : {}}
+                  >
+                    {article.liked ? <IconLiked /> : <IconLike />}
+                    {article._count.likes}
+                  </StyledButton>
+                </Action>
+                <Action>
+                  <StyledLink
+                    href={article.source}
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    <IconArticle /> View article
+                  </StyledLink>
+                </Action>
+                <Action>
+                  <StyledButton>
+                    <IconShare /> Share
+                  </StyledButton>
+                </Action>
+              </Actions>
+            </FlexBetween>
+            <AmaSort article={article} sort={sort} setSort={setSort} />
+          </div>
+        </Container>
+        <CommentsContainer>
+          <Comments
+            comments={groupedComments}
+            setParentId={setParentId}
+            parentId={parentId}
+            article={article}
+          />
+        </CommentsContainer>
+        <CommentBox
+          article={article}
+          comments={comments}
+          conatinerRef={conatinerRef}
           setParentId={setParentId}
           parentId={parentId}
-          article={article}
         />
-      </CommentsContainer>
-      <CommentBox
-        article={article}
-        comments={comments}
-        conatinerRef={conatinerRef}
-        setParentId={setParentId}
-        parentId={parentId}
-      />
-    </>
+      </div>
+    </Test>
   );
 }
+
+const Test = styled.div`
+  position: relative;
+  display: flex;
+`;
+
+const Absolute = styled.div`
+  position: absolute;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  transition: opacity 0.15s ease;
+  padding-top: 5px;
+`;
+
+const AbsoluteTitle = styled.div`
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 120%;
+  color: ${(p) => p.theme.colors.white};
+  max-width: 690px;
+  ${ellipsis};
+`;
+
+const Shadows = styled.div`
+  &::before {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 180px;
+    left: 0;
+    top: 0;
+    background: linear-gradient(#000 50%, transparent 100%);
+    z-index: 2;
+    pointer-events: none;
+
+    ${mq.desktopSmall} {
+      background: linear-gradient(#000 87%, transparent 100%);
+      height: 180px;
+    }
+
+    ${mq.phablet} {
+      display: none;
+    }
+  }
+
+  &::after {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 200px;
+    left: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 33%);
+    pointer-events: none;
+    z-index: 2;
+
+    ${mq.desktopSmall} {
+      bottom: 0;
+    }
+
+    ${mq.phablet} {
+      height: 60px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
+    }
+  }
+`;
+
+const BackLink = styled.a`
+  display: inline-block;
+  position: sticky;
+  top: 16px;
+  transition: transform 0.25s ease;
+  z-index: 3;
+
+  &:hover {
+    transform: translateX(-3px);
+  }
+`;
 
 const CommentsContainer = styled.div`
   margin-top: 24px;
   padding: 0 0 160px 54px;
   max-width: 689px;
+`;
+
+const DateContainer = styled.span`
+  margin-right: 8px;
 `;
 
 const DotDivider = styled.span`
@@ -210,6 +369,7 @@ const StackedContainer = styled.div`
 `;
 
 const FlexBetween = styled.div`
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -220,34 +380,24 @@ const Flex = styled.div`
   align-items: center;
 `;
 
-const LiveDot = styled.div`
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  margin-left: 8px;
-  background: ${(p) => p.theme.colors.orange};
-`;
-
 const Actions = styled.div`
   display: flex;
   align-items: center;
+  width: 100%;
+  padding-bottom: 22px;
+  transition: opacity 0.15s ease;
 `;
 
 const Action = styled.div`
   margin-right: 24px;
 `;
 
-const Details = styled.div`
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  padding-bottom: 24px;
-`;
+const Details = styled.div``;
 
 const Container = styled.div`
-  display: grid;
-  grid-template-columns: 18px 1fr;
-  grid-gap: 36px;
   z-index: 3;
   position: relative;
+  padding-left: 54px;
 `;
 
 const Title = styled.h2`
@@ -266,7 +416,6 @@ const Content = styled.p`
   font-size: 16px;
   line-height: 120%;
   max-width: 690px;
-  margin-bottom: 12px;
 `;
 
 const Authors = styled.div`

@@ -42,8 +42,19 @@ export async function getServerSideProps(context) {
         _count: {
           select: { comments: true, likes: true },
         },
+        comments: {
+          distinct: ["authorId"],
+          select: {
+            author: true,
+          },
+        },
       },
     });
+
+    if (!session) {
+      return JSON.parse(JSON.stringify(rawPosts));
+    }
+
     const likes = await prisma.postLike.findMany({
       where: {
         userId: session.user.id,

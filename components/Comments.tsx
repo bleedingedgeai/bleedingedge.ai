@@ -4,11 +4,17 @@ import { useSession } from "next-auth/react";
 import { Fragment, useCallback, useContext } from "react";
 import styled from "styled-components";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { clamp } from "../helpers/numbers";
 import { theme } from "../styles/theme";
 import Avatar from "./Avatar";
+import Badge from "./Badge";
 import IconAma from "./Icons/IconAma";
+import IconDelete from "./Icons/IconDelete";
+import IconEdit from "./Icons/IconEdit";
 import IconLike from "./Icons/IconLike";
 import IconLiked from "./Icons/IconLiked";
+import IconReplied from "./Icons/IconReplied";
+import IconReply from "./Icons/IconReply";
 import { OverlayContext, OverlayType } from "./Overlay";
 
 TimeAgo.addDefaultLocale(en);
@@ -108,21 +114,44 @@ function CommentsRecursive({
   return (
     <>
       {comments.map((comment) => {
+        const isHost = article.authors.some((a) => a.id === comment.author.id);
+        const isOwn = session?.data?.user.id === comment.author.id;
+        const hasReplies = comment.children.length > 0;
+
         return (
           <Fragment key={comment.id + comment.content}>
             <Container
               style={{
-                marginLeft: parentIndex * 42,
+                paddingLeft: clamp(parentIndex * 42, 0, 42),
                 opacity: parentId ? (parentId === comment.id ? 1 : 0.36) : 1,
               }}
             >
-              <Avatar src={comment.author.image} outline={false} />
+              {hasReplies && (
+                <Connection
+                  style={{
+                    paddingLeft: parentIndex * 42 + 9,
+                  }}
+                >
+                  <ConnectionLine />
+                </Connection>
+              )}
+              <Avatar
+                src={comment.author.image}
+                outline={isHost}
+                highlight={isHost}
+              />
+
               <div>
                 <Author>
-                  <span>{comment.author.name}</span> ·{" "}
+                  <Name>{comment.author.name}</Name> ·{" "}
                   {timeAgo.format(new Date(comment.updatedAt))}
+                  {isHost && (
+                    <BadgeContainer>
+                      <Badge />
+                    </BadgeContainer>
+                  )}
                 </Author>
-                <Content>{comment.content}</Content>
+                <Content isHost={isHost}>{comment.content}</Content>
                 <Bottom>
                   <Actions>
                     <Action>
@@ -141,9 +170,24 @@ function CommentsRecursive({
                     </Action>
                     <Action>
                       <StyledButton onClick={() => setParentId(comment.id)}>
-                        <IconAma /> <span>reply</span>
+                        {hasReplies ? <IconReplied /> : <IconReply />}{" "}
+                        <span>reply</span>
                       </StyledButton>
                     </Action>
+                    {isOwn && (
+                      <>
+                        <Action>
+                          <StyledButton onClick={() => setParentId(comment.id)}>
+                            <IconEdit /> <span>Edit</span>
+                          </StyledButton>
+                        </Action>
+                        <Action>
+                          <StyledButton onClick={() => setParentId(comment.id)}>
+                            <IconDelete /> <span>Delete</span>
+                          </StyledButton>
+                        </Action>
+                      </>
+                    )}
                   </Actions>
                 </Bottom>
               </div>
@@ -162,26 +206,8 @@ function CommentsRecursive({
   );
 }
 
-const Content = styled.div`
-  font-family: ${(p) => p.theme.fontFamily.nouvelle};
-  font-size: 13px;
-  line-height: 120%;
-  color: ${(p) => p.theme.colors.light_grey};
-  margin-bottom: 8px;
-`;
-
-const Author = styled.div`
-  font-size: 10px;
-  line-height: 135%;
-  color: ${(p) => p.theme.colors.light_grey};
-  margin-bottom: 8px;
-
-  span {
-    color: ${(p) => p.theme.colors.off_white};
-  }
-`;
-
 const Container = styled.div`
+  position: relative;
   margin-bottom: 24px;
   display: grid;
   grid-template-columns: 18px 1fr;
@@ -189,28 +215,65 @@ const Container = styled.div`
   transition: opacity 0.25s ease;
 `;
 
-const Actions = styled.div`
-  display: flex;
-  align-items: center;
+const Connection = styled.div`
+  position: absolute;
+  height: 100%;
 `;
 
-const Action = styled.div`
-  margin-right: 24px;
+const ConnectionLine = styled.div`
+  top: 18px;
+  width: 1px;
+  height: 100%;
+  background: #202020;
 `;
+
+const ConnectionLineCurve = styled.div`
+  top: -26px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #202020;
+  position: absolute;
+`;
+
+const BadgeContainer = styled.span`
+  margin-left: 12px;
+`;
+
+const Name = styled.span`
+  color: ${(p) => p.theme.colors.off_white};
+`;
+
+const Content = styled.div<{ isHost: boolean }>`
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
+  font-size: 14px;
+  line-height: 130%;
+  color: ${(p) =>
+    p.isHost ? p.theme.colors.white : p.theme.colors.light_grey};
+  margin-bottom: 8px;
+`;
+
+const Author = styled.div`
+  display: flex;
+  font-size: 10px;
+  line-height: 135%;
+  color: ${(p) => p.theme.colors.light_grey};
+  margin-bottom: 8px;
+`;
+
+const Actions = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  grid-gap: 24px;
+`;
+
+const Action = styled.div``;
 
 const Bottom = styled.div`
   display: flex;
   align-items: center;
   color: ${(p) => p.theme.colors.light_grey};
   font-size: 10px;
-`;
-
-const StyledLink = styled.span`
-  color: ${(p) => p.theme.colors.light_grey};
-
-  &:hover {
-    color: ${(p) => p.theme.colors.off_white};
-  }
 `;
 
 const StyledButton = styled.button`

@@ -18,6 +18,7 @@ export default function CommentBox({
   const [comment, setComment] = useState("");
   const { showOverlay } = useContext(OverlayContext);
   const session = useSession();
+  const formRef = useRef<HTMLFormElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [offset, setOffset] = useState(0);
   const [width, setWidth] = useState(0);
@@ -56,6 +57,10 @@ export default function CommentBox({
         article.id,
       ]);
 
+      if (!session?.data) {
+        return { previousComments };
+      }
+
       // Optimistically update to the new value
       queryClient.setQueryData(["comments", article.id], (old) => [
         ...(old as any),
@@ -63,9 +68,11 @@ export default function CommentBox({
           ...newComment,
           updatedAt: new Date(),
           createdAt: new Date(),
+          _count: { likes: 1 },
+          liked: true,
           author: {
-            name: session.data.user.name,
-            image: session.data.user.image,
+            name: session?.data.user.name,
+            image: session?.data.user.image,
           },
         },
       ]);
@@ -131,10 +138,27 @@ export default function CommentBox({
         document.removeEventListener("keydown", handleKeyDown);
       };
     }
-  }, [parentId]);
+  }, [parentId, handleSubmit]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter" && event.metaKey) {
+        handleSubmit(event);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [parentId, handleSubmit]);
 
   return (
-    <CommentBoxForm onSubmit={handleSubmit} style={{ left: offset, width }}>
+    <CommentBoxForm
+      onSubmit={handleSubmit}
+      style={{ left: offset, width }}
+      onClick={() => textareaRef.current.focus()}
+    >
       {replyingToComment && (
         <ReplyingTo>
           <div>
@@ -156,11 +180,17 @@ export default function CommentBox({
         placeholder="Ask my anything"
       />
 
-      <Submit type="submit">
-        {session.data.user.name}
-        <Divider />
-        <IconSend />
-      </Submit>
+      {session.data ? (
+        <Submit type="submit">
+          {session?.data?.user.name}
+          <Divider />
+          <IconSend />
+        </Submit>
+      ) : (
+        <Submit type="submit">
+          <IconSend />
+        </Submit>
+      )}
     </CommentBoxForm>
   );
 }
@@ -193,15 +223,12 @@ const CommentBoxForm = styled.form`
   height: 91px;
   bottom: 42px;
   z-index: 3;
-`;
-
-const Submit = styled.button`
-  position: absolute;
-  top: 18px;
-  right: 16px;
-  color: ${(p) => p.theme.colors.light_grey};
-  display: flex;
-  align-items: center;
+  transition: box-shadow 0.25s ease, background 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0px 4px 34px rgba(0, 0, 0, 0.55);
+  background: rgba(22, 22, 22, 0.52);
+  backdrop-filter: blur(55px);
+  border-radius: 14px;
 `;
 
 const Divider = styled.div`
@@ -209,6 +236,39 @@ const Divider = styled.div`
   width: 1px;
   background: rgba(255, 255, 255, 0.21);
   margin: 0 14px;
+  transition: background 0.25s ease;
+`;
+
+const Submit = styled.button`
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  color: ${(p) => p.theme.colors.light_grey};
+  display: flex;
+  align-items: center;
+  margin-right: -10px;
+  margin-top: -5px;
+  padding: 5px 10px;
+  background: rgba(255, 255, 255, 0);
+  border-radius: 7px;
+  transition: background 0.25s ease, color 0.25s ease;
+  font-size: 12px;
+
+  svg path {
+    transition: fill 0.25s ease;
+  }
+
+  &:hover {
+    color: ${(p) => p.theme.colors.white};
+    background: rgba(255, 255, 255, 0.08);
+    svg path {
+      fill: ${(p) => p.theme.colors.white};
+    }
+
+    ${Divider} {
+      background: rgba(255, 255, 255, 0.42);
+    }
+  }
 `;
 
 const BlueGradientContainer = styled.div`
@@ -274,28 +334,20 @@ const StyledTextarea = styled.textarea`
   width: 100%;
   resize: none;
   border: none;
-  border-radius: 14px;
   padding: 16px 18px;
-  font-size: 14px;
   height: 91px;
-  box-shadow: 0px 4px 34px rgba(0, 0, 0, 0.55);
-  transition: box-shadow 0.25s ease, background 0.25s ease;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0px 4px 34px rgba(0, 0, 0, 0.55);
-  background: rgba(22, 22, 22, 0.52);
-  backdrop-filter: blur(55px);
+  border-radius: 14px;
+  max-width: 687px;
+  width: 90%;
   caret-color: ${(p) => p.theme.colors.orange};
+  font-size: 14px;
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
+  background: transparent;
 
   &::placeholder {
+    font-family: ${(p) => p.theme.fontFamily.space};
     color: rgba(255, 255, 255, 0.16);
-  }
-
-  &:not([disabled], :focus):hover {
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16);
-  }
-
-  &:focus {
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.32);
+    line-height: 100%;
   }
 
   ${mq.tablet} {

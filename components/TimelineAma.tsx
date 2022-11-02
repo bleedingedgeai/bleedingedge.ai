@@ -12,6 +12,7 @@ import IconAma from "./Icons/IconAma";
 import IconLike from "./Icons/IconLike";
 import IconLiked from "./Icons/IconLiked";
 import IconShare from "./Icons/IconShare";
+import Live from "./Live";
 import Names from "./Names";
 import { OverlayContext, OverlayType } from "./Overlay";
 import Participants from "./Participants";
@@ -153,18 +154,13 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                   <Names authors={article.authors} />
                 </span>
                 <Flex>
-                  {article.live && (
-                    <span>
-                      <LiveDot />
-                      Live
-                    </span>
-                  )}{" "}
-                  <span>
+                  {article.live && <Live />}{" "}
+                  <DateContainer>
                     {new Intl.DateTimeFormat("en", {
                       day: "numeric",
                       month: "short",
-                    }).format(new Date(article.postedAt))}
-                  </span>
+                    }).format(new Date(article.updatedAt))}
+                  </DateContainer>
                 </Flex>
               </Top>
 
@@ -217,12 +213,9 @@ const Flex = styled.div`
   align-items: center;
 `;
 
-const LiveDot = styled.div`
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  margin-left: 8px;
-  background: ${(p) => p.theme.colors.orange};
+const DateContainer = styled.span`
+  min-width: 55px;
+  text-align: right;
 `;
 
 const AvatarContainer = styled.div`
@@ -313,12 +306,6 @@ const Content = styled.p`
   max-width: 612px;
 `;
 
-const Authors = styled.div`
-  font-size: 10px;
-  line-height: 135%;
-  color: ${(p) => p.theme.colors.off_white};
-`;
-
 const Actions = styled.div`
   display: flex;
   align-items: center;
@@ -331,6 +318,7 @@ const Action = styled.div`
 const Bottom = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   color: ${(p) => p.theme.colors.light_grey};
 `;
 

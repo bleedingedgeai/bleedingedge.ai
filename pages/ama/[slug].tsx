@@ -46,6 +46,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const [session] = await Promise.all([sessionRequest]);
 
+  // const liveArticleRequest = await prisma.post.findFirst({
+  //   where: { live: true },
+  //   include: {
+  //     authors: true,
+  //     comments: {
+  //       distinct: ["authorId"],
+  //       select: {
+  //         author: true,
+  //       },
+  //     },
+  //   },
+  // });
+
   const post = await queryClient.fetchQuery(
     ["post", context.params.slug],
     async () => {
@@ -58,11 +71,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           _count: {
             select: { comments: true, likes: true },
           },
+          comments: {
+            distinct: ["authorId"],
+            select: {
+              author: true,
+            },
+          },
         },
       });
+
+      if (!session) {
+        return JSON.parse(JSON.stringify(rawPost));
+      }
+
       const likes = await prisma.postLike.findMany({
         where: {
-          userId: session.user.id,
+          userId: session?.user?.id,
           postId: rawPost.id,
         },
       });
@@ -87,6 +111,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
       },
     });
+
+    if (!session) {
+      return JSON.parse(JSON.stringify(rawComments));
+    }
+
     const likes = await prisma.commentLike.findMany({
       where: {
         userId: session.user.id,
