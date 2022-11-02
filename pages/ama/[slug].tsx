@@ -46,18 +46,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const [session] = await Promise.all([sessionRequest]);
 
-  // const post = await prisma.post.findUnique({
-  //   where: {
-  //     slug: String(context.params?.slug),
-  //   },
-  //   include: {
-  //     authors: true,
-  //     _count: {
-  //       select: { comments: true, likes: true },
-  //     },
-  //   },
-  // });
-
   const post = await queryClient.fetchQuery(
     ["post", context.params.slug],
     async () => {

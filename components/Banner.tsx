@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { slugify } from "../helpers/string";
 import Avatar from "./Avatar";
 import IconAma from "./Icons/IconAma";
-import Stacked from "./Stacked";
+import Participants from "./Participants";
 
 export default function Banner({ article }) {
   if (!article) {
@@ -35,29 +35,6 @@ export default function Banner({ article }) {
   );
 }
 
-function Participants({ article }) {
-  if (!article.comments) {
-    return null;
-  }
-
-  const totalPartipants = article.comments?.length || 0;
-  const particpantsToShow = article.comments?.slice(0, 4) || [];
-  const overflowParticpants = totalPartipants - particpantsToShow?.length;
-
-  return (
-    <>
-      {overflowParticpants ? <Extra>+{overflowParticpants}</Extra> : null}
-      <Stacked
-        size={18}
-        direction="right"
-        elements={particpantsToShow.map((comment) => (
-          <Avatar src={comment.author.image} size={18} outline={false} grey />
-        ))}
-      />
-    </>
-  );
-}
-
 const Right = styled.span`
   display: flex;
   align-items: center;
@@ -76,12 +53,6 @@ const Live = styled.span`
   font-size: 10px;
   line-height: 135%;
   margin-right: 8px;
-`;
-
-const Extra = styled.span`
-  font-size: 10px;
-  margin-right: 5px;
-  color: ${(p) => p.theme.colors.light_grey};
 `;
 
 const BannerContainer = styled.a`

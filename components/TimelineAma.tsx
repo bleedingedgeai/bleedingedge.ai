@@ -14,6 +14,7 @@ import IconLiked from "./Icons/IconLiked";
 import IconShare from "./Icons/IconShare";
 import Names from "./Names";
 import { OverlayContext, OverlayType } from "./Overlay";
+import Participants from "./Participants";
 
 const placeholderContent =
   "Hello! My name is Lachy and I created this site! bleeding edge is a feed of noteworthy developments in AI. this site is very much a work in progress. please send suggestions and feedback!";
@@ -142,12 +143,31 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
           >
             <AvatarContainer>
               <Avatar src={article.authors[0].image} highlight={live} />
-              <AuthorCount>{article.authors.length}</AuthorCount>
+              {article.authors.length > 1 && (
+                <AuthorCount>{article.authors.length}</AuthorCount>
+              )}
             </AvatarContainer>
             <Main>
               <Top>
-                <Names authors={article.authors} />
+                <span>
+                  <Names authors={article.authors} />
+                </span>
+                <Flex>
+                  {article.live && (
+                    <span>
+                      <LiveDot />
+                      Live
+                    </span>
+                  )}{" "}
+                  <span>
+                    {new Intl.DateTimeFormat("en", {
+                      day: "numeric",
+                      month: "short",
+                    }).format(new Date(article.postedAt))}
+                  </span>
+                </Flex>
               </Top>
+
               <Middle>
                 <Title>{article.title}</Title>
                 <Content>{article.content || placeholderContent}</Content>
@@ -182,6 +202,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                     </StyledButton>
                   </Action>
                 </Actions>
+                <Participants article={article} />
               </Bottom>
             </Main>
           </Container>
@@ -190,6 +211,19 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
     </>
   );
 }
+
+const Flex = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const LiveDot = styled.div`
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-left: 8px;
+  background: ${(p) => p.theme.colors.orange};
+`;
 
 const AvatarContainer = styled.div`
   position: relative;

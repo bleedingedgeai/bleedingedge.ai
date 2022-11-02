@@ -135,7 +135,7 @@ export default function Ama({ article, comments }) {
                   style={article.liked ? { color: theme.colors.white } : {}}
                 >
                   {article.liked ? <IconLiked /> : <IconLike />}
-                  {article._count.likes}
+                  {article._count.likes + 1}
                 </StyledButton>
               </Action>
               <Action>
