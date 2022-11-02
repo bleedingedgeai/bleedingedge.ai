@@ -3,7 +3,7 @@ import Avatar from "./Avatar";
 import Stacked from "./Stacked";
 
 export default function Participants({ article }) {
-  if (!article.comments) {
+  if (article.comments.length === 0) {
     return null;
   }
 

@@ -15,7 +15,7 @@ export default function Banner({ article }) {
   return (
     <Container>
       <Author>
-        <Avatar src={author.image} size={28} highlight />
+        <Avatar src={author.image} size={28} superHighlight />
       </Author>
       <Link href={`/ama/${slugify(article.title)}`}>
         <BannerContainer>

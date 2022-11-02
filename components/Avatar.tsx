@@ -5,6 +5,7 @@ interface AvatarProps {
   src: string;
   size?: number;
   highlight?: boolean;
+  superHighlight?: boolean;
   outline?: boolean;
   greyScale?: boolean;
 }
@@ -12,6 +13,7 @@ interface AvatarProps {
 export default function Avatar({
   src,
   highlight,
+  superHighlight,
   size = 18,
   outline = true,
   greyScale,
@@ -21,6 +23,7 @@ export default function Avatar({
       size={size}
       outline={outline}
       highlight={highlight}
+      superHighlight={superHighlight}
       greyScale={greyScale}
     >
       <StyledImage src={src} width={size} height={size} />
@@ -32,6 +35,7 @@ const AvatarContainer = styled.div<{
   size: number;
   outline?: boolean;
   highlight?: boolean;
+  superHighlight?: boolean;
   greyScale?: boolean;
 }>`
   position: relative;
@@ -61,7 +65,7 @@ const AvatarContainer = styled.div<{
 
   ${(p) =>
     p.outline &&
-    p.highlight &&
+    p.superHighlight &&
     `&::before {
     content: "";
     position: absolute;

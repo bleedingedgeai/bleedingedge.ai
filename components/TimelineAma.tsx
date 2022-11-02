@@ -163,7 +163,6 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                   </DateContainer>
                 </Flex>
               </Top>
-
               <Middle>
                 <Title>{article.title}</Title>
                 <Content>{article.content || placeholderContent}</Content>
@@ -242,11 +241,31 @@ const Main = styled.div`
   position: relative;
 `;
 
+const Title = styled.h2`
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 120%;
+  color: ${(p) => p.theme.colors.off_white};
+  margin-bottom: 4px;
+  transition: color 0.2s ease;
+`;
+
+const Content = styled.p`
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
+  font-size: 13px;
+  line-height: 120%;
+  color: ${(p) => p.theme.colors.light_grey};
+  max-width: 612px;
+  transition: color 0.2s ease;
+`;
+
 const Container = styled.div<{ live: boolean }>`
   display: grid;
   grid-template-columns: 18px 1fr;
   grid-gap: 36px;
   margin-right: 21px;
+  cursor: pointer;
 
   &:not(:last-of-type) {
     margin-bottom: 18px;
@@ -274,6 +293,10 @@ const Container = styled.div<{ live: boolean }>`
       }`}
     }
   }
+
+  &:hover ${Title} {
+    color: ${(p) => p.theme.colors.white};
+  }
 `;
 
 const Top = styled.div`
@@ -287,23 +310,6 @@ const Top = styled.div`
 
 const Middle = styled.div`
   margin-bottom: 14px;
-`;
-
-const Title = styled.h2`
-  font-family: ${(p) => p.theme.fontFamily.nouvelle};
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 120%;
-  color: ${(p) => p.theme.colors.off_white};
-  margin-bottom: 4px;
-`;
-
-const Content = styled.p`
-  font-family: ${(p) => p.theme.fontFamily.nouvelle};
-  font-size: 13px;
-  line-height: 120%;
-  color: #969696;
-  max-width: 612px;
 `;
 
 const Actions = styled.div`

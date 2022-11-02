@@ -126,7 +126,7 @@ function CommentsRecursive({
                 opacity: parentId ? (parentId === comment.id ? 1 : 0.36) : 1,
               }}
             >
-              {hasReplies && (
+              {/* {hasReplies && (
                 <Connection
                   style={{
                     paddingLeft: parentIndex * 42 + 9,
@@ -134,7 +134,7 @@ function CommentsRecursive({
                 >
                   <ConnectionLine />
                 </Connection>
-              )}
+              )} */}
               <Avatar
                 src={comment.author.image}
                 outline={isHost}
