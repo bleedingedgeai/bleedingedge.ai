@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useCallback, useContext } from "react";
 import styled from "styled-components";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { slugify } from "../helpers/string";
 import { Sort } from "../pages";
 import { theme } from "../styles/theme";
@@ -11,6 +12,7 @@ import IconAma from "./Icons/IconAma";
 import IconLike from "./Icons/IconLike";
 import IconLiked from "./Icons/IconLiked";
 import IconShare from "./Icons/IconShare";
+import Names from "./Names";
 import { OverlayContext, OverlayType } from "./Overlay";
 
 const placeholderContent =
@@ -34,6 +36,74 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
   const session = useSession();
   const { showOverlay } = useContext(OverlayContext);
   const sortMethod = sort === "Latest" ? sortByLatest : sortByEarliest;
+
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationKey: ["ama"],
+    mutationFn: (like: any) => {
+      return fetch("/api/posts/like", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(like),
+      });
+    },
+    onMutate: async (newArticle) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({
+        queryKey: ["ama"],
+      });
+
+      // Snapshot the previous value
+      const previousPosts = queryClient.getQueryData(["ama"]);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(["ama"], (articles: any) => {
+        console.log(articles, newArticle);
+        return articles.map((article) => {
+          if (article.id == newArticle.postId) {
+            const shouldLike = !article.liked;
+
+            return {
+              ...article,
+              _count: {
+                ...article._count,
+                likes: shouldLike
+                  ? article._count.likes + 1
+                  : article._count.likes - 1,
+              },
+              liked: shouldLike,
+            };
+          }
+
+          return article;
+        });
+      });
+
+      // Return a context object with the snapshotted value
+      return { previousPosts };
+    },
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData(["ama"], context.previousPosts);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["ama"] });
+    },
+  });
+
+  const handleLike = (event: React.MouseEvent, article) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (session.status === "unauthenticated") {
+      return showOverlay(OverlayType.AUTHENTICATION);
+    }
+
+    mutation.mutate({
+      userId: session.data.user.id,
+      postId: article.id,
+    });
+  };
 
   return (
     <>
@@ -70,18 +140,13 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
             onClick={() => router.push(amaHref)}
             live={live}
           >
-            <div>
-              {article.authors.map((author) => (
-                <Avatar key={author.id} src={author.image} highlight={live} />
-              ))}
-            </div>
+            <AvatarContainer>
+              <Avatar src={article.authors[0].image} highlight={live} />
+              <AuthorCount>{article.authors.length}</AuthorCount>
+            </AvatarContainer>
             <Main>
               <Top>
-                <div>
-                  {article.authors.map((author) => (
-                    <Authors key={author.id}>{author.name} </Authors>
-                  ))}
-                </div>
+                <Names authors={article.authors} />
               </Top>
               <Middle>
                 <Title>{article.title}</Title>
@@ -90,7 +155,9 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
               <Bottom>
                 <Actions>
                   <Action>
-                    <StyledButton onClick={handleUpvoteClick}>
+                    <StyledButton
+                      onClick={(event) => handleLike(event, article)}
+                    >
                       {article.liked ? <IconLiked /> : <IconLike />}{" "}
                       <span
                         style={
@@ -123,6 +190,26 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
     </>
   );
 }
+
+const AvatarContainer = styled.div`
+  position: relative;
+`;
+
+const AuthorCount = styled.span`
+  background: ${(p) => p.theme.colors.dark_grey};
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.64);
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
+  font-size: 9px;
+  color: ${(p) => p.theme.colors.white};
+  top: -6px;
+  right: -6px;
+`;
 
 const Main = styled.div`
   position: relative;
@@ -167,6 +254,8 @@ const Top = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
+  font-size: 10px;
+  color: ${(p) => p.theme.colors.off_white};
 `;
 
 const Middle = styled.div`

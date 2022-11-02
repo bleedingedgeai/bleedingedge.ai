@@ -51,7 +51,7 @@ function Participants({ article }) {
         size={18}
         direction="right"
         elements={particpantsToShow.map((comment) => (
-          <Avatar src={comment.author.image} size={18} outline={false} />
+          <Avatar src={comment.author.image} size={18} outline={false} grey />
         ))}
       />
     </>

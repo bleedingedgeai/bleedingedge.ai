@@ -48,20 +48,20 @@ const Element = styled.span<{ elementSize?: number }>`
 
 const ElementRight = styled(Element)`
   &:not(:first-of-type) {
-    margin-left: -${(p) => p.elementSize / 10}px;
+    margin-left: -1px;
   }
 
   &:not(:last-of-type) {
-    mask: radial-gradient(circle at 125% 50%, transparent 40%, black 40%);
+    mask: radial-gradient(circle at 125% 50%, transparent 30%, black 30%);
   }
 `;
 
 const ElementLeft = styled(Element)`
   &:not(:first-of-type) {
-    margin-right: -${(p) => p.elementSize / 10}px;
+    margin-right: -1px;
   }
 
   &:not(:last-of-type) {
-    mask: radial-gradient(circle at -25% 50%, transparent 40%, black 40%);
+    mask: radial-gradient(circle at -25% 50%, transparent 30%, black 30%);
   }
 `;

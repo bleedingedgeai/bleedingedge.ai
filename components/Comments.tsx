@@ -3,6 +3,7 @@ import en from "javascript-time-ago/locale/en";
 import { useSession } from "next-auth/react";
 import { Fragment, useCallback, useContext } from "react";
 import styled from "styled-components";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { theme } from "../styles/theme";
 import Avatar from "./Avatar";
 import IconAma from "./Icons/IconAma";
@@ -18,6 +19,7 @@ export default function Comments(props) {
 }
 
 function CommentsRecursive({
+  article,
   comments,
   index: parentIndex = 0,
   parentId,
@@ -26,27 +28,78 @@ function CommentsRecursive({
   const session = useSession();
   const { showOverlay } = useContext(OverlayContext);
 
-  const handleUpvoteClick = useCallback(
-    (event: React.MouseEvent, comment) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (session.status === "unauthenticated") {
-        return showOverlay(OverlayType.AUTHENTICATION);
-      }
-
-      fetch("/api/comments/like", {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationKey: ["comments", article.id],
+    mutationFn: (like: any) => {
+      return fetch("/api/comments/like", {
+        method: "post",
         headers: {
           "Content-Type": "application/json",
         },
-        method: "POST",
-        body: JSON.stringify({
-          userId: session.data.user.id,
-          commentId: comment.id,
-        }),
+        body: JSON.stringify(like),
       });
     },
-    [session]
-  );
+    onMutate: async (newComment) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({
+        queryKey: ["comments", article.id],
+      });
+
+      // Snapshot the previous value
+      const previousComments = queryClient.getQueryData([
+        "comments",
+        article.id,
+      ]);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(["comments", article.id], (comments: any) => {
+        return comments.map((comment) => {
+          if (comment.id == newComment.commentId) {
+            const shouldLike = !comment.liked;
+
+            return {
+              ...comment,
+              _count: {
+                ...comment._count,
+                likes: shouldLike
+                  ? comment._count.likes + 1
+                  : comment._count.likes - 1,
+              },
+              liked: shouldLike,
+            };
+          }
+
+          return comment;
+        });
+      });
+
+      // Return a context object with the snapshotted value
+      return { previousComments };
+    },
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData(
+        ["comments", article.id],
+        context.previousComments
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", article.id] });
+    },
+  });
+
+  const handleLike = (event: React.MouseEvent, comment) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (session.status === "unauthenticated") {
+      return showOverlay(OverlayType.AUTHENTICATION);
+    }
+
+    mutation.mutate({
+      userId: session.data.user.id,
+      commentId: comment.id,
+    });
+  };
 
   if (!comments) {
     return null;
@@ -74,7 +127,7 @@ function CommentsRecursive({
                   <Actions>
                     <Action>
                       <StyledButton
-                        onClick={(event) => handleUpvoteClick(event, comment)}
+                        onClick={(event) => handleLike(event, comment)}
                       >
                         {comment.liked ? <IconLiked /> : <IconLike />}{" "}
                         <span
@@ -100,6 +153,7 @@ function CommentsRecursive({
               index={parentIndex + 1}
               setParentId={setParentId}
               parentId={parentId}
+              article={article}
             />
           </Fragment>
         );

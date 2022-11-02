@@ -1,6 +1,8 @@
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useCallback, useContext, useRef, useState } from "react";
 import styled from "styled-components";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatNestedComments } from "../pages/ama/[slug]";
 import { theme } from "../styles/theme";
 import Avatar from "./Avatar";
@@ -11,6 +13,7 @@ import IconHosts from "./Icons/IconHosts";
 import IconLike from "./Icons/IconLike";
 import IconLiked from "./Icons/IconLiked";
 import IconShare from "./Icons/IconShare";
+import Names from "./Names";
 import { OverlayContext, OverlayType } from "./Overlay";
 import Stacked from "./Stacked";
 
@@ -22,28 +25,71 @@ export default function Ama({ article, comments }) {
   const { showOverlay } = useContext(OverlayContext);
   const session = useSession();
 
-  const handleUpvoteClick = useCallback(
-    (event: React.MouseEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-
-      if (session.status === "unauthenticated") {
-        return showOverlay(OverlayType.AUTHENTICATION);
-      }
-
-      fetch("/api/posts/like", {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationKey: ["post", router.query.slug],
+    mutationFn: (like: any) => {
+      return fetch("/api/posts/like", {
+        method: "post",
         headers: {
           "Content-Type": "application/json",
         },
-        method: "POST",
-        body: JSON.stringify({
-          userId: session.data.user.id,
-          postId: article.id,
-        }),
+        body: JSON.stringify(like),
       });
     },
-    [article, session]
-  );
+    onMutate: async () => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({
+        queryKey: ["post", router.query.slug],
+      });
+
+      // Snapshot the previous value
+      const previousPost = queryClient.getQueryData([
+        "post",
+        router.query.slug,
+      ]);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(["post", router.query.slug], (old: any) => {
+        const shouldLike = !old.liked;
+
+        return {
+          ...old,
+          _count: {
+            ...old._count,
+            likes: shouldLike ? old._count.likes + 1 : old._count.likes - 1,
+          },
+          liked: shouldLike,
+        };
+      });
+
+      // Return a context object with the snapshotted value
+      return { previousPost };
+    },
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData(
+        ["post", router.query.slug],
+        context.previousPost
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["post", router.query.slug] });
+    },
+  });
+
+  const handleLike = (event: React.MouseEvent, article) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (session.status === "unauthenticated") {
+      return showOverlay(OverlayType.AUTHENTICATION);
+    }
+
+    mutation.mutate({
+      userId: session.data.user.id,
+      postId: article.id,
+    });
+  };
 
   const conatinerRef = useRef<HTMLDivElement>(null);
 
@@ -54,9 +100,7 @@ export default function Ama({ article, comments }) {
         <Details ref={conatinerRef}>
           <FlexBetween>
             <Authors>
-              {article.authors.map((author) => (
-                <span key={author.id}>{author.name}</span>
-              ))}
+              <Names authors={article.authors} />
               <DotDivider>·</DotDivider>
               <Flex>
                 <span>
@@ -87,7 +131,7 @@ export default function Ama({ article, comments }) {
             <Actions>
               <Action>
                 <StyledButton
-                  onClick={handleUpvoteClick}
+                  onClick={(event) => handleLike(event, article)}
                   style={article.liked ? { color: theme.colors.white } : {}}
                 >
                   {article.liked ? <IconLiked /> : <IconLike />}
@@ -122,6 +166,7 @@ export default function Ama({ article, comments }) {
           comments={formatNestedComments(comments)}
           setParentId={setParentId}
           parentId={parentId}
+          article={article}
         />
       </CommentsContainer>
       <CommentBox
@@ -201,7 +246,6 @@ const Container = styled.div`
   display: grid;
   grid-template-columns: 18px 1fr;
   grid-gap: 36px;
-  margin-right: 21px;
   z-index: 3;
   position: relative;
 `;
