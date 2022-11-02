@@ -27,7 +27,7 @@ const defaultDescription =
 export default function SEO({
   children,
   dateforSEO,
-  image = "/assets/meta/be-meta.jpg",
+  image = "/assets/meta/be-meta-home.jpg",
   title,
   themeColor = theme.colors.black,
   description = defaultDescription,
