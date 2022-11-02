@@ -74,7 +74,7 @@ export async function getServerSideProps(context) {
 export default function Ama({ tags }) {
   const [sort, setSort] = useState<Sort>("Latest");
 
-  const { data: articleFromQuery } = useQuery({
+  const { data: articleFromQuery } = useQuery<any>({
     queryKey: ["ama"],
     queryFn: async () => {},
   });

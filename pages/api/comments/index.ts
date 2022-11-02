@@ -33,4 +33,21 @@ export default async function handle(req: NextApiRequest, res) {
     res.json(comment);
     return;
   }
+  if (req.method === "GET") {
+    // const { content, postId, } = req.body;
+
+    // const result = await prisma.comment.findMany({
+    //   where: {
+    //     slug: req.body.slug,
+    //   },
+    //   include: {
+    //     author: true,
+    //     _count: {
+    //       select: { votes: true },
+    //     },
+    //   },
+    // });
+    res.json();
+    return;
+  }
 }
