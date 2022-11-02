@@ -18,7 +18,6 @@ export default function CommentBox({
   const [comment, setComment] = useState("");
   const { showOverlay } = useContext(OverlayContext);
   const session = useSession();
-  const formRef = useRef<HTMLFormElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [offset, setOffset] = useState(0);
   const [width, setWidth] = useState(0);
@@ -154,11 +153,7 @@ export default function CommentBox({
   }, [parentId, handleSubmit]);
 
   return (
-    <CommentBoxForm
-      onSubmit={handleSubmit}
-      style={{ left: offset, width }}
-      onClick={() => textareaRef.current.focus()}
-    >
+    <Container style={{ left: offset, width }}>
       {replyingToComment && (
         <ReplyingTo>
           <div>
@@ -169,60 +164,89 @@ export default function CommentBox({
           </button>
         </ReplyingTo>
       )}
-      <BlueGradientContainer>
-        <BlueGradient />
-      </BlueGradientContainer>
+      <CommentBoxForm
+        onSubmit={handleSubmit}
+        onClick={() => textareaRef.current.focus()}
+      >
+        <BlueGradientContainer>
+          <BlueGradient />
+        </BlueGradientContainer>
+        <StyledTextarea
+          ref={textareaRef}
+          value={comment}
+          onChange={handleCommentChange}
+          placeholder="Ask my anything"
+        />
 
-      <StyledTextarea
-        ref={textareaRef}
-        value={comment}
-        onChange={handleCommentChange}
-        placeholder="Ask my anything"
-      />
-
-      {session.data ? (
-        <Submit type="submit">
-          {session?.data?.user.name}
-          <Divider />
-          <IconSend />
-        </Submit>
-      ) : (
-        <Submit type="submit">
-          <IconSend />
-        </Submit>
-      )}
-    </CommentBoxForm>
+        {session.data ? (
+          <Submit type="submit">
+            {session?.data?.user.name}
+            <Divider />
+            <IconSend />
+          </Submit>
+        ) : (
+          <Submit type="submit">
+            <IconSend />
+          </Submit>
+        )}
+      </CommentBoxForm>
+    </Container>
   );
 }
 
-const ReplyingTo = styled.div`
-  position: absolute;
-  top: -28px;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  background: #050505;
-  border-top-left-radius: 14px;
-  border-top-right-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-bottom: none;
-  padding: 8px 19px 12px;
-  font-size: 13px;
-  font-family: ${(p) => p.theme.fontFamily.nouvelle};
-  color: ${(p) => p.theme.colors.light_grey};
-
-  span {
-    color: ${(p) => p.theme.colors.off_white};
-  }
-`;
-
-const CommentBoxForm = styled.form`
+const Container = styled.div`
   position: fixed;
   right: 12%;
   width: 841px;
   height: 91px;
   bottom: 42px;
   z-index: 3;
+`;
+
+const ReplyingTo = styled.div`
+  position: absolute;
+  top: -30px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  background: #050505;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+  border-bottom: none;
+  padding: 8px 19px 20px;
+  font-size: 13px;
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
+  color: ${(p) => p.theme.colors.light_grey};
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+
+  span {
+    color: ${(p) => p.theme.colors.off_white};
+  }
+
+  div,
+  button {
+    position: relative;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    background: #050505;
+    width: calc(100% - 2px);
+    height: 100%;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+  }
+`;
+
+const CommentBoxForm = styled.form`
   transition: box-shadow 0.25s ease, background 0.25s ease;
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0px 4px 34px rgba(0, 0, 0, 0.55);

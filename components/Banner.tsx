@@ -186,7 +186,7 @@ const BannerContainer = styled.a`
   }
 
   &:hover::after {
-    opacity: 1;
+    opacity: 0.88;
   }
 `;
 
