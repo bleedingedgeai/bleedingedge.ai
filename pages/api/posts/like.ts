@@ -7,22 +7,22 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     const data = {
-      commentId: req.body.commentId,
+      postId: req.body.postId,
       userId: req.body.userId,
     };
 
-    const like = await prisma.commentVote.findUnique({
-      where: { userId_commentId: data },
+    const like = await prisma.postLike.findUnique({
+      where: { userId_postId: data },
     });
 
     if (like) {
-      const deleted = await prisma.commentVote.delete({
-        where: { userId_commentId: data },
+      const deleted = await prisma.postLike.delete({
+        where: { userId_postId: data },
       });
-      res.status(200).json(deleted);
+      res.status(200).json({ deleted: true, ...deleted });
       return;
     } else {
-      const upvote = await prisma.commentVote.create({ data });
+      const upvote = await prisma.postLike.create({ data });
       res.status(200).json(upvote);
       return;
     }

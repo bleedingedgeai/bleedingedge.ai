@@ -1,12 +1,13 @@
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import { useSession } from "next-auth/react";
-import { Fragment, useCallback, useContext, useState } from "react";
+import { Fragment, useCallback, useContext } from "react";
 import styled from "styled-components";
 import { theme } from "../styles/theme";
 import Avatar from "./Avatar";
 import IconAma from "./Icons/IconAma";
-import IconUpvote from "./Icons/IconUpvotes";
+import IconLike from "./Icons/IconLike";
+import IconLiked from "./Icons/IconLiked";
 import { OverlayContext, OverlayType } from "./Overlay";
 
 TimeAgo.addDefaultLocale(en);
@@ -33,7 +34,7 @@ function CommentsRecursive({
         return showOverlay(OverlayType.AUTHENTICATION);
       }
 
-      fetch("/api/comments/vote", {
+      fetch("/api/comments/like", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -55,7 +56,7 @@ function CommentsRecursive({
     <>
       {comments.map((comment) => {
         return (
-          <Fragment key={comment.id}>
+          <Fragment key={comment.id + comment.content}>
             <Container
               style={{
                 marginLeft: parentIndex * 42,
@@ -68,16 +69,21 @@ function CommentsRecursive({
                   <span>{comment.author.name}</span> ·{" "}
                   {timeAgo.format(new Date(comment.updatedAt))}
                 </Author>
-                <Content>
-                  {comment.id} | {comment.content}
-                </Content>
+                <Content>{comment.content}</Content>
                 <Bottom>
                   <Actions>
                     <Action>
                       <StyledButton
                         onClick={(event) => handleUpvoteClick(event, comment)}
                       >
-                        <IconUpvote />
+                        {comment.liked ? <IconLiked /> : <IconLike />}{" "}
+                        <span
+                          style={
+                            comment.liked ? { color: theme.colors.white } : {}
+                          }
+                        >
+                          {comment._count?.likes}
+                        </span>
                       </StyledButton>
                     </Action>
                     <Action>
@@ -113,8 +119,12 @@ const Content = styled.div`
 const Author = styled.div`
   font-size: 10px;
   line-height: 135%;
-  color: ${(p) => p.theme.colors.off_white};
+  color: ${(p) => p.theme.colors.light_grey};
   margin-bottom: 8px;
+
+  span {
+    color: ${(p) => p.theme.colors.off_white};
+  }
 `;
 
 const Container = styled.div`
@@ -154,8 +164,8 @@ const StyledButton = styled.button`
   align-items: center;
   color: ${(p) => p.theme.colors.light_grey};
 
-  span {
-    margin: 0 6px;
+  svg {
+    margin-right: 8px;
   }
 
   &:hover {

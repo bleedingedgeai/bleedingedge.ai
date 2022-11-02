@@ -48,7 +48,7 @@ const Element = styled.span<{ elementSize?: number }>`
 
 const ElementRight = styled(Element)`
   &:not(:first-of-type) {
-    margin-left: -${(p) => p.elementSize / 6}px;
+    margin-left: -${(p) => p.elementSize / 10}px;
   }
 
   &:not(:last-of-type) {
@@ -58,7 +58,7 @@ const ElementRight = styled(Element)`
 
 const ElementLeft = styled(Element)`
   &:not(:first-of-type) {
-    margin-right: -${(p) => p.elementSize / 6}px;
+    margin-right: -${(p) => p.elementSize / 10}px;
   }
 
   &:not(:last-of-type) {

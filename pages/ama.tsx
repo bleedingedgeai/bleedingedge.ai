@@ -1,6 +1,7 @@
 import { unstable_getServerSession } from "next-auth";
 import { useState } from "react";
 import styled from "styled-components";
+import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
 import FilterAndSort from "../components/FilterAndSort";
 import FilterAndSortMobile from "../components/FilterAndSortMobile";
 import Layout from "../components/Layout";
@@ -13,6 +14,7 @@ import { authOptions } from "./api/auth/[...nextauth]";
 import { Sort } from ".";
 
 export async function getServerSideProps(context) {
+  const queryClient = new QueryClient();
   const sessionRequest = unstable_getServerSession(
     context.req,
     context.res,
@@ -20,34 +22,62 @@ export async function getServerSideProps(context) {
   );
 
   const tagsRequest = prisma.tag.findMany({});
+  const [session, tags] = await Promise.all([sessionRequest, tagsRequest]);
 
   const articlesRequest = prisma.post.findMany({
     where: { authors: { some: {} } },
     include: {
       authors: true,
       _count: {
-        select: { comments: true, votes: true },
+        select: { comments: true, likes: true },
       },
     },
   });
 
-  const [session, articles, tags] = await Promise.all([
-    sessionRequest,
-    articlesRequest,
-    tagsRequest,
-  ]);
+  await queryClient.fetchQuery(["ama"], async () => {
+    const rawPosts = await prisma.post.findMany({
+      where: { authors: { some: {} } },
+      include: {
+        authors: true,
+        _count: {
+          select: { comments: true, likes: true },
+        },
+      },
+    });
+    const likes = await prisma.postLike.findMany({
+      where: {
+        userId: session.user.id,
+        postId: {
+          in: rawPosts.map((comment) => comment.id),
+        },
+      },
+    });
+    const posts = rawPosts.map((post) => {
+      return {
+        ...post,
+        liked: likes.find((like) => like.postId === post.id),
+      };
+    });
+
+    return JSON.parse(JSON.stringify(posts));
+  });
 
   return {
     props: {
       session,
-      articles: JSON.parse(JSON.stringify(articles)),
       tags,
+      dehydratedState: dehydrate(queryClient),
     },
   };
 }
 
-export default function Ama({ tags, articles }) {
+export default function Ama({ tags }) {
   const [sort, setSort] = useState<Sort>("Latest");
+
+  const { data: articleFromQuery } = useQuery({
+    queryKey: ["ama"],
+    queryFn: async () => {},
+  });
 
   return (
     <>
@@ -56,7 +86,7 @@ export default function Ama({ tags, articles }) {
         <FilterAndSortSticky>
           <FilterAndSort tags={tags} sort={sort} setSort={setSort} />
         </FilterAndSortSticky>
-        <TimelineAma sort={sort} articles={articles} />
+        <TimelineAma sort={sort} articles={articleFromQuery} />
       </Layout>
       <FilterAndSortMobile tags={tags} sort={sort} setSort={setSort} />
     </>

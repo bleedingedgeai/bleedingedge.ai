@@ -62,8 +62,8 @@ model User {
   sessions      Session[]
   comments      Comment[]
   posts         Post[]
-  postVotes     PostVote[]
-  commentVotes  CommentVote[]
+  postLikes     PostLike[]
+  commentLikes  CommentLike[]
 }
 
 model Post {
@@ -82,7 +82,7 @@ model Post {
   authors  User[]
   tags     Tag[]
   comments Comment[]
-  votes    PostVote[]
+  likes    PostLike[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -106,13 +106,13 @@ model Comment {
   parentId String?
   children Comment[] @relation("ParentChild")
 
-  votes CommentVote[]
+  likes CommentLike[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
 
-model PostVote {
+model PostLike {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -121,7 +121,7 @@ model PostVote {
   @@id([userId, postId])
 }
 
-model CommentVote {
+model CommentLike {
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)

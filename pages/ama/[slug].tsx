@@ -1,5 +1,6 @@
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
+import { useRouter } from "next/router";
 import React from "react";
 import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
 import Ama from "../../components/Ama";
@@ -37,18 +38,6 @@ export function formatNestedComments(comments: Array<any>) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const queryClient = new QueryClient();
 
-  const post = await prisma.post.findUnique({
-    where: {
-      slug: String(context.params?.slug),
-    },
-    include: {
-      authors: true,
-      _count: {
-        select: { comments: true, votes: true },
-      },
-    },
-  });
-
   const sessionRequest = unstable_getServerSession(
     context.req,
     context.res,
@@ -57,27 +46,75 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const [session] = await Promise.all([sessionRequest]);
 
-  // const likes = await prisma.commentVote.findMany({
+  // const post = await prisma.post.findUnique({
   //   where: {
-  //     userId: (session?.user as any)?.id,
-  //     commentId: { in: comments.map((comment) => comment.id) },
+  //     slug: String(context.params?.slug),
+  //   },
+  //   include: {
+  //     authors: true,
+  //     _count: {
+  //       select: { comments: true, likes: true },
+  //     },
   //   },
   // });
 
+  const post = await queryClient.fetchQuery(
+    ["post", context.params.slug],
+    async () => {
+      const rawPost = await prisma.post.findUnique({
+        where: {
+          slug: String(context.params?.slug),
+        },
+        include: {
+          authors: true,
+          _count: {
+            select: { comments: true, likes: true },
+          },
+        },
+      });
+      const likes = await prisma.postLike.findMany({
+        where: {
+          userId: session.user.id,
+          postId: rawPost.id,
+        },
+      });
+      return JSON.parse(
+        JSON.stringify({
+          ...rawPost,
+          liked: likes.find((like) => like.postId === rawPost.id),
+        })
+      );
+    }
+  );
+
   await queryClient.fetchQuery(["comments", post.id], async () => {
-    const result = await prisma.comment.findMany({
+    const rawComments = await prisma.comment.findMany({
       where: {
         postId: post.id,
       },
       include: {
         author: true,
         _count: {
-          select: { votes: true },
+          select: { likes: true },
         },
       },
     });
+    const likes = await prisma.commentLike.findMany({
+      where: {
+        userId: session.user.id,
+        commentId: {
+          in: rawComments.map((comment) => comment.id),
+        },
+      },
+    });
+    const comments = rawComments.map((comment) => {
+      return {
+        ...comment,
+        liked: likes.find((like) => like.commentId === comment.id),
+      };
+    });
 
-    return JSON.parse(JSON.stringify(result));
+    return JSON.parse(JSON.stringify(comments));
   });
 
   return {
@@ -90,8 +127,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function AmaPage({ article }) {
-  const test = useQuery({
+  const router = useRouter();
+
+  const { data: commentsFromQuery } = useQuery({
     queryKey: ["comments", article.id],
+    queryFn: async () => {},
+  });
+  const { data: articleFromQuery } = useQuery({
+    queryKey: ["post", router.query.slug],
     queryFn: async () => {},
   });
 
@@ -99,7 +142,7 @@ export default function AmaPage({ article }) {
     <>
       <SEO title="bleeding edge" />
       <Layout>
-        <Ama article={article} comments={test.data} />
+        <Ama article={articleFromQuery} comments={commentsFromQuery} />
       </Layout>
     </>
   );

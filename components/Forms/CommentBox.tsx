@@ -28,7 +28,7 @@ const StyledTextarea = styled.textarea`
   border-radius: 14px;
   padding: 16px 18px;
   font-size: 16px;
-  height: 128px;
+  height: 91px;
   box-shadow: 0px 4px 34px rgba(0, 0, 0, 0.55);
   transition: box-shadow 0.25s ease, background 0.25s ease;
   border: 1px solid rgba(255, 255, 255, 0.12);

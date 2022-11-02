@@ -8,8 +8,9 @@ import { Sort } from "../pages";
 import { theme } from "../styles/theme";
 import Avatar from "./Avatar";
 import IconAma from "./Icons/IconAma";
+import IconLike from "./Icons/IconLike";
+import IconLiked from "./Icons/IconLiked";
 import IconShare from "./Icons/IconShare";
-import IconUpvote from "./Icons/IconUpvotes";
 import { OverlayContext, OverlayType } from "./Overlay";
 
 const placeholderContent =
@@ -49,7 +50,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
               return showOverlay(OverlayType.AUTHENTICATION);
             }
 
-            fetch("/api/posts/vote", {
+            fetch("/api/posts/like", {
               headers: {
                 "Content-Type": "application/json",
               },
@@ -90,7 +91,14 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                 <Actions>
                   <Action>
                     <StyledButton onClick={handleUpvoteClick}>
-                      <IconUpvote /> <span>{article._count.votes}</span> upvotes
+                      {article.liked ? <IconLiked /> : <IconLike />}{" "}
+                      <span
+                        style={
+                          article.liked ? { color: theme.colors.white } : {}
+                        }
+                      >
+                        {article._count.likes}
+                      </span>
                     </StyledButton>
                   </Action>
                   <Action>
@@ -204,7 +212,13 @@ const Bottom = styled.div`
 `;
 
 const StyledLink = styled.a`
+  display: flex;
   color: ${(p) => p.theme.colors.light_grey};
+
+  svg,
+  span:first-of-type {
+    margin-right: 8px;
+  }
 
   &:hover {
     color: ${(p) => p.theme.colors.off_white};
@@ -216,8 +230,8 @@ const StyledButton = styled.button`
   align-items: center;
   color: ${(p) => p.theme.colors.light_grey};
 
-  span {
-    margin: 0 6px;
+  svg {
+    margin-right: 8px;
   }
 
   &:hover {
