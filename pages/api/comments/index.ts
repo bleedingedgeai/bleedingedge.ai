@@ -30,22 +30,7 @@ export default async function handle(req: NextApiRequest, res) {
       },
     });
 
-    await prisma.commentLike.create({
-      data: {
-        commentId: comment.id,
-        userId: userId,
-      },
-    });
-
-    const commentWithLike = {
-      ...comment,
-      _count: {
-        likes: 1,
-      },
-      liked: true,
-    };
-
-    res.json(commentWithLike);
+    res.json(comment);
     return;
   }
   if (req.method === "GET") {

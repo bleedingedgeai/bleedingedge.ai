@@ -69,8 +69,8 @@ export default function CommentBox({
           ...newComment,
           updatedAt: new Date(),
           createdAt: new Date(),
-          _count: { likes: 1 },
-          liked: true,
+          _count: { likes: 0 },
+          liked: false,
           author: {
             name: session?.data.user.name,
             id: session?.data.user.id,

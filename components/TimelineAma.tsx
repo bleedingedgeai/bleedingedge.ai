@@ -150,20 +150,24 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                       onClick={(event) => handleLike(event, article)}
                     >
                       {article.liked ? <IconLiked /> : <IconLike />}{" "}
-                      <span
-                        style={
-                          article.liked ? { color: theme.colors.white } : {}
-                        }
-                      >
-                        {article._count.likes}
-                      </span>
+                      {article._count.likes > 0 && (
+                        <span
+                          style={
+                            article.liked ? { color: theme.colors.white } : {}
+                          }
+                        >
+                          {article._count.likes}
+                        </span>
+                      )}
                     </StyledButton>
                   </Action>
                   <Action>
                     <Link href={amaHref}>
                       <StyledLink>
                         <IconAma fill={theme.colors.light_grey} />{" "}
-                        <span>{article._count.comments}</span> comments
+                        {article._count.likes > 0 && (
+                          <span>{article._count.comments}</span>
+                        )}
                       </StyledLink>
                     </Link>
                   </Action>
@@ -308,9 +312,8 @@ const StyledLink = styled.a`
   display: flex;
   color: ${(p) => p.theme.colors.light_grey};
 
-  svg,
-  span:first-of-type {
-    margin-right: 8px;
+  span {
+    margin-left: 8px;
   }
 
   &:hover {
@@ -323,8 +326,8 @@ const StyledButton = styled.button`
   align-items: center;
   color: ${(p) => p.theme.colors.light_grey};
 
-  svg {
-    margin-right: 8px;
+  span {
+    margin-left: 8px;
   }
 
   &:hover {

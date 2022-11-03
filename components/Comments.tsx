@@ -268,13 +268,17 @@ function CommentsRecursive({
                           onClick={(event) => handleLike(event, comment)}
                         >
                           {comment.liked ? <IconLiked /> : <IconLike />}{" "}
-                          <span
-                            style={
-                              comment.liked ? { color: theme.colors.white } : {}
-                            }
-                          >
-                            {comment._count?.likes}
-                          </span>
+                          {comment._count?.likes > 0 && (
+                            <span
+                              style={
+                                comment.liked
+                                  ? { color: theme.colors.white }
+                                  : {}
+                              }
+                            >
+                              {comment._count?.likes}
+                            </span>
+                          )}
                         </StyledButton>
                       </Action>
                       <Action>
@@ -500,8 +504,8 @@ const StyledButton = styled.button`
   align-items: center;
   color: ${(p) => p.theme.colors.light_grey};
 
-  svg {
-    margin-right: 8px;
+  span {
+    margin-left: 8px;
   }
 
   &:hover {
