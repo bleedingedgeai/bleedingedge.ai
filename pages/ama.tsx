@@ -111,6 +111,7 @@ const FilterAndSortSticky = styled.div`
   position: sticky;
   top: 40px;
   z-index: 210000;
+  margin-right: -18px;
 
   ${mq.desktopSmall} {
     top: 121px;

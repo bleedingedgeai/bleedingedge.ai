@@ -43,7 +43,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
   const mutation = useMutation({
     mutationKey: ["ama"],
     mutationFn: (like: any) => {
-      return fetch("/api/posts/like", {
+      return fetch("/api/articles/like", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -122,7 +122,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
               return showOverlay(OverlayType.AUTHENTICATION);
             }
 
-            fetch("/api/posts/like", {
+            fetch("/api/articles/like", {
               headers: {
                 "Content-Type": "application/json",
               },
@@ -264,7 +264,6 @@ const Container = styled.div<{ live: boolean }>`
   display: grid;
   grid-template-columns: 18px 1fr;
   grid-gap: 36px;
-  margin-right: 21px;
   cursor: pointer;
 
   &:not(:last-of-type) {

@@ -38,7 +38,7 @@ export default function Ama({ article, comments }) {
   const mutation = useMutation({
     mutationKey: ["post", router.query.slug],
     mutationFn: (like: any) => {
-      return fetch("/api/posts/like", {
+      return fetch("/api/articles/like", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -142,7 +142,7 @@ export default function Ama({ article, comments }) {
           </BackLink>
         </Link>
       </div>
-      <div>
+      <div style={{ width: "100%" }}>
         <Container>
           <Details ref={conatinerRef}>
             <FlexBetween>
@@ -337,7 +337,7 @@ const BackLink = styled.a`
 
 const CommentsContainer = styled.div`
   margin-top: 24px;
-  padding: 0 0 160px 54px;
+  padding: 0 0 160px 32px;
   max-width: 689px;
 `;
 
@@ -397,7 +397,7 @@ const Details = styled.div``;
 const Container = styled.div`
   z-index: 3;
   position: relative;
-  padding-left: 54px;
+  padding-left: 32px;
 `;
 
 const Title = styled.h2`
