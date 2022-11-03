@@ -2,7 +2,7 @@
 
 import { NextApiHandler } from "next";
 import NextAuth from "next-auth";
-import TwitterProvider from "next-auth/providers/twitter";
+import TwitterProvider, { TwitterProfile } from "next-auth/providers/twitter";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../../lib/prisma";
 
@@ -12,28 +12,21 @@ export const authOptions = {
       clientId: process.env.TWITTER_OAUTH2_CLIENT_ID,
       clientSecret: process.env.TWITTER_OAUTH2_CLIENT_SECRET,
       version: "2.0",
+      profile(profile: TwitterProfile) {
+        return {
+          id: profile.data.id,
+          name: profile.data.name,
+          username: profile.data.username,
+          image: profile.data.profile_image_url,
+        };
+      },
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account, profile }) {
-      console.log({ token, user, account, profile });
-      if (profile) {
-        token["userProfile"] = {
-          followersCount: profile.followers_count,
-          twitterHandle: profile.screen_name,
-          userID: profile.id,
-        };
-      }
-      if (account) {
-        token["credentials"] = {
-          authToken: account.oauth_token,
-          authSecret: account.oauth_token_secret,
-        };
-      }
-      return token;
-    },
-    async session({ session, token, user }) {
+    async session({ session, token, user, ...rest }) {
       session.user.id = user?.id;
+      session.user.username = user?.username;
+      delete session.user.email;
       return session;
     },
   },

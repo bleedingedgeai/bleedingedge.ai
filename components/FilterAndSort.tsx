@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { inputIsFocused } from "../helpers/input";
 import { mq } from "../styles/mediaqueries";
+import Dot from "./Dot";
 import Select from "./Forms/Select";
 import IconArrow from "./Icons/IconArrow";
 import { Sort } from "./Layout";
@@ -58,7 +59,7 @@ export default function FilterAndSort({
         </SortContainer>
         <Right>
           <Select options={tags.map((t) => t.name)} />
-          <DotDivider>·</DotDivider>
+          <Dot />
           <SubmitButton onClick={() => showOverlay(OverlayType.SUGGESTION)}>
             Submit
           </SubmitButton>
@@ -71,10 +72,6 @@ export default function FilterAndSort({
 const Right = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const DotDivider = styled.span`
-  margin: 0 16px;
 `;
 
 const SubmitButton = styled.button`

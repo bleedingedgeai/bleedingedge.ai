@@ -12,6 +12,7 @@ import AmaSort from "./AmaSort";
 import Avatar from "./Avatar";
 import CommentBox from "./CommentBox";
 import Comments from "./Comments";
+import Dot from "./Dot";
 import IconArrowLeft from "./Icons/IconArrowLeft";
 import IconArticle from "./Icons/IconArticle";
 import IconLike from "./Icons/IconLike";
@@ -150,7 +151,7 @@ export default function Ama({ article, comments }) {
             <FlexBetween>
               <Authors>
                 <Names authors={article.authors} />
-                <DotDivider>·</DotDivider>
+                <Dot />
                 <Flex>
                   <DateContainer>
                     {new Intl.DateTimeFormat("en", {
@@ -213,8 +214,10 @@ export default function Ama({ article, comments }) {
                     onClick={(event) => handleLike(event, article)}
                     style={article.liked ? { color: theme.colors.white } : {}}
                   >
-                    {article.liked ? <IconLiked /> : <IconLike />}
-                    {article._count.likes}
+                    {article.liked ? <IconLiked /> : <IconLike />}{" "}
+                    {article._count.likes > 0 && (
+                      <span>{article._count.likes}</span>
+                    )}
                   </StyledButton>
                 </Action>
                 <Action>
@@ -223,12 +226,12 @@ export default function Ama({ article, comments }) {
                     target="_blank"
                     rel="noopener"
                   >
-                    <IconArticle /> View article
+                    <IconArticle /> <span>View article</span>
                   </StyledLink>
                 </Action>
                 <Action>
                   <StyledButton>
-                    <IconShare /> Share
+                    <IconShare /> <span>Share</span>
                   </StyledButton>
                 </Action>
               </Actions>
@@ -351,11 +354,6 @@ const DateContainer = styled.span`
   margin-right: 8px;
 `;
 
-const DotDivider = styled.span`
-  margin: 0 6px;
-  color: ${(p) => p.theme.colors.light_grey};
-`;
-
 const Hosts = styled.div`
   display: flex;
   align-items: center;
@@ -434,8 +432,14 @@ const Authors = styled.div`
 `;
 
 const StyledLink = styled.a`
+  display: flex;
+  align-items: center;
   color: ${(p) => p.theme.colors.light_grey};
   font-size: 10px;
+
+  span {
+    margin-left: 8px;
+  }
 
   &:hover {
     color: ${(p) => p.theme.colors.off_white};
@@ -448,12 +452,8 @@ const StyledButton = styled.button`
   color: ${(p) => p.theme.colors.light_grey};
   font-size: 10px;
 
-  svg {
-    margin-right: 8px;
-  }
-
   span {
-    margin-right: 6px;
+    margin-left: 8px;
   }
 
   &:hover {

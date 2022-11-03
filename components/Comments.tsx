@@ -8,6 +8,7 @@ import { clamp } from "../helpers/numbers";
 import { theme } from "../styles/theme";
 import Avatar from "./Avatar";
 import Badge from "./Badge";
+import Dot from "./Dot";
 import IconAma from "./Icons/IconAma";
 import IconDelete from "./Icons/IconDelete";
 import IconEdit from "./Icons/IconEdit";
@@ -15,6 +16,7 @@ import IconLike from "./Icons/IconLike";
 import IconLiked from "./Icons/IconLiked";
 import IconReplied from "./Icons/IconReplied";
 import IconReply from "./Icons/IconReply";
+import Names from "./Names";
 import { OverlayContext, OverlayType } from "./Overlay";
 
 TimeAgo.addDefaultLocale(en);
@@ -237,7 +239,6 @@ function CommentsRecursive({
         const eidtOrReply = parentId || editId;
         const isEditting = editId === comment.id;
 
-        console.log(commentIndex === 0, parentId, parentIndex, comment.content);
         return (
           <Fragment key={comment.id + comment.content}>
             <Container
@@ -276,7 +277,8 @@ function CommentsRecursive({
 
               <div>
                 <Author>
-                  <Name>{comment.author.name}</Name> ·{" "}
+                  <Names authors={[comment.author]} />
+                  <Dot />
                   {timeAgo.format(new Date(comment.updatedAt))}
                   {isHost && (
                     <BadgeContainer>

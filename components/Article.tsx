@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Router, { useRouter } from "next/router";
 import React, { useCallback } from "react";
 import styled from "styled-components";
@@ -6,6 +5,7 @@ import IconStar from "../components/Icons/IconStar";
 import { pluralize, slugify } from "../helpers/string";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
+import Dot from "./Dot";
 import IconAma from "./Icons/IconAma";
 import { today, yesterday } from "./Timeline";
 
@@ -45,7 +45,7 @@ function CommentsLink({ article }: { article: any }) {
 
   return (
     <ThanksContainer>
-      <DotDivider>·</DotDivider>
+      <Dot />
       <ThanksToAnchor onClick={handleClick}>
         {comments}{" "}
         <span style={{ marginLeft: 2 }}>{pluralize("comment", comments)}</span>
@@ -67,7 +67,7 @@ function ThanksTo({ twitterUrl }: { twitterUrl?: string }) {
 
   return (
     <ThanksContainer>
-      <DotDivider>·</DotDivider>
+      <Dot />
       <ThanksToAnchor onClick={handleClick}>
         Submitted by @{url.pathname.split("/")[1]}
       </ThanksToAnchor>
@@ -280,7 +280,7 @@ function ArticleHighlightOrFeature({
           <IconStar />
         </StarContainer>
       ) : (
-        <Dot />
+        <IconDot />
       )}
       <ArticleWithBackgroundContent>
         {highlight && (
@@ -314,7 +314,7 @@ function ArticleHighlightOrFeature({
   );
 }
 
-const Dot = styled.div`
+const IconDot = styled.div`
   position: absolute;
   width: 7px;
   height: 7px;
@@ -384,7 +384,9 @@ function ArticleMetadata({
           <ThanksTo twitterUrl={article.thanks_to} />
         </HideOnDesktop>
         <PostedAt>{format(new Date(article.postedAt))}</PostedAt>
-        <DotDividerMobile>·</DotDividerMobile>
+        <MobileOnly>
+          <Dot />
+        </MobileOnly>
         <ArticleMetadataMobile>
           {getPrettyHostname(article.source)}
         </ArticleMetadataMobile>
@@ -422,12 +424,7 @@ const ArticleMetadataMobile = styled.div`
   }
 `;
 
-const DotDivider = styled.span`
-  margin: 0 6px;
-  color: ${(p) => p.theme.colors.light_grey};
-`;
-
-const DotDividerMobile = styled(DotDivider)`
+const MobileOnly = styled.span`
   ${mq.phabletUp} {
     display: none;
   }

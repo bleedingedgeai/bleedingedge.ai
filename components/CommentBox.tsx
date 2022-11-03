@@ -267,7 +267,7 @@ export default function CommentBox({
 
         {session.data ? (
           <Submit type="submit">
-            {session?.data?.user.name}
+            @{session?.data?.user.username}
             <Divider />
             <IconSend />
           </Submit>

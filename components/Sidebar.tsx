@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import IconLogo from "../components/Icons/IconLogo";
 import { theme } from "../styles/theme";
+import Dot from "./Dot";
 import IconGoTo from "./Icons/IconGoTo";
 import Subscribe from "./Subscribe";
 
@@ -71,7 +72,9 @@ export default function Sidebar() {
           <Link href="/about">
             <StyledLinkBottom>About this project</StyledLinkBottom>
           </Link>
-          <DotDivider>·</DotDivider>
+          <DotSpacer>
+            <Dot />
+          </DotSpacer>
           <StyledLinkBottom
             href="https://twitter.com/bleedingedgeai"
             target="_blank"
@@ -138,6 +141,6 @@ const StyledButton = styled.button`
   }
 `;
 
-const DotDivider = styled.span`
-  margin: 0 16px;
+const DotSpacer = styled.span`
+  margin: 0 10px;
 `;

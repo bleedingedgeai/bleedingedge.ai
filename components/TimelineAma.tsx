@@ -273,10 +273,6 @@ const Container = styled.div<{ live: boolean }>`
       }`}
     }
   }
-
-  &:hover ${Title} {
-    color: ${(p) => p.theme.colors.white};
-  }
 `;
 
 const Top = styled.div`
