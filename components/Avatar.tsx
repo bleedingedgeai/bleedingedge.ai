@@ -1,14 +1,18 @@
 import Image from "next/image";
+import { useMemo } from "react";
 import styled from "styled-components";
+import { getRandomWholeNumber } from "../helpers/numbers";
 
 interface AvatarProps {
-  src: string;
+  src?: string;
   size?: number;
   highlight?: boolean;
   superHighlight?: boolean;
   outline?: boolean;
   greyScale?: boolean;
 }
+
+const fallbackNames = ["alexandra", "annunciata", "francesca", "maria"];
 
 export default function Avatar({
   src,
@@ -18,6 +22,14 @@ export default function Avatar({
   outline = true,
   greyScale,
 }: AvatarProps) {
+  const imageSrc = useMemo(() => {
+    if (src) {
+      return src;
+    }
+
+    return `/assets/avatar/${fallbackNames[getRandomWholeNumber(0, 3)]}.jpg`;
+  }, [src]);
+
   return (
     <AvatarContainer
       size={size}
@@ -26,7 +38,7 @@ export default function Avatar({
       superHighlight={superHighlight}
       greyScale={greyScale}
     >
-      <StyledImage src={src} width={size} height={size} />
+      <StyledImage src={imageSrc} width={size} height={size} />
     </AvatarContainer>
   );
 }

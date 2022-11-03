@@ -12,8 +12,8 @@ export default async function handler(
   const [slug, comments, commentId] = req.query.slug as any;
 
   if (commentId) {
-    if (req.method === "PUT") {
-      const comment = await prisma.comment.update({
+    if (req.method === "DELETE") {
+      const deletedComment = await prisma.comment.update({
         where: {
           id: commentId,
         },
@@ -23,7 +23,18 @@ export default async function handler(
           },
         },
       });
-      return res.status(200).json(JSON.parse(JSON.stringify(comment)));
+      return res.status(200).json(JSON.parse(JSON.stringify(deletedComment)));
+    }
+    if (req.method === "PUT") {
+      const udpatedComment = await prisma.comment.update({
+        where: {
+          id: commentId,
+        },
+        data: {
+          content: req.body.content,
+        },
+      });
+      return res.status(200).json(JSON.parse(JSON.stringify(udpatedComment)));
     }
 
     const comment = await prisma.comment.findUnique({

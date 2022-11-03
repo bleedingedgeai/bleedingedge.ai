@@ -6,6 +6,10 @@ export function isNumeric(value): boolean {
   return !isNaN(value);
 }
 
-export const clamp = (value: number, min: number, max: number): number => {
+export function clamp(value: number, min: number, max: number): number {
   return value < min ? min : value > max ? max : value;
-};
+}
+
+export function getRandomWholeNumber(min, max): number {
+  return Math.floor(Math.random() * (max - min) + min);
+}

@@ -30,6 +30,8 @@ function CommentsRecursive({
   index: parentIndex = 0,
   parentId,
   setParentId,
+  editId,
+  setEditId,
 }) {
   const session = useSession();
   const { showOverlay } = useContext(OverlayContext);
@@ -112,7 +114,7 @@ function CommentsRecursive({
     mutationFn: (commentId: string) => {
       console.log(commentId);
       return fetch(`/api/ama/${article.slug}/comments/${commentId}`, {
-        method: "put",
+        method: "delete",
         headers: {
           "Content-Type": "application/json",
         },
@@ -163,7 +165,14 @@ function CommentsRecursive({
     event.preventDefault();
     event.stopPropagation();
 
-    deleteMutation.mutate(commentId);
+    return showOverlay(OverlayType.CONFIRMATION, {
+      heading: "Deleting your comment",
+      text: "Are you sure you want to delete this comment? This cannot be undone. Any replies you may have received will remain visible.",
+      right: {
+        text: "Delete",
+        action: () => deleteMutation.mutate(commentId),
+      },
+    });
   };
 
   if (!comments) {
@@ -185,13 +194,16 @@ function CommentsRecursive({
                   opacity: parentId ? (parentId === comment.id ? 1 : 0.36) : 1,
                 }}
               >
-                Deleted
+                <Avatar outline={false} />
+                <CommentDeleted />
               </Container>
               <CommentsRecursive
                 comments={comment.children}
                 index={parentIndex + 1}
                 setParentId={setParentId}
                 parentId={parentId}
+                setEditId={setEditId}
+                editId={editId}
                 article={article}
               />
             </Fragment>
@@ -201,13 +213,19 @@ function CommentsRecursive({
         const isHost = article.authors?.some((a) => a.id === comment.author.id);
         const isOwn = session?.data?.user.id === comment.author.id;
         const hasReplies = comment.children.length > 0;
+        const eidtOrReply = parentId || editId;
+        const isEditting = editId === comment.id;
 
         return (
           <Fragment key={comment.id + comment.content}>
             <Container
               style={{
                 paddingLeft: clamp(parentIndex * 42, 0, 42),
-                opacity: parentId ? (parentId === comment.id ? 1 : 0.36) : 1,
+                opacity: eidtOrReply
+                  ? parentId === comment.id || editId === comment.id
+                    ? 1
+                    : 0.36
+                  : 1,
               }}
             >
               {/* {hasReplies && (
@@ -237,44 +255,54 @@ function CommentsRecursive({
                 </Author>
                 <Content isHost={isHost}>{comment.content}</Content>
                 <Bottom>
-                  <Actions>
-                    <Action>
-                      <StyledButton
-                        onClick={(event) => handleLike(event, comment)}
-                      >
-                        {comment.liked ? <IconLiked /> : <IconLike />}{" "}
-                        <span
-                          style={
-                            comment.liked ? { color: theme.colors.white } : {}
-                          }
+                  {isEditting ? (
+                    <Actions>
+                      <Action>
+                        <IconEdit />
+                      </Action>
+                    </Actions>
+                  ) : (
+                    <Actions>
+                      <Action>
+                        <StyledButton
+                          onClick={(event) => handleLike(event, comment)}
                         >
-                          {comment._count?.likes}
-                        </span>
-                      </StyledButton>
-                    </Action>
-                    <Action>
-                      <StyledButton onClick={() => setParentId(comment.id)}>
-                        {hasReplies ? <IconReplied /> : <IconReply />}{" "}
-                        <span>Reply</span>
-                      </StyledButton>
-                    </Action>
-                    {isOwn && (
-                      <>
-                        <Action>
-                          <StyledButton onClick={() => setParentId(comment.id)}>
-                            <IconEdit /> <span>Edit</span>
-                          </StyledButton>
-                        </Action>
-                        <Action>
-                          <StyledButton
-                            onClick={(event) => handleDelete(event, comment.id)}
+                          {comment.liked ? <IconLiked /> : <IconLike />}{" "}
+                          <span
+                            style={
+                              comment.liked ? { color: theme.colors.white } : {}
+                            }
                           >
-                            <IconDelete /> <span>Delete</span>
-                          </StyledButton>
-                        </Action>
-                      </>
-                    )}
-                  </Actions>
+                            {comment._count?.likes}
+                          </span>
+                        </StyledButton>
+                      </Action>
+                      <Action>
+                        <StyledButton onClick={() => setParentId(comment.id)}>
+                          {hasReplies ? <IconReplied /> : <IconReply />}{" "}
+                          <span>Reply</span>
+                        </StyledButton>
+                      </Action>
+                      {isOwn && (
+                        <>
+                          <Action>
+                            <StyledButton onClick={() => setEditId(comment.id)}>
+                              <IconEdit /> <span>Edit</span>
+                            </StyledButton>
+                          </Action>
+                          <Action>
+                            <StyledButton
+                              onClick={(event) =>
+                                handleDelete(event, comment.id)
+                              }
+                            >
+                              <IconDelete /> <span>Delete</span>
+                            </StyledButton>
+                          </Action>
+                        </>
+                      )}
+                    </Actions>
+                  )}
                 </Bottom>
               </div>
             </Container>
@@ -284,6 +312,8 @@ function CommentsRecursive({
               setParentId={setParentId}
               parentId={parentId}
               article={article}
+              editId={editId}
+              setEditId={setEditId}
             />
           </Fragment>
         );
@@ -291,6 +321,109 @@ function CommentsRecursive({
     </>
   );
 }
+
+function CommentDeleted() {
+  return (
+    <DeletedContainer>
+      <IconDeletedContainer>
+        <IconDeletedBoder />
+      </IconDeletedContainer>
+      <span>This question was deleted by the author.</span>
+    </DeletedContainer>
+  );
+}
+
+const DeletedContainer = styled.div`
+  position: relative;
+
+  max-width: 306px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+
+  span {
+    position: relative;
+    font-family: ${(p) => p.theme.fontFamily.nouvelle};
+    font-size: 13px;
+    line-height: 130%;
+    text-align: center;
+    color: ${(p) => p.theme.colors.light_grey};
+  }
+`;
+
+const IconDeletedContainer = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+`;
+
+const IconDeletedBoder = () => (
+  <svg
+    width="100%"
+    height="36"
+    viewBox="0 0 306 36"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g clip-path="url(#clip0_878_2759)">
+      <rect width="306" height="36" rx="8" fill="#0A0A0A" />
+      <g filter="url(#filter0_f_878_2759)">
+        <path
+          d="M430 0V46H171.733L138 31.4333L171.733 0H430Z"
+          fill="url(#paint0_linear_878_2759)"
+          fill-opacity="0.3"
+        />
+      </g>
+    </g>
+    <rect
+      x="0.5"
+      y="0.5"
+      width="99%"
+      height="35"
+      rx="7.5"
+      stroke="white"
+      stroke-opacity="0.1"
+      stroke-dasharray="2 2"
+    />
+    <defs>
+      <filter
+        id="filter0_f_878_2759"
+        x="-6"
+        y="-144"
+        width="580"
+        height="334"
+        filterUnits="userSpaceOnUse"
+        color-interpolation-filters="sRGB"
+      >
+        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="BackgroundImageFix"
+          result="shape"
+        />
+        <feGaussianBlur
+          stdDeviation="72"
+          result="effect1_foregroundBlur_878_2759"
+        />
+      </filter>
+      <linearGradient
+        id="paint0_linear_878_2759"
+        x1="284"
+        y1="46"
+        x2="248"
+        y2="-47.5"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stop-color="#FA2162" />
+        <stop offset="1" stop-color="#FA2162" stop-opacity="0" />
+      </linearGradient>
+      <clipPath id="clip0_878_2759">
+        <rect width="99.5%" height="36" rx="8" fill="white" />
+      </clipPath>
+    </defs>
+  </svg>
+);
 
 const Container = styled.div`
   position: relative;

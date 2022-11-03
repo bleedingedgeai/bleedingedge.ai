@@ -14,6 +14,8 @@ export default function CommentBox({
   conatinerRef,
   parentId,
   setParentId,
+  setEditId,
+  editId,
 }) {
   const [comment, setComment] = useState("");
   const { showOverlay } = useContext(OverlayContext);
@@ -93,6 +95,58 @@ export default function CommentBox({
     },
   });
 
+  const editMutation = useMutation({
+    mutationKey: ["comments", article.id],
+    mutationFn: ({ content, commentId }: any) => {
+      return fetch(`/api/ama/${article.slug}/comments/${commentId}`, {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ commentId, content }),
+      });
+    },
+    onMutate: async ({ commentId, content }) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: ["comments", article.id] });
+
+      // Snapshot the previous value
+      const previousComments = queryClient.getQueryData([
+        "comments",
+        article.id,
+      ]);
+
+      if (!session?.data) {
+        return { previousComments };
+      }
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(["comments", article.id], (comments: any) => {
+        return comments.map((comment) => {
+          if (comment.id == commentId) {
+            return { ...comment, content, updatedAt: new Date() };
+          }
+
+          return comment;
+        });
+      });
+
+      setEditId(null);
+      setComment("");
+      // Return a context object with the snapshotted value
+      return { previousComments };
+    },
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData(
+        ["comments", article.id],
+        context.previousComments
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", article.id] });
+    },
+  });
+
   const handleCommentChange = useCallback(
     (event: React.FormEvent<HTMLTextAreaElement>) => {
       setComment(event.currentTarget.value);
@@ -105,6 +159,13 @@ export default function CommentBox({
 
     if (session.status === "unauthenticated") {
       return showOverlay(OverlayType.AUTHENTICATION);
+    }
+
+    if (editId) {
+      return editMutation.mutate({
+        content: comment,
+        commentId: editId,
+      });
     }
 
     mutation.mutate({
@@ -129,16 +190,17 @@ export default function CommentBox({
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setParentId(null);
+        setEditId(null);
       }
     };
 
-    if (parentId) {
+    if (parentId || editId) {
       document.addEventListener("keydown", handleKeyDown);
       return () => {
         document.removeEventListener("keydown", handleKeyDown);
       };
     }
-  }, [parentId, handleSubmit]);
+  }, [parentId, editId, handleSubmit]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -153,6 +215,17 @@ export default function CommentBox({
     };
   }, [parentId, handleSubmit]);
 
+  const commentToEdit = comments.find((comment) => comment.id === editId);
+
+  useEffect(() => {
+    if (commentToEdit) {
+      setComment(commentToEdit.content);
+      queueMicrotask(() => {
+        textareaRef.current.focus();
+      });
+    }
+  }, [commentToEdit]);
+
   return (
     <Container style={{ left: offset, width }}>
       {replyingToComment && (
@@ -161,6 +234,19 @@ export default function CommentBox({
             Replying to <span>{replyingToComment.author.name}</span>
           </div>
           <button onClick={() => setParentId(null)}>
+            <IconEx size={16} fill={theme.colors.white} />
+          </button>
+        </ReplyingTo>
+      )}
+      {commentToEdit && (
+        <ReplyingTo>
+          <div>Editing message</div>
+          <button
+            onClick={() => {
+              setComment("");
+              setEditId(null);
+            }}
+          >
             <IconEx size={16} fill={theme.colors.white} />
           </button>
         </ReplyingTo>

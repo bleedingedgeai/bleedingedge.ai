@@ -29,6 +29,7 @@ export type Sort = "Top questions" | "New questions";
 
 export default function Ama({ article, comments }) {
   const [parentId, setParentId] = useState(null);
+  const [editId, setEditId] = useState(null);
   const { showOverlay } = useContext(OverlayContext);
   const session = useSession();
   const [sort, setSort] = useState<Sort>("Top questions");
@@ -120,6 +121,7 @@ export default function Ama({ article, comments }) {
 
   const [showStick, setShowSticky] = useState(false);
   const stickyRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const handleScroll = () => {
       const { top } = stickyRef.current.getBoundingClientRect();
@@ -239,6 +241,8 @@ export default function Ama({ article, comments }) {
             comments={groupedComments}
             setParentId={setParentId}
             parentId={parentId}
+            setEditId={setEditId}
+            editId={editId}
             article={article}
           />
         </CommentsContainer>
@@ -248,6 +252,8 @@ export default function Ama({ article, comments }) {
           conatinerRef={conatinerRef}
           setParentId={setParentId}
           parentId={parentId}
+          setEditId={setEditId}
+          editId={editId}
         />
       </div>
     </Test>

@@ -7,6 +7,7 @@ import { useMediaQuery } from "../hooks/useMediaQuery";
 import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
 import AuthenticationOverlay from "./AuthenticationOverlay";
+import ConfirmationOverlay from "./ConfirmationOverlay";
 import IconEx from "./Icons/IconEx";
 import Slidein from "./OverlaySlidein";
 import Portal from "./Portal";
@@ -17,12 +18,14 @@ export enum OverlayType {
   SUGGESTION = "SUGGESTION",
   SUBSCRIBE = "SUBSCRIBE",
   AUTHENTICATION = "AUTHENTICATION",
+  CONFIRMATION = "CONFIRMATION",
 }
 
 const OverlayComponentMap = {
   [OverlayType.SUGGESTION]: <SuggestionOverlay />,
   [OverlayType.SUBSCRIBE]: <SubscribeOverlay />,
   [OverlayType.AUTHENTICATION]: <AuthenticationOverlay />,
+  [OverlayType.CONFIRMATION]: <ConfirmationOverlay />,
 };
 
 enum Action {
@@ -33,47 +36,59 @@ enum Action {
 interface OverlayAction {
   action: Action;
   type?: OverlayType;
+  props?: any;
 }
 
-export type ShowOverlayFn = (type: OverlayType) => void;
+export type ShowOverlayFn = (type: OverlayType, props?: any) => void;
 export type HideOverlayFn = (bypassReset?: boolean) => void;
 
 export interface Context {
   OverlayComponent: React.ReactElement;
   showOverlay: ShowOverlayFn;
   hideOverlay: HideOverlayFn;
+  overlayProps: any;
 }
 
 const defaultContext: Context = {
   OverlayComponent: null,
   showOverlay: () => {},
   hideOverlay: () => {},
+  overlayProps: {},
 };
 
 export const OverlayContext = React.createContext<Context>(defaultContext);
 
-const initialState = null;
+const initialState = {
+  OverlayComponent: null,
+  overlayProps: null,
+};
 
 function overlayReducer(
   state: typeof initialState,
-  { action, type }: OverlayAction
+  { action, type, props }: OverlayAction
 ): typeof initialState {
   switch (action) {
     case Action.SHOW:
-      return OverlayComponentMap[type];
+      return {
+        OverlayComponent: OverlayComponentMap[type],
+        overlayProps: props,
+      };
     case Action.HIDE:
-      return null;
+      return initialState;
     default:
       return state;
   }
 }
 
 export function OerlayProvider(props: React.PropsWithChildren<{}>) {
-  const [OverlayComponent, dispatch] = useReducer(overlayReducer, initialState);
+  const [{ OverlayComponent, overlayProps }, dispatch] = useReducer(
+    overlayReducer,
+    initialState
+  );
 
   const showOverlay = useCallback(
-    (type) => {
-      dispatch({ action: Action.SHOW, type });
+    (type, props) => {
+      dispatch({ action: Action.SHOW, type, props });
       scrollable(false);
     },
     [dispatch]
@@ -90,6 +105,7 @@ export function OerlayProvider(props: React.PropsWithChildren<{}>) {
         OverlayComponent,
         showOverlay,
         hideOverlay,
+        overlayProps,
       }}
     >
       {props.children}
@@ -101,10 +117,14 @@ export default function Overlay() {
   const { phablet } = useMediaQuery();
   const { OverlayComponent, hideOverlay } = useContext(OverlayContext);
 
-  const menuBackdropTransitions = useTransition(OverlayComponent, {
+  const overlayTransitions = useTransition(OverlayComponent, {
     from: { opacity: 0.6, transform: `scale(0.98) translateY(4px)` },
     enter: { opacity: 1, transform: `scale(1) translateY(0px)` },
-    leave: { opacity: 0, transform: `scale(1) translateY(0px)` },
+    leave: {
+      opacity: 0,
+      transform: `scale(1) translateY(0px)`,
+      config: { duration: 0 },
+    },
     config: { tension: 888, friction: 55 },
   });
 
@@ -129,7 +149,7 @@ export default function Overlay() {
 
   return (
     <>
-      {menuBackdropTransitions(
+      {overlayTransitions(
         (style, item) =>
           item && (
             <Portal>
