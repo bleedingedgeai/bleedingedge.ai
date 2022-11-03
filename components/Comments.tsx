@@ -181,11 +181,14 @@ function CommentsRecursive({
 
   return (
     <>
-      {comments.map((comment) => {
+      {comments.map((comment, commentIndex) => {
         if (!comment.author) {
           if (comment.children.filter((x) => x?.author).length === 0) {
             return null;
           }
+
+          const hasReplies = comment.children.length > 0;
+
           return (
             <Fragment key={comment.id + comment.content}>
               <Container
@@ -194,6 +197,24 @@ function CommentsRecursive({
                   opacity: parentId ? (parentId === comment.id ? 1 : 0.36) : 1,
                 }}
               >
+                {hasReplies && parentIndex === 0 && (
+                  <Connection
+                    style={{
+                      paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
+                    }}
+                  >
+                    <ConnectionLine />
+                  </Connection>
+                )}
+                {parentIndex === 1 && (
+                  <ConnectionCurve
+                    style={{
+                      paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
+                    }}
+                  >
+                    <IconConnectionCurve />
+                  </ConnectionCurve>
+                )}
                 <Avatar outline={false} />
                 <CommentDeleted />
               </Container>
@@ -216,6 +237,7 @@ function CommentsRecursive({
         const eidtOrReply = parentId || editId;
         const isEditting = editId === comment.id;
 
+        console.log(commentIndex === 0, parentId, parentIndex, comment.content);
         return (
           <Fragment key={comment.id + comment.content}>
             <Container
@@ -228,15 +250,24 @@ function CommentsRecursive({
                   : 1,
               }}
             >
-              {/* {hasReplies && (
+              {hasReplies && parentIndex === 0 && (
                 <Connection
                   style={{
-                    paddingLeft: parentIndex * 42 + 9,
+                    paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
                   }}
                 >
                   <ConnectionLine />
                 </Connection>
-              )} */}
+              )}
+              {parentIndex === 1 && (
+                <ConnectionCurve
+                  style={{
+                    paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
+                  }}
+                >
+                  <IconConnectionCurve />
+                </ConnectionCurve>
+              )}
               <Avatar
                 src={comment.author.image}
                 outline={isHost}
@@ -440,7 +471,7 @@ const Container = styled.div`
 
 const Connection = styled.div`
   position: absolute;
-  height: 100%;
+  height: calc(100% - 4px);
 `;
 
 const ConnectionLine = styled.div`
@@ -450,14 +481,23 @@ const ConnectionLine = styled.div`
   background: #202020;
 `;
 
-const ConnectionLineCurve = styled.div`
-  top: -26px;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: #202020;
+const ConnectionCurve = styled.div`
+  top: -29px;
+  left: -42.5px;
   position: absolute;
 `;
+
+const IconConnectionCurve = () => (
+  <svg
+    width="29"
+    height="39"
+    viewBox="0 0 29 39"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M1 0C1 24.577 7.89855 37.9826 29 37.9826" stroke="#202020" />
+  </svg>
+);
 
 const BadgeContainer = styled.span`
   margin-left: 12px;
