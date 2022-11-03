@@ -35,7 +35,7 @@ function CommentsRecursive({
   const { showOverlay } = useContext(OverlayContext);
 
   const queryClient = useQueryClient();
-  const mutation = useMutation({
+  const likeMutation = useMutation({
     mutationKey: ["comments", article.id],
     mutationFn: (like: any) => {
       return fetch("/api/comments/like", {
@@ -101,10 +101,69 @@ function CommentsRecursive({
       return showOverlay(OverlayType.AUTHENTICATION);
     }
 
-    mutation.mutate({
+    likeMutation.mutate({
       userId: session.data.user.id,
       commentId: comment.id,
     });
+  };
+
+  const deleteMutation = useMutation({
+    mutationKey: ["comments", article.id],
+    mutationFn: (commentId: string) => {
+      console.log(commentId);
+      return fetch(`/api/ama/${article.slug}/comments/${commentId}`, {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
+    onMutate: async (commentId) => {
+      console.log(commentId);
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({
+        queryKey: ["comments", article.id],
+      });
+
+      // Snapshot the previous value
+      const previousComments = queryClient.getQueryData([
+        "comments",
+        article.id,
+      ]);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(["comments", article.id], (comments: any) => {
+        return comments.map((comment) => {
+          if (comment.id == commentId) {
+            comment.authorId = null;
+            delete comment.author;
+
+            return comment;
+          }
+
+          return comment;
+        });
+      });
+
+      // Return a context object with the snapshotted value
+      return { previousComments };
+    },
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData(
+        ["comments", article.id],
+        context.previousComments
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", article.id] });
+    },
+  });
+
+  const handleDelete = (event: React.MouseEvent, commentId) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    deleteMutation.mutate(commentId);
   };
 
   if (!comments) {
@@ -114,6 +173,31 @@ function CommentsRecursive({
   return (
     <>
       {comments.map((comment) => {
+        if (!comment.author) {
+          if (comment.children.length === 0) {
+            return null;
+          }
+          return (
+            <Fragment key={comment.id + comment.content}>
+              <Container
+                style={{
+                  paddingLeft: clamp(parentIndex * 42, 0, 42),
+                  opacity: parentId ? (parentId === comment.id ? 1 : 0.36) : 1,
+                }}
+              >
+                Deleted
+              </Container>
+              <CommentsRecursive
+                comments={comment.children}
+                index={parentIndex + 1}
+                setParentId={setParentId}
+                parentId={parentId}
+                article={article}
+              />
+            </Fragment>
+          );
+        }
+
         const isHost = article.authors.some((a) => a.id === comment.author.id);
         const isOwn = session?.data?.user.id === comment.author.id;
         const hasReplies = comment.children.length > 0;
@@ -182,7 +266,9 @@ function CommentsRecursive({
                           </StyledButton>
                         </Action>
                         <Action>
-                          <StyledButton onClick={() => setParentId(comment.id)}>
+                          <StyledButton
+                            onClick={(event) => handleDelete(event, comment.id)}
+                          >
                             <IconDelete /> <span>Delete</span>
                           </StyledButton>
                         </Action>

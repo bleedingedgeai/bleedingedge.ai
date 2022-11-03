@@ -12,6 +12,20 @@ export default async function handler(
   const [slug, comments, commentId] = req.query.slug as any;
 
   if (commentId) {
+    if (req.method === "PUT") {
+      const comment = await prisma.comment.update({
+        where: {
+          id: commentId,
+        },
+        data: {
+          author: {
+            disconnect: true,
+          },
+        },
+      });
+      return res.status(200).json(JSON.parse(JSON.stringify(comment)));
+    }
+
     const comment = await prisma.comment.findUnique({
       where: {
         id: commentId,

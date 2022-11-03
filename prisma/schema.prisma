@@ -98,8 +98,8 @@ model Comment {
   id      String @id @default(cuid())
   content String @db.Text
 
-  author   User      @relation(fields: [authorId], references: [id])
-  authorId String
+  author   User?     @relation(fields: [authorId], references: [id])
+  authorId String?
   post     Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId   String
   parent   Comment?  @relation("ParentChild", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
