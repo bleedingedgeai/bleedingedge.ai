@@ -38,7 +38,7 @@ export default function Ama({ article, comments }) {
   const mutation = useMutation({
     mutationKey: ["post", router.query.slug],
     mutationFn: (like: any) => {
-      return fetch("/api/articles/like", {
+      return fetch("/api/ama/like", {
         method: "post",
         headers: {
           "Content-Type": "application/json",

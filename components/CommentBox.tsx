@@ -71,6 +71,7 @@ export default function CommentBox({
           liked: true,
           author: {
             name: session?.data.user.name,
+            id: session?.data.user.id,
             image: session?.data.user.image,
           },
         },

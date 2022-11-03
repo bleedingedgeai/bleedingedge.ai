@@ -43,7 +43,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
   const mutation = useMutation({
     mutationKey: ["ama"],
     mutationFn: (like: any) => {
-      return fetch("/api/articles/like", {
+      return fetch("/api/ama/like", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +62,6 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
 
       // Optimistically update to the new value
       queryClient.setQueryData(["ama"], (articles: any) => {
-        console.log(articles, newArticle);
         return articles.map((article) => {
           if (article.id == newArticle.postId) {
             const shouldLike = !article.liked;
@@ -112,29 +111,6 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
       {articles.map((article) => {
         const amaHref = `/ama/${slugify(article.title)}`;
         const live = article.live;
-
-        const handleUpvoteClick = useCallback(
-          (event: React.MouseEvent) => {
-            event.preventDefault();
-            event.stopPropagation();
-
-            if (session.status === "unauthenticated") {
-              return showOverlay(OverlayType.AUTHENTICATION);
-            }
-
-            fetch("/api/articles/like", {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              method: "POST",
-              body: JSON.stringify({
-                userId: session.data.user.id,
-                postId: article.id,
-              }),
-            });
-          },
-          [article, session]
-        );
 
         return (
           <Container
@@ -219,6 +195,7 @@ const DateContainer = styled.span`
 
 const AvatarContainer = styled.div`
   position: relative;
+  left: 3px;
 `;
 
 const AuthorCount = styled.span`

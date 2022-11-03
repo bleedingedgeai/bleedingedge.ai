@@ -171,7 +171,7 @@ function CommentsRecursive({
                     <Action>
                       <StyledButton onClick={() => setParentId(comment.id)}>
                         {hasReplies ? <IconReplied /> : <IconReply />}{" "}
-                        <span>reply</span>
+                        <span>Reply</span>
                       </StyledButton>
                     </Action>
                     {isOwn && (
