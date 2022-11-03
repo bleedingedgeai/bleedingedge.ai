@@ -28,7 +28,16 @@ export async function getServerSideProps(context) {
       include: {
         authors: true,
         _count: {
-          select: { comments: true, likes: true },
+          select: {
+            comments: {
+              where: {
+                authorId: {
+                  not: null,
+                },
+              },
+            },
+            likes: true,
+          },
         },
         comments: {
           distinct: ["authorId"],

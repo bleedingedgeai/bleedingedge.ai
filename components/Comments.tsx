@@ -174,7 +174,7 @@ function CommentsRecursive({
     <>
       {comments.map((comment) => {
         if (!comment.author) {
-          if (comment.children.length === 0) {
+          if (comment.children.filter((x) => x?.author).length === 0) {
             return null;
           }
           return (
@@ -198,7 +198,7 @@ function CommentsRecursive({
           );
         }
 
-        const isHost = article.authors.some((a) => a.id === comment.author.id);
+        const isHost = article.authors?.some((a) => a.id === comment.author.id);
         const isOwn = session?.data?.user.id === comment.author.id;
         const hasReplies = comment.children.length > 0;
 

@@ -26,7 +26,14 @@ export async function getStaticProps({ params }) {
     include: {
       _count: {
         select: {
-          comments: true,
+          comments: {
+            where: {
+              authorId: {
+                not: null,
+              },
+            },
+          },
+          likes: true,
         },
       },
       authors: true,
