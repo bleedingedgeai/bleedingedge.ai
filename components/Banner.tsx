@@ -4,6 +4,7 @@ import { slugify } from "../helpers/string";
 import Avatar from "./Avatar";
 import IconAma from "./Icons/IconAma";
 import Participants from "./Participants";
+import { mq } from "../styles/mediaqueries";
 
 export default function Banner({ article }) {
   if (!article) {
@@ -57,6 +58,10 @@ const Inner = styled.div`
   width: calc(100% - 4px);
   margin: 0 auto;
   background: ${(p) => p.theme.colors.black};
+  ${mq.phablet} {
+    height: auto;
+    padding: 10px 7px 10px 20px;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -137,6 +142,9 @@ const BannerContainer = styled.a`
   border-radius: 77px;
   width: 100%;
   overflow: hidden;
+  ${mq.phablet} {
+    height: auto;
+  }
 
   &::before {
     content: "";
