@@ -2,6 +2,8 @@ import { useSession } from "next-auth/react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { scrollable } from "../helpers/dom";
+import { useDebounce } from "../hooks/useDebounce";
 import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
 import IconEx from "./Icons/IconEx";
@@ -154,11 +156,28 @@ export default function CommentBox({
     [setComment]
   );
 
+  useEffect(() => {
+    const commentFromStorage = localStorage.getItem(`comment-${article.slug}`);
+    setComment(commentFromStorage);
+  }, [article.slug]);
+
+  useDebounce(
+    () => {
+      localStorage.setItem(`comment-${article.slug}`, comment);
+    },
+    [article.slug, comment],
+    1000
+  );
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
     if (session.status === "unauthenticated") {
       return showOverlay(OverlayType.AUTHENTICATION);
+    }
+
+    if (!comment) {
+      return;
     }
 
     if (editId) {

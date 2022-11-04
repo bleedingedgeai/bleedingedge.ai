@@ -15,7 +15,7 @@ const links = [
   },
   {
     path: "/ama",
-    text: "Ask me anything",
+    text: "AMAs",
   },
 ];
 
@@ -70,7 +70,7 @@ export default function Sidebar() {
         </Description>
         <div>
           <Link href="/about">
-            <StyledLinkBottom>About this project</StyledLinkBottom>
+            <StyledLinkBottom>About</StyledLinkBottom>
           </Link>
           <DotSpacer>
             <Dot />

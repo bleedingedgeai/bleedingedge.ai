@@ -41,6 +41,7 @@ export default function Input({
       <input
         tabIndex={-1}
         type={type || "text"}
+        name={name}
         style={{ opacity: 0, height: 0, width: 0, position: "absolute" }}
         aria-hidden="true"
       />

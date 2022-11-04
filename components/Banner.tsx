@@ -2,7 +2,7 @@ import Link from "next/link";
 import styled, { keyframes } from "styled-components";
 import { slugify } from "../helpers/string";
 import Avatar from "./Avatar";
-import IconAma from "./Icons/IconAma";
+import IconReply from "./Icons/IconReply";
 import Participants from "./Participants";
 
 export default function Banner({ article }) {
@@ -25,7 +25,7 @@ export default function Banner({ article }) {
             <OrangeGradient />
             <Title>
               {article.title}
-              <IconAma />
+              <IconReply />
             </Title>
             <Right>
               <Live>Live AMA</Live>

@@ -59,7 +59,10 @@ export default function FilterAndSort({
         </SortContainer>
         <Right>
           <Select options={tags.map((t) => t.name)} />
-          <Dot />
+          <DotSpacer>
+            <Dot />
+          </DotSpacer>
+
           <SubmitButton onClick={() => showOverlay(OverlayType.SUGGESTION)}>
             Submit
           </SubmitButton>
@@ -156,4 +159,8 @@ const SortButton = styled.button`
       display: none;
     }
   }
+`;
+
+const DotSpacer = styled.span`
+  margin: 0 10px;
 `;

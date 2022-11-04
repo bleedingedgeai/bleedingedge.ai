@@ -13,6 +13,7 @@ import Avatar from "./Avatar";
 import CommentBox from "./CommentBox";
 import Comments from "./Comments";
 import Dot from "./Dot";
+import Hosts from "./Hosts";
 import IconArrowLeft from "./Icons/IconArrowLeft";
 import IconArticle from "./Icons/IconArticle";
 import IconLike from "./Icons/IconLike";
@@ -162,18 +163,7 @@ export default function Ama({ article, comments }) {
                   {article.live && <Live onlyDot />}{" "}
                 </Flex>
               </Authors>
-              <Hosts>
-                Hosts <span>{article.authors.length}</span>
-                <StackedContainer>
-                  <Stacked
-                    size={18}
-                    direction="right"
-                    elements={article.authors.map((author) => (
-                      <Avatar src={author.image} size={18} outline={false} />
-                    ))}
-                  />
-                </StackedContainer>
-              </Hosts>
+              <Hosts authors={article.authors} />
             </FlexBetween>
             <Title>{article.title}</Title>
             <Content>{article.content || placeholderContent}</Content>
@@ -193,15 +183,7 @@ export default function Ama({ article, comments }) {
                 }}
               >
                 <AbsoluteTitle>{article.title}</AbsoluteTitle>
-                <StackedContainer>
-                  <Stacked
-                    size={18}
-                    direction="right"
-                    elements={article.authors.map((author) => (
-                      <Avatar src={author.image} size={18} outline={false} />
-                    ))}
-                  />
-                </StackedContainer>
+                <Hosts authors={article.authors} />
               </Absolute>
               <Actions
                 style={{
@@ -354,24 +336,6 @@ const DateContainer = styled.span`
   margin-right: 8px;
 `;
 
-const Hosts = styled.div`
-  display: flex;
-  align-items: center;
-  color: ${(p) => p.theme.colors.light_grey};
-
-  & > span {
-    margin: 0 8px 0 6px;
-    color: ${(p) => p.theme.colors.off_white};
-  }
-`;
-
-const StackedContainer = styled.div`
-  display: grid;
-  padding: 2px;
-  border: 1px solid ${(p) => p.theme.colors.orange};
-  border-radius: 30px;
-`;
-
 const FlexBetween = styled.div`
   position: relative;
   display: flex;
@@ -436,13 +400,21 @@ const StyledLink = styled.a`
   align-items: center;
   color: ${(p) => p.theme.colors.light_grey};
   font-size: 10px;
+  transition: color 0.2s ease;
 
   span {
     margin-left: 8px;
   }
 
+  svg path {
+    transition: fill 0.2s ease;
+  }
+
   &:hover {
     color: ${(p) => p.theme.colors.off_white};
+    svg path {
+      fill: ${(p) => p.theme.colors.off_white};
+    }
   }
 `;
 
@@ -451,9 +423,14 @@ const StyledButton = styled.button`
   align-items: center;
   color: ${(p) => p.theme.colors.light_grey};
   font-size: 10px;
+  transition: color 0.2s ease;
 
   span {
     margin-left: 8px;
+  }
+
+  svg path {
+    transition: fill 0.2s ease;
   }
 
   &:hover {

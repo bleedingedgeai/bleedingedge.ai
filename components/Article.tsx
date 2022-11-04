@@ -6,7 +6,7 @@ import { pluralize, slugify } from "../helpers/string";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 import Dot from "./Dot";
-import IconAma from "./Icons/IconAma";
+import IconReply from "./Icons/IconReply";
 import { today, yesterday } from "./Timeline";
 
 interface ArticleProps {
@@ -119,7 +119,7 @@ function ArticleDefault({
             {article.title}{" "}
             {article.authors.length > 0 && (
               <ThanksToAnchor onClick={handleClick}>
-                <IconAma />
+                <IconReply />
               </ThanksToAnchor>
             )}
           </Title>

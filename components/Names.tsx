@@ -30,7 +30,7 @@ export default function Names({ authors }) {
 
         if (last) {
           return (
-            <span>
+            <span key={props.key}>
               & <Anchor {...props}>{author.name}</Anchor>
             </span>
           );

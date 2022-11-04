@@ -207,12 +207,11 @@ const Container = styled(animated.div)`
 
 const ExitContainer = styled.button`
   position: absolute;
-  left: 18px;
+  right: 18px;
   top: 18px;
   z-index: 1;
 
   ${mq.tablet} {
-    left: unset;
     right: 36px;
     top: 36px;
   }

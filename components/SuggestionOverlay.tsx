@@ -111,14 +111,22 @@ export default function Suggestion() {
           </>
         ) : (
           <>
-            <Heading>
-              Found something interesting
-              <br /> or have any suggestions?
-            </Heading>
+            <Heading>Submit an article</Heading>
+            <Text>
+              You can also tag{" "}
+              <a
+                href="https://twitter.com/bleedingedgeai"
+                target="_blank"
+                rel="noopener"
+              >
+                @bleedingedgeai
+              </a>{" "}
+              on Twitter to suggest an article.
+            </Text>
             <form onSubmit={handleSubmit}>
               <InuputContainer>
                 <Input
-                  name="email"
+                  name="address"
                   type="email"
                   label="Email address"
                   autoFocus={!tablet}
@@ -211,10 +219,12 @@ const TextareaContainer = styled.div`
 const Heading = styled.h2`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-weight: 500;
+  font-size: 18px;
   line-height: 120%;
-  margin-bottom: 24px;
   font-size: 18px;
   color: ${(p) => p.theme.colors.off_white};
+
+  margin-bottom: 8px;
 
   ${mq.tablet} {
     font-size: 24px;
@@ -228,7 +238,17 @@ const Text = styled.p`
   line-height: 120%;
   color: ${(p) => p.theme.colors.light_grey};
   max-width: 308px;
-  margin-bottom: 36px;
+  margin-bottom: 20px;
+
+  a {
+    color: ${(p) => p.theme.colors.light_grey};
+    text-decoration: underline;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: ${(p) => p.theme.colors.off_white};
+    }
+  }
 `;
 
 function GitHub() {
@@ -280,11 +300,11 @@ function GitHub() {
 }
 
 const GithubContainer = styled.div`
-  padding: 12px 0px 7px 12px;
-  background: ${(p) => p.theme.colors.dark_grey};
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: inline-block;
+  padding: 12px 0px 7px 0px;
   border-radius: 7px;
-  margin-bottom: 24px;
+  margin-bottom: 45px;
+  margin-top: 10px;
 `;
 
 const GithubRepo = styled.div`
@@ -292,7 +312,7 @@ const GithubRepo = styled.div`
   font-weight: 500;
   font-size: 16px;
   line-height: 120%;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 
   display: flex;
   align-items: center;

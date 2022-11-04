@@ -8,9 +8,9 @@ import { slugify } from "../helpers/string";
 import { Sort } from "../pages";
 import { theme } from "../styles/theme";
 import Avatar from "./Avatar";
-import IconAma from "./Icons/IconAma";
 import IconLike from "./Icons/IconLike";
 import IconLiked from "./Icons/IconLiked";
+import IconReply from "./Icons/IconReply";
 import IconShare from "./Icons/IconShare";
 import Live from "./Live";
 import Names from "./Names";
@@ -164,7 +164,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                   <Action>
                     <Link href={amaHref}>
                       <StyledLink>
-                        <IconAma fill={theme.colors.light_grey} />{" "}
+                        <IconReply fill={theme.colors.light_grey} />{" "}
                         {article._count.likes > 0 && (
                           <span>{article._count.comments}</span>
                         )}

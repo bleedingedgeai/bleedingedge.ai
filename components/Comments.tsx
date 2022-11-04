@@ -4,12 +4,12 @@ import { useSession } from "next-auth/react";
 import { Fragment, useCallback, useContext } from "react";
 import styled from "styled-components";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { scrollable } from "../helpers/dom";
 import { clamp } from "../helpers/numbers";
 import { theme } from "../styles/theme";
 import Avatar from "./Avatar";
 import Badge from "./Badge";
 import Dot from "./Dot";
-import IconAma from "./Icons/IconAma";
 import IconDelete from "./Icons/IconDelete";
 import IconEdit from "./Icons/IconEdit";
 import IconLike from "./Icons/IconLike";
@@ -184,8 +184,15 @@ function CommentsRecursive({
   return (
     <>
       {comments.map((comment, commentIndex) => {
+        const eddittingOrReplyingToThisComment =
+          parentId === comment.id || editId === comment.id;
+        const eidtOrReply = parentId || editId;
+        const isEditting = editId === comment.id;
+        const childrenWithAUthors = comment.children.filter((x) => x?.author);
+        const firstReply = parentIndex === 1 && commentIndex === 0;
+
         if (!comment.author) {
-          if (comment.children.filter((x) => x?.author).length === 0) {
+          if (childrenWithAUthors.length === 0) {
             return null;
           }
 
@@ -196,7 +203,16 @@ function CommentsRecursive({
               <Container
                 style={{
                   paddingLeft: clamp(parentIndex * 42, 0, 42),
-                  opacity: parentId ? (parentId === comment.id ? 1 : 0.36) : 1,
+                  opacity: eidtOrReply
+                    ? eddittingOrReplyingToThisComment
+                      ? 1
+                      : 0.32
+                    : 1,
+                  pointerEvents: eidtOrReply
+                    ? eddittingOrReplyingToThisComment
+                      ? "none"
+                      : "initial"
+                    : "none",
                 }}
               >
                 {hasReplies && parentIndex === 0 && (
@@ -208,7 +224,7 @@ function CommentsRecursive({
                     <ConnectionLine />
                   </Connection>
                 )}
-                {parentIndex === 1 && (
+                {firstReply && (
                   <ConnectionCurve
                     style={{
                       paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
@@ -218,7 +234,7 @@ function CommentsRecursive({
                   </ConnectionCurve>
                 )}
                 <Avatar outline={false} />
-                <CommentDeleted />
+                <CommentDeleted parentId={comment.parentId} />
               </Container>
               <CommentsRecursive
                 comments={comment.children}
@@ -235,9 +251,7 @@ function CommentsRecursive({
 
         const isHost = article.authors?.some((a) => a.id === comment.author.id);
         const isOwn = session?.data?.user.id === comment.author.id;
-        const hasReplies = comment.children.length > 0;
-        const eidtOrReply = parentId || editId;
-        const isEditting = editId === comment.id;
+        const hasReplies = childrenWithAUthors.length > 0;
 
         return (
           <Fragment key={comment.id + comment.content}>
@@ -247,8 +261,13 @@ function CommentsRecursive({
                 opacity: eidtOrReply
                   ? parentId === comment.id || editId === comment.id
                     ? 1
-                    : 0.36
+                    : 0.32
                   : 1,
+                pointerEvents: eidtOrReply
+                  ? eddittingOrReplyingToThisComment
+                    ? "initial"
+                    : "none"
+                  : "initial",
               }}
             >
               {hasReplies && parentIndex === 0 && (
@@ -260,7 +279,7 @@ function CommentsRecursive({
                   <ConnectionLine />
                 </Connection>
               )}
-              {parentIndex === 1 && (
+              {firstReply && (
                 <ConnectionCurve
                   style={{
                     paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
@@ -280,11 +299,6 @@ function CommentsRecursive({
                   <Names authors={[comment.author]} />
                   <Dot />
                   {timeAgo.format(new Date(comment.updatedAt))}
-                  {isHost && (
-                    <BadgeContainer>
-                      <Badge />
-                    </BadgeContainer>
-                  )}
                 </Author>
                 <Content isHost={isHost}>{comment.content}</Content>
                 <Bottom>
@@ -315,15 +329,27 @@ function CommentsRecursive({
                         </StyledButton>
                       </Action>
                       <Action>
-                        <StyledButton onClick={() => setParentId(comment.id)}>
+                        <StyledButton
+                          onClick={() => {
+                            setParentId(comment.id);
+                          }}
+                        >
                           {hasReplies ? <IconReplied /> : <IconReply />}{" "}
-                          <span>Reply</span>
+                          <span>
+                            {eddittingOrReplyingToThisComment
+                              ? "Replying to..."
+                              : "Reply"}
+                          </span>
                         </StyledButton>
                       </Action>
                       {isOwn && (
                         <>
                           <Action>
-                            <StyledButton onClick={() => setEditId(comment.id)}>
+                            <StyledButton
+                              onClick={() => {
+                                setEditId(comment.id);
+                              }}
+                            >
                               <IconEdit /> <span>Edit</span>
                             </StyledButton>
                           </Action>
@@ -359,13 +385,15 @@ function CommentsRecursive({
   );
 }
 
-function CommentDeleted() {
+function CommentDeleted({ parentId }) {
   return (
     <DeletedContainer>
       <IconDeletedContainer>
         <IconDeletedBoder />
       </IconDeletedContainer>
-      <span>This question was deleted by the author.</span>
+      <span>
+        This {parentId ? "response" : "question"} was deleted by the author.
+      </span>
     </DeletedContainer>
   );
 }
@@ -402,13 +430,13 @@ const IconDeletedBoder = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_878_2759)">
+    <g clipPath="url(#clip0_878_2759)">
       <rect width="306" height="36" rx="8" fill="#0A0A0A" />
       <g filter="url(#filter0_f_878_2759)">
         <path
           d="M430 0V46H171.733L138 31.4333L171.733 0H430Z"
           fill="url(#paint0_linear_878_2759)"
-          fill-opacity="0.3"
+          fillOpacity="0.3"
         />
       </g>
     </g>
@@ -419,8 +447,8 @@ const IconDeletedBoder = () => (
       height="35"
       rx="7.5"
       stroke="white"
-      stroke-opacity="0.1"
-      stroke-dasharray="2 2"
+      strokeOpacity="0.1"
+      strokeDasharray="2 2"
     />
     <defs>
       <filter
@@ -430,9 +458,9 @@ const IconDeletedBoder = () => (
         width="580"
         height="334"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feBlend
           mode="normal"
           in="SourceGraphic"
@@ -452,8 +480,8 @@ const IconDeletedBoder = () => (
         y2="-47.5"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#FA2162" />
-        <stop offset="1" stop-color="#FA2162" stop-opacity="0" />
+        <stop stopColor="#FA2162" />
+        <stop offset="1" stopColor="#FA2162" stopOpacity="0" />
       </linearGradient>
       <clipPath id="clip0_878_2759">
         <rect width="99.5%" height="36" rx="8" fill="white" />
