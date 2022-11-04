@@ -377,6 +377,11 @@ const FlexBetween = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  ${mq.phablet} {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
 `;
 
 const Flex = styled.div`
