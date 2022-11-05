@@ -85,7 +85,7 @@ export default function Ama({ tags }) {
   const { data: articleFromQuery } = useQuery<any>({
     queryKey: ["ama"],
     queryFn: async () => {
-      return await (await fetch(`/api/ama`)).json();
+      return await (await fetch(`/api/articles`)).json();
     },
   });
 

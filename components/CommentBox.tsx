@@ -1,15 +1,14 @@
 import { useSession } from "next-auth/react";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Document from "@tiptap/extension-document";
+import History from "@tiptap/extension-history";
 import Link from "@tiptap/extension-link";
 import Paragraph from "@tiptap/extension-paragraph";
 import Placeholder from "@tiptap/extension-placeholder";
 import Text from "@tiptap/extension-text";
 import { useEditor } from "@tiptap/react";
-import { scrollable } from "../helpers/dom";
-import { useDebounce } from "../hooks/useDebounce";
 import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
 import CommentsEmptyState from "./CommentsEmptyState";
@@ -40,6 +39,7 @@ export default function CommentBox({
       Paragraph,
       Text,
       Link,
+      History,
       Placeholder.configure({
         placeholder: "Ask me anything...",
       }),
@@ -69,8 +69,8 @@ export default function CommentBox({
   const mutation = useMutation({
     mutationKey: ["comments", article.id],
     mutationFn: (newComment: any) => {
-      return fetch("/api/comments", {
-        method: "post",
+      return fetch(`/api/articles/${article.slug}/comments`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -127,8 +127,8 @@ export default function CommentBox({
   const editMutation = useMutation({
     mutationKey: ["comments", article.id],
     mutationFn: ({ content, commentId }: any) => {
-      return fetch(`/api/ama/${article.slug}/comments/${commentId}`, {
-        method: "put",
+      return fetch(`/api/articles/${article.slug}/comments/${commentId}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -178,9 +178,7 @@ export default function CommentBox({
 
   useEffect(() => {
     const commentFromStorage = localStorage.getItem(`comment-${article.slug}`);
-    console.log(commentFromStorage, editor);
     if (commentFromStorage && editor) {
-      console.log(commentFromStorage);
       editor?.commands?.setContent(commentFromStorage);
     }
   }, [article.slug, editor]);

@@ -49,13 +49,13 @@ function CommentsRecursive({
   const queryClient = useQueryClient();
   const likeMutation = useMutation({
     mutationKey: ["comments", article.id],
-    mutationFn: (like: any) => {
-      return fetch("/api/comments/like", {
+    mutationFn: ({ commentId, userId }: any) => {
+      return fetch(`/api/articles/${article.slug}/comments/${commentId}/like`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(like),
+        body: JSON.stringify({ commentId, userId }),
       });
     },
     onMutate: async (newComment) => {
@@ -123,7 +123,7 @@ function CommentsRecursive({
     mutationKey: ["comments", article.id],
     mutationFn: (commentId: string) => {
       console.log(commentId);
-      return fetch(`/api/ama/${article.slug}/comments/${commentId}`, {
+      return fetch(`/api/articles/${article.slug}/comments/${commentId}`, {
         method: "delete",
         headers: {
           "Content-Type": "application/json",

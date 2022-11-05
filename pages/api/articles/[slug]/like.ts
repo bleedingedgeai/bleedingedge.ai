@@ -1,10 +1,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../../lib/prisma";
+import z from "zod";
+import { withAuthentication } from "../../../../lib/middleware/withAuthentication";
+import { withMethods } from "../../../../lib/middleware/withMethods";
+import { withValidation } from "../../../../lib/middleware/withValidation";
+import prisma from "../../../../lib/prisma";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+const schema = z.object({
+  postId: z.string(),
+  userId: z.string(),
+});
+
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const data = {
       postId: req.body.postId,
@@ -27,6 +33,9 @@ export default async function handler(
       return;
     }
   }
-
-  return res.status(400).json({ error: "Method not allowed" });
 }
+
+export default withMethods(
+  ["POST"],
+  withAuthentication(withValidation(schema, handler))
+);

@@ -149,13 +149,15 @@ export default function AmaPage({ article }) {
   const { data: commentsFromQuery } = useQuery({
     queryKey: ["comments", article.id],
     queryFn: async () => {
-      return await (await fetch(`/api/ama/${article.slug}/comments`)).json();
+      return await (
+        await fetch(`/api/articles/${article.slug}/comments`)
+      ).json();
     },
   });
   const { data: articleFromQuery } = useQuery({
     queryKey: ["post", router.query.slug],
     queryFn: async () => {
-      return await (await fetch(`/api/ama/${article.slug}`)).json();
+      return await (await fetch(`/api/articles/${article.slug}`)).json();
     },
   });
 

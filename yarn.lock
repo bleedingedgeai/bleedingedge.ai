@@ -457,12 +457,27 @@
     prosemirror-view "^1.28.2"
     tippy.js "^6.3.7"
 
+"@tiptap/extension-history@^2.0.0-beta.202":
+  version "2.0.0-beta.202"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-history/-/extension-history-2.0.0-beta.202.tgz#d94770367a1a7b4e8f81f36d8b1731ca1fbc6879"
+  integrity sha512-BLwaOWmFHBQjOonojYHl1Po27IHxgjSAPw+ijMKtKzqa2msJRJevjC4tBaX5s/YrB7PQ2tFE7rfJED4HLjBm6w==
+  dependencies:
+    prosemirror-history "^1.3.0"
+
 "@tiptap/extension-link@^2.0.0-beta.202":
   version "2.0.0-beta.202"
   resolved "https://registry.yarnpkg.com/@tiptap/extension-link/-/extension-link-2.0.0-beta.202.tgz#2b10ef877937bf2d491fffaf3e0545105f61b6fb"
   integrity sha512-/9bZd43dMkzmo7SCCDtEscgdFKCat9yZAyAyg+PHYdhI8Lbqv5GfjxzBbx58v7jEP1eDKFnwTDFVwAsxCE9f0w==
   dependencies:
     linkifyjs "^3.0.5"
+    prosemirror-model "^1.18.1"
+    prosemirror-state "^1.4.1"
+
+"@tiptap/extension-mention@^2.0.0-beta.202":
+  version "2.0.0-beta.202"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-mention/-/extension-mention-2.0.0-beta.202.tgz#eeb87a57f601abf3111b7947d420bbad68e52bd5"
+  integrity sha512-ztD9oomi1MkI3YXFXX9rsN/J5aY4J/K0ML2PFY33uksRTOk1XK84MSyUb85jO44VDQuVRLho1n4Ey0XkJPhsGA==
+  dependencies:
     prosemirror-model "^1.18.1"
     prosemirror-state "^1.4.1"
 
@@ -492,6 +507,15 @@
   dependencies:
     "@tiptap/extension-bubble-menu" "^2.0.0-beta.202"
     "@tiptap/extension-floating-menu" "^2.0.0-beta.202"
+    prosemirror-view "^1.28.2"
+
+"@tiptap/suggestion@^2.0.0-beta.202":
+  version "2.0.0-beta.202"
+  resolved "https://registry.yarnpkg.com/@tiptap/suggestion/-/suggestion-2.0.0-beta.202.tgz#f0bc6a6712aeea266d7ed156c7c70ad29fb864e5"
+  integrity sha512-V2BepOUj3ycvogOZE/nY9q2J4Hm1oH44YhOkqHB+QFQeOu6vqhFRqgGniJji52z2tAF+dvydSpQEzG+uCf2MEA==
+  dependencies:
+    prosemirror-model "^1.18.1"
+    prosemirror-state "^1.4.1"
     prosemirror-view "^1.28.2"
 
 "@tsconfig/node10@^1.0.7":
@@ -1286,6 +1310,15 @@ prosemirror-commands@^1.3.1:
     prosemirror-state "^1.0.0"
     prosemirror-transform "^1.0.0"
 
+prosemirror-history@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-history/-/prosemirror-history-1.3.0.tgz#bf5a1ff7759aca759ddf0c722c2fa5b14fb0ddc1"
+  integrity sha512-qo/9Wn4B/Bq89/YD+eNWFbAytu6dmIM85EhID+fz9Jcl9+DfGEo8TTSrRhP15+fFEoaPqpHSxlvSzSEbmlxlUA==
+  dependencies:
+    prosemirror-state "^1.2.2"
+    prosemirror-transform "^1.0.0"
+    rope-sequence "^1.3.0"
+
 prosemirror-keymap@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/prosemirror-keymap/-/prosemirror-keymap-1.2.0.tgz#d5cc9da9b712020690a994b50b92a0e448a60bf5"
@@ -1310,7 +1343,7 @@ prosemirror-schema-list@^1.2.2:
     prosemirror-state "^1.0.0"
     prosemirror-transform "^1.0.0"
 
-prosemirror-state@^1.0.0, prosemirror-state@^1.4.1:
+prosemirror-state@^1.0.0, prosemirror-state@^1.2.2, prosemirror-state@^1.4.1:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/prosemirror-state/-/prosemirror-state-1.4.2.tgz#f93bd8a33a4454efab917ba9b738259d828db7e5"
   integrity sha512-puuzLD2mz/oTdfgd8msFbe0A42j5eNudKAAPDB0+QJRw8cO1ygjLmhLrg9RvDpf87Dkd6D4t93qdef00KKNacQ==
@@ -1411,6 +1444,11 @@ relative-time-format@^1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/relative-time-format/-/relative-time-format-1.1.4.tgz#50c308a482985333a13df119b1ff2763e3eb0685"
   integrity sha512-WRWEDEZFTD/95oYMd58kzlYHI6QzexMpPkxvi4/P+NLdzli/tteNonmAa5jYLm8ehJVTGiM2siNg7i1Dkn/gDw==
+
+rope-sequence@^1.3.0:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/rope-sequence/-/rope-sequence-1.3.3.tgz#3f67fc106288b84b71532b4a5fd9d4881e4457f0"
+  integrity sha512-85aZYCxweiD5J8yTEbw+E6A27zSnLPNDL0WfPdw3YYodq7WjnTKo0q4dtyQ2gz23iPT8Q9CUyJtAaUNcTxRf5Q==
 
 rrweb-snapshot@^1.1.7:
   version "1.1.14"
@@ -1619,3 +1657,8 @@ yn@3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/yn/-/yn-3.1.1.tgz#1e87401a09d767c1d5eab26a6e4c185182d2eb50"
   integrity sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
+
+zod@^3.19.1:
+  version "3.19.1"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.19.1.tgz#112f074a97b50bfc4772d4ad1576814bd8ac4473"
+  integrity sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==

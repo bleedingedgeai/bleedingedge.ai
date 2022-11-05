@@ -30,7 +30,11 @@ export default function CommentsEmptyState({ show }) {
                 </span>
                 <Right>
                   Painting co-created with{" "}
-                  <a href="https://ai.com" target="_blank" rel="nonopener">
+                  <a
+                    href="https://www.midjourney.com/home/"
+                    target="_blank"
+                    rel="nonopener"
+                  >
                     AI
                   </a>
                   .

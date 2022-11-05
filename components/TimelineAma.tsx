@@ -43,13 +43,13 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationKey: ["ama"],
-    mutationFn: (like: any) => {
-      return fetch("/api/ama/like", {
+    mutationFn: ({ postId, userId, slug }: any) => {
+      return fetch(`/api/articles/${slug}/like`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(like),
+        body: JSON.stringify({ postId, userId }),
       });
     },
     onMutate: async (newArticle) => {
@@ -104,6 +104,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
     mutation.mutate({
       userId: session.data.user.id,
       postId: article.id,
+      slug: article.slug,
     });
   };
 
