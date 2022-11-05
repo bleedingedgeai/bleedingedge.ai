@@ -30,7 +30,7 @@ export default function AmaSort({ article, sort, setSort }) {
         </SortButton>
       </SortContainer>
       <Right>
-        Participants <Number>{article.comments?.length}</Number>{" "}
+        Participants <Number>{participants}</Number>{" "}
         <Participants article={article} />
       </Right>
     </Container>
