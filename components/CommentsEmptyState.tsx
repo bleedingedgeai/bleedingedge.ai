@@ -3,10 +3,16 @@ import { useMemo } from "react";
 import { animated, useTransition } from "react-spring";
 import styled from "styled-components";
 import { getRandomWholeNumber } from "../helpers/numbers";
+import { mq } from "../styles/mediaqueries";
+
+const imageBasePath = `/assets/painting/painting-`;
 
 export default function CommentsEmptyState({ show }) {
   const imageSrc = useMemo(() => {
-    return `/assets/painting/painting-${getRandomWholeNumber(1, 4)}.jpg`;
+    return `${imageBasePath}${getRandomWholeNumber(1, 4)}.jpg`;
+  }, []);
+  const imageSrcMobile = useMemo(() => {
+    return `${imageBasePath}${getRandomWholeNumber(1, 4)}-mobile.jpg`;
   }, []);
 
   const transitions = useTransition(show, {
@@ -22,7 +28,12 @@ export default function CommentsEmptyState({ show }) {
         (style, item) =>
           item && (
             <Container style={style}>
-              <StyledImage src={imageSrc} layout="fill" />
+              <ImageContainer>
+                <StyledImage src={imageSrc} layout="fill" />
+              </ImageContainer>
+              <ImageContainerMobile>
+                <StyledImage src={imageSrcMobile} layout="fill" />
+              </ImageContainerMobile>
               <Text>
                 <span>
                   This space is currently empty. Ask anything to start a
@@ -46,6 +57,24 @@ export default function CommentsEmptyState({ show }) {
     </>
   );
 }
+
+const ImageContainer = styled.div`
+  display: grid;
+  width: auto;
+
+  ${mq.tablet} {
+    display: none;
+  }
+`;
+
+const ImageContainerMobile = styled.div`
+  display: grid;
+  width: auto;
+
+  ${mq.tabletUp} {
+    display: none;
+  }
+`;
 
 const Container = styled(animated.div)`
   position: absolute;
@@ -76,7 +105,16 @@ const Text = styled.div`
   color: ${(p) => p.theme.colors.off_white};
   width: 100%;
   z-index: 3;
-  margin-bottom: 28px;
+  padding-bottom: 28px;
+
+  ${mq.desktop} {
+    flex-direction: column;
+  }
+
+  ${mq.phablet} {
+    height: 100%;
+    padding: 18px 0 16px;
+  }
 `;
 
 const Right = styled.span`
@@ -93,4 +131,6 @@ const Right = styled.span`
   }
 `;
 
-const StyledImage = styled(Image)``;
+const StyledImage = styled(Image)`
+  margin: 0 auto;
+`;

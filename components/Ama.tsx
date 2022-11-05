@@ -230,16 +230,18 @@ export default function Ama({ article, comments }) {
             <AmaSort article={article} sort={sort} setSort={setSort} />
           </div>
         </StickyContainer>
-        <CommentsContainer>
-          <Comments
-            comments={groupedComments}
-            setParentId={setParentId}
-            parentId={parentId}
-            setEditId={setEditId}
-            editId={editId}
-            article={article}
-          />
-        </CommentsContainer>
+        {groupedComments.length === 0 ? null : (
+          <CommentsContainer>
+            <Comments
+              comments={groupedComments}
+              setParentId={setParentId}
+              parentId={parentId}
+              setEditId={setEditId}
+              editId={editId}
+              article={article}
+            />
+          </CommentsContainer>
+        )}
         <CommentBox
           article={article}
           comments={comments}
