@@ -9,6 +9,7 @@ import FilterAndSortMobile from "../components/FilterAndSortMobile";
 import Layout from "../components/Layout";
 import SEO from "../components/SEO";
 import Timeline from "../components/Timeline";
+import { clean } from "../helpers/json";
 import prisma from "../lib/prisma";
 import { mq } from "../styles/mediaqueries";
 import { authOptions } from "./api/auth/[...nextauth]";
@@ -95,8 +96,8 @@ export async function getServerSideProps(context) {
   return {
     props: {
       session,
-      articles: JSON.parse(JSON.stringify(articles)),
-      liveArticle: JSON.parse(JSON.stringify(liveArticle)),
+      articles: clean(articles),
+      liveArticle: clean(liveArticle),
       tags,
     },
   };

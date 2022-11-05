@@ -7,10 +7,11 @@ import FilterAndSortMobile from "../components/FilterAndSortMobile";
 import Layout from "../components/Layout";
 import SEO from "../components/SEO";
 import TimelineAma from "../components/TimelineAma";
+import { clean } from "../helpers/json";
 import prisma from "../lib/prisma";
 import { mq } from "../styles/mediaqueries";
+import { Sort } from "./ama";
 import { authOptions } from "./api/auth/[...nextauth]";
-import { Sort } from ".";
 
 export async function getServerSideProps(context) {
   const sessionRequest = unstable_getServerSession(
@@ -49,7 +50,7 @@ export async function getServerSideProps(context) {
     });
 
     if (!session) {
-      return JSON.parse(JSON.stringify(rawPosts));
+      return clean(rawPosts);
     }
 
     const likes = await prisma.postLike.findMany({
@@ -67,7 +68,7 @@ export async function getServerSideProps(context) {
       };
     });
 
-    return JSON.parse(JSON.stringify(posts));
+    return clean(posts);
   });
 
   return {

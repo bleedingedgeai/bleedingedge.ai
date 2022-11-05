@@ -34,9 +34,11 @@ export default function Select({ options: initialOptions }: SelectProps) {
 
   const handleSelect = useCallback((value) => {
     if (value) {
-      router.replace(`/tags/${value}`);
+      router.replace(`${router.pathname}/tags/${value}`);
     } else {
-      router.replace(`/`);
+      const withoutTags = router.pathname.split("/tags/")[0] || "/";
+      console.log(withoutTags);
+      router.replace(withoutTags);
     }
 
     setSelected(value);

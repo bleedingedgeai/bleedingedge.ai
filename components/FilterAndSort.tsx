@@ -62,7 +62,6 @@ export default function FilterAndSort({
           <DotSpacer>
             <Dot />
           </DotSpacer>
-
           <SubmitButton onClick={() => showOverlay(OverlayType.SUGGESTION)}>
             Submit
           </SubmitButton>
