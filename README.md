@@ -4,7 +4,7 @@ bleeding edge is a feed of noteworthy developments in AI. this site is very much
 
 ### Getting started
 
-This is a [Next.JS](https://nextjs.org/) based website website. To get started, you will first need to create a local `.env.local` file based of the `.env` file with the keys from Airtable and SendGrid to successfully fetch the posts locally.
+This is a [Next.JS](https://nextjs.org/) based website. To get started, you will first need to create a local `.env.local` file based of the `.env` file with the keys from Airtable and SendGrid to successfully fetch the posts locally.
 
 ```sh
 
