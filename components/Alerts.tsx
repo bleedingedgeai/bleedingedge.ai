@@ -125,7 +125,7 @@ function AlertsElements({
 
   const dynamicWidthStyles = useSpring({
     width: alert.dynamicWidth ? width || 256 : width,
-    config: { tension: 1200, friction: 100 },
+    config: { tension: 1200, friction: 80 },
   });
 
   return (

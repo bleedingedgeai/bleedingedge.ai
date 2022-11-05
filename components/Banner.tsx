@@ -23,11 +23,11 @@ export default function Banner({ article }) {
         <BannerContainer>
           <AnimatedGradient />
           <Inner>
-            <BlueGraidnet />
             <OrangeGradient />
+            <BlueGradient />
             <Title>
               {article.title}
-              <IconReply fill={theme.colors.orange} />
+              <IconReply fill={theme.colors.white} />
             </Title>
             <Right>
               <Live>Live AMA</Live>
@@ -212,17 +212,17 @@ const Author = styled.span`
   margin-right: 8px;
 `;
 
-const BlueGraidnet = styled.span`
+const OrangeGradient = styled.span`
   position: absolute;
   width: 315px;
   height: 40px;
   left: 607px;
   top: -4px;
-  background: rgba(209, 159, 100, 0.7);
+  background: rgba(209, 159, 100, 0.42);
   filter: blur(52px);
 `;
 
-const OrangeGradient = styled.span`
+const BlueGradient = styled.span`
   position: absolute;
   width: 288px;
   height: 45px;
@@ -234,5 +234,6 @@ const OrangeGradient = styled.span`
     #033151 57.26%,
     #28445c 96.49%
   );
+  opacity: 0.6;
   filter: blur(52px);
 `;

@@ -116,10 +116,12 @@ const Card = styled(animated.div)`
     position: absolute;
     left: 0;
     right: 0%;
-    top: -24px;
+    top: -25px;
     bottom: 0;
     opacity: 0.5;
     z-index: -1;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
   }
 `;
 

@@ -303,13 +303,13 @@ export default function CommentBox({
           <Editor editor={editor} />
         </CommentBoxForm>
         {session.data ? (
-          <Submit type="submit">
+          <Submit type="submit" onClick={handleSubmit}>
             @{session?.data?.user.username}
             <Divider />
             <IconSend />
           </Submit>
         ) : (
-          <Submit type="submit">
+          <Submit type="submit" onClick={handleSubmit}>
             <IconSend />
           </Submit>
         )}

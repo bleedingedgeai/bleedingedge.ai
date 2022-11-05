@@ -70,7 +70,9 @@ const AvatarContainer = styled.div<{
     border-radius: 50%;
     background: #000;
     border: 1px solid ${
-      p.highlight ? p.theme.colors.orange : p.theme.colors.light_grey
+      p.highlight || p.superHighlight
+        ? p.theme.colors.orange
+        : p.theme.colors.light_grey
     }
     ;
   }`}
@@ -81,12 +83,13 @@ const AvatarContainer = styled.div<{
     `&::before {
     content: "";
     position: absolute;
-    left: -5px;
-    top: -5px;
-    width: calc(100% + 10px);
-    height: calc(100% + 10px);
+    left: -2px;
+    top: -2px;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
     border-radius: 50%;
-background: linear-gradient(217.16deg, rgba(209, 159, 100, 0.24) -7.44%, rgba(206, 206, 206, 0.24) 108.26%);
+    filter: blur(3px);
+background: linear-gradient(217.16deg, rgba(209, 159, 100, 0.32) -7.44%, rgba(206, 206, 206, 0.32) 108.26%);
   }`}
 `;
 

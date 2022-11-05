@@ -16,6 +16,12 @@ export default function AmaSort({ article, sort, setSort }) {
     [setSort]
   );
 
+  const participants = article.comments.filter((x) => x?.author).length;
+
+  if (participants === 0) {
+    return <Container ref={conatinerRef} />;
+  }
+
   return (
     <Container ref={conatinerRef}>
       <SortContainer onClick={handleSortClick}>
@@ -23,7 +29,6 @@ export default function AmaSort({ article, sort, setSort }) {
           Sort by <span>:: {sort}</span>
         </SortButton>
       </SortContainer>
-
       <Right>
         Participants <Number>{article.comments?.length}</Number>{" "}
         <Participants article={article} />

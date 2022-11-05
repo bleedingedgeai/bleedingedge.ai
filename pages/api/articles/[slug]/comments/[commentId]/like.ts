@@ -13,7 +13,7 @@ const schema = z.object({
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const data = {
-      commentId: req.body.postId,
+      commentId: req.body.commentId,
       userId: req.body.userId,
     };
 
