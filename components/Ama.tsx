@@ -181,10 +181,7 @@ export default function Ama({ article, comments }) {
             <Content>{article.content || placeholderContent}</Content>
           </Details>
         </Container>
-        <Container
-          style={{ position: "sticky", top: 0, paddingTop: 12 }}
-          ref={stickyRef}
-        >
+        <StickyContainer ref={stickyRef}>
           <div />
           <div>
             <FlexBetween>
@@ -232,7 +229,7 @@ export default function Ama({ article, comments }) {
             </FlexBetween>
             <AmaSort article={article} sort={sort} setSort={setSort} />
           </div>
-        </Container>
+        </StickyContainer>
         <CommentsContainer>
           <Comments
             comments={groupedComments}
@@ -297,11 +294,6 @@ const Shadows = styled.div`
     pointer-events: none;
 
     ${mq.desktopSmall} {
-      background: linear-gradient(#000 87%, transparent 100%);
-      height: 180px;
-    }
-
-    ${mq.tablet} {
       display: none;
     }
   }
@@ -316,10 +308,6 @@ const Shadows = styled.div`
     background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 33%);
     pointer-events: none;
     z-index: 2;
-
-    ${mq.desktopSmall} {
-      bottom: 0;
-    }
 
     ${mq.tablet} {
       height: 160px;
@@ -396,6 +384,16 @@ const Container = styled.div`
   }
 `;
 
+const StickyContainer = styled(Container)`
+  position: sticky;
+  top: 0;
+  padding-top: 12px;
+
+  ${mq.desktopSmall} {
+    position: relative;
+  }
+`;
+
 const Title = styled.h2`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-weight: 500;
@@ -452,6 +450,10 @@ const StyledLink = styled.a`
       fill: ${(p) => p.theme.colors.off_white};
     }
   }
+
+  ${mq.tablet} {
+    font-size: 12px;
+  }
 `;
 
 const StyledButton = styled.button`
@@ -475,5 +477,9 @@ const StyledButton = styled.button`
     svg path {
       fill: ${(p) => p.theme.colors.off_white};
     }
+  }
+
+  ${mq.tablet} {
+    font-size: 12px;
   }
 `;

@@ -10,8 +10,8 @@ import TimelineAma from "../components/TimelineAma";
 import { clean } from "../helpers/json";
 import prisma from "../lib/prisma";
 import { mq } from "../styles/mediaqueries";
-import { Sort } from "./ama";
 import { authOptions } from "./api/auth/[...nextauth]";
+import { Sort } from ".";
 
 export async function getServerSideProps(context) {
   const sessionRequest = unstable_getServerSession(

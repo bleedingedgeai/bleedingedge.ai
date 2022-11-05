@@ -41,6 +41,7 @@ export default function Navigation() {
             <DesktopLinks>
               <SubscribButton>Subscribe</SubscribButton>
               <Link href="/about">About</Link>
+              <Link href="/ama">AMAs</Link>
             </DesktopLinks>
             <MenuButton
               onClick={() => {
@@ -267,6 +268,10 @@ const LogoContainer = styled.div`
 `;
 
 const DesktopLinks = styled.div`
+  & a:not(:last-of-type) {
+    margin-right: 48px;
+  }
+
   ${mq.phablet} {
     display: none;
   }

@@ -110,6 +110,8 @@ export default function CommentBox({
 
       setParentId(null);
       editor.commands.clearContent();
+      localStorage.removeItem(`comment-${article.slug}`);
+
       // Return a context object with the snapshotted value
       return { previousComments };
     },
@@ -162,6 +164,7 @@ export default function CommentBox({
 
       setEditId(null);
       editor.commands.clearContent();
+      localStorage.removeItem(`comment-${article.slug}`);
       // Return a context object with the snapshotted value
       return { previousComments };
     },
@@ -281,6 +284,7 @@ export default function CommentBox({
             <div>Editing message</div>
             <button
               onClick={() => {
+                localStorage.removeItem(`comment-${article.slug}`);
                 editor.commands.clearContent();
                 setEditId(null);
               }}
@@ -297,18 +301,18 @@ export default function CommentBox({
             <BlueGradient />
           </BlueGradientContainer>
           <Editor editor={editor} />
-          {session.data ? (
-            <Submit type="submit">
-              @{session?.data?.user.username}
-              <Divider />
-              <IconSend />
-            </Submit>
-          ) : (
-            <Submit type="submit">
-              <IconSend />
-            </Submit>
-          )}
         </CommentBoxForm>
+        {session.data ? (
+          <Submit type="submit">
+            @{session?.data?.user.username}
+            <Divider />
+            <IconSend />
+          </Submit>
+        ) : (
+          <Submit type="submit">
+            <IconSend />
+          </Submit>
+        )}
       </Container>
     </Portal>
   );
@@ -384,6 +388,7 @@ const CommentBoxForm = styled.form`
 
   ${mq.tablet} {
     height: 46px;
+    padding: 12px 18px;
   }
 `;
 
@@ -424,6 +429,10 @@ const Submit = styled.button`
     ${Divider} {
       background: rgba(255, 255, 255, 0.42);
     }
+  }
+
+  ${mq.tablet} {
+    top: 14px;
   }
 `;
 

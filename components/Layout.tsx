@@ -41,8 +41,11 @@ const Left = styled.div`
   z-index: 3;
   padding-right: 6%;
 
-  ${mq.desktop} {
+  ${mq.desktopMedium} {
     max-width: 252px;
+  }
+
+  ${mq.desktopMedium} {
     padding-right: 0;
   }
 
@@ -61,7 +64,7 @@ const Right = styled.div`
     max-width: 100%;
     padding-top: 0;
   }
-
+  /* 
   &::before {
     content: "";
     position: fixed;
@@ -102,7 +105,7 @@ const Right = styled.div`
       height: 60px;
       background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
     }
-  }
+  } */
 `;
 
 const Glow = styled.div`

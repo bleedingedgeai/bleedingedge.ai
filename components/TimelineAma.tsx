@@ -5,7 +5,7 @@ import React, { useContext } from "react";
 import styled from "styled-components";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { copyToClipboard, slugify } from "../helpers/string";
-import { Sort } from "../pages/ama/[slug]/[slug]";
+import { Sort } from "../pages";
 import { theme } from "../styles/theme";
 import { AlertsContext } from "./AlertsProvider";
 import Avatar from "./Avatar";

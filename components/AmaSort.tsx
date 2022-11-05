@@ -43,6 +43,7 @@ const Right = styled.div`
   display: flex;
   align-items: center;
   color: ${(p) => p.theme.colors.light_grey};
+  font-size: 10px;
 `;
 
 const Number = styled.span`

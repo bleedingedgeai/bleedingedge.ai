@@ -38,15 +38,14 @@ const Container = styled.div`
     p {
       font-size: 14px;
       font-family: ${(p) => p.theme.fontFamily.nouvelle};
+
+      ${mq.tablet} {
+        font-size: 16px;
+      }
     }
 
     a {
       text-decoration: underline;
-    }
-
-    ${mq.tablet} {
-      font-size: 16px;
-      height: 46px;
     }
   }
 `;

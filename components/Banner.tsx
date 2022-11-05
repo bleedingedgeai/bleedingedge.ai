@@ -1,6 +1,8 @@
 import Link from "next/link";
 import styled, { keyframes } from "styled-components";
 import { slugify } from "../helpers/string";
+import { ellipsis } from "../styles/css";
+import { theme } from "../styles/theme";
 import Avatar from "./Avatar";
 import IconReply from "./Icons/IconReply";
 import Participants from "./Participants";
@@ -25,7 +27,7 @@ export default function Banner({ article }) {
             <OrangeGradient />
             <Title>
               {article.title}
-              <IconReply />
+              <IconReply fill={theme.colors.orange} />
             </Title>
             <Right>
               <Live>Live AMA</Live>
@@ -111,6 +113,7 @@ const Gradient = styled.div`
 const Right = styled.span`
   display: flex;
   align-items: center;
+  ${ellipsis}
 `;
 
 const Container = styled.div`
@@ -197,6 +200,8 @@ const Title = styled.span`
   line-height: 120%;
   color: ${(p) => p.theme.colors.white};
   position: relative;
+  padding-right: 6px;
+  ${ellipsis}
 
   svg {
     margin-left: 12px;
