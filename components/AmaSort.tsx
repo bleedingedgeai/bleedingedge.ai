@@ -72,7 +72,6 @@ const SortButton = styled.button`
   }
 
   ${mq.desktopSmall} {
-    margin-left: 8px;
   }
 
   ${mq.phablet} {

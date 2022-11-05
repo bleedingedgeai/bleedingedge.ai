@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { ellipsis } from "../styles/css";
 
 const twitter = "https://twitter.com";
 
@@ -22,7 +23,7 @@ export default function Names({ authors }) {
   }
 
   return (
-    <span>
+    <Container>
       {authors.map((author, index) => {
         const last = index === authors.length - 1;
         const secondLast = index === authors.length - 2;
@@ -42,13 +43,17 @@ export default function Names({ authors }) {
 
         return <Anchor {...props}>{author.name}, </Anchor>;
       })}
-    </span>
+    </Container>
   );
 }
 
+const Container = styled.span`
+  ${ellipsis}
+`;
 const Anchor = styled.a`
   color: ${(p) => p.theme.colors.off_white};
   transition: color 0.2s ease;
+  ${ellipsis}
 
   &:hover {
     color: ${(p) => p.theme.colors.white};

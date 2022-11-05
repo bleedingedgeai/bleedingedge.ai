@@ -42,6 +42,7 @@ const Left = styled.div`
   padding-right: 6%;
 
   ${mq.desktop} {
+    max-width: 252px;
     padding-right: 0;
   }
 

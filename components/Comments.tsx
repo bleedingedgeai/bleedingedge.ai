@@ -1,11 +1,12 @@
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import { useSession } from "next-auth/react";
-import { Fragment, useCallback, useContext } from "react";
+import { Fragment, useContext } from "react";
 import styled from "styled-components";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { scrollable } from "../helpers/dom";
 import { clamp } from "../helpers/numbers";
+import { ellipsis } from "../styles/css";
+import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
 import Avatar from "./Avatar";
 import Badge from "./Badge";
@@ -298,7 +299,9 @@ function CommentsRecursive({
                 <Author>
                   <Names authors={[comment.author]} />
                   <Dot />
-                  {timeAgo.format(new Date(comment.updatedAt))}
+                  <UpdatedAt>
+                    {timeAgo.format(new Date(comment.updatedAt))}
+                  </UpdatedAt>
                 </Author>
                 <Content isHost={isHost}>{comment.content}</Content>
                 <Bottom>
@@ -497,6 +500,16 @@ const Container = styled.div`
   grid-template-columns: 18px 1fr;
   grid-gap: 24px;
   transition: opacity 0.25s ease;
+
+  ${mq.desktopSmall} {
+    grid-gap: 21px;
+    margin-bottom: 18px;
+  }
+
+  ${mq.phablet} {
+    grid-gap: 12px;
+    margin-bottom: 24px;
+  }
 `;
 
 const Connection = styled.div`
@@ -552,6 +565,10 @@ const Author = styled.div`
   line-height: 135%;
   color: ${(p) => p.theme.colors.light_grey};
   margin-bottom: 8px;
+`;
+
+const UpdatedAt = styled.span`
+  ${ellipsis}
 `;
 
 const Actions = styled.div`

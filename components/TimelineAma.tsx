@@ -4,9 +4,10 @@ import { useRouter } from "next/router";
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { slugify } from "../helpers/string";
+import { copyToClipboard, slugify } from "../helpers/string";
 import { Sort } from "../pages";
 import { theme } from "../styles/theme";
+import { AlertsContext } from "./AlertsProvider";
 import Avatar from "./Avatar";
 import IconLike from "./Icons/IconLike";
 import IconLiked from "./Icons/IconLiked";
@@ -106,6 +107,20 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
     });
   };
 
+  const { showAlert } = useContext(AlertsContext);
+  const handleShare = (event: React.MouseEvent, article) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    copyToClipboard(
+      `${process.env.NEXT_PUBLIC_URL}/ama/${slugify(article.title)}`
+    );
+    showAlert({
+      icon: () => <IconShare fill={theme.colors.white} />,
+      text: `Copied source to clipboard`,
+    });
+  };
+
   return (
     <>
       {articles.map((article) => {
@@ -172,7 +187,9 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                     </Link>
                   </Action>
                   <Action>
-                    <StyledButton>
+                    <StyledButton
+                      onClick={(event) => handleShare(event, article)}
+                    >
                       <IconShare />
                     </StyledButton>
                   </Action>

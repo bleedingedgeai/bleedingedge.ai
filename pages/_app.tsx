@@ -9,10 +9,15 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import AlertsProvider from "../components/AlertsProvider";
 import Favicon from "../components/Favicon";
-import { OerlayProvider } from "../components/Overlay";
+import { OverlayProvider } from "../components/Overlay";
 import { GlobalStyle } from "../styles/global";
 import { theme } from "../styles/theme";
+
+const DynamicAlerts = dynamic(() => import("../components/Alerts"), {
+  suspense: true,
+});
 
 const DynamicOverlay = dynamic(() => import("../components/Overlay"), {
   suspense: true,
@@ -36,12 +41,15 @@ export default function App({ Component, pageProps }) {
         <Hydrate state={pageProps.dehydratedState}>
           <SessionProvider session={pageProps.session}>
             <ThemeProvider theme={theme}>
-              <OerlayProvider>
-                <Component {...pageProps} />
-                <Suspense fallback={null}>
-                  <DynamicOverlay />
-                </Suspense>
-              </OerlayProvider>
+              <AlertsProvider>
+                <OverlayProvider>
+                  <Component {...pageProps} />
+                  <Suspense fallback={null}>
+                    <DynamicOverlay />
+                    <DynamicAlerts />
+                  </Suspense>
+                </OverlayProvider>
+              </AlertsProvider>
             </ThemeProvider>
           </SessionProvider>
         </Hydrate>

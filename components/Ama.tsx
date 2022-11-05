@@ -4,12 +4,14 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { copyToClipboard } from "../helpers/string";
 import { formatNestedComments } from "../pages/ama/[slug]";
+import { slugify } from "../prisma/seed";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
+import { AlertsContext } from "./AlertsProvider";
 import AmaSort from "./AmaSort";
-import Avatar from "./Avatar";
 import CommentBox from "./CommentBox";
 import Comments from "./Comments";
 import Dot from "./Dot";
@@ -22,7 +24,6 @@ import IconShare from "./Icons/IconShare";
 import Live from "./Live";
 import Names from "./Names";
 import { OverlayContext, OverlayType } from "./Overlay";
-import Stacked from "./Stacked";
 
 const placeholderContent =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas non dignissim nisi. Quisque imperdiet ornare nunc nec dapibus. In scelerisque turpis eget purus pharetra commodo.";
@@ -136,16 +137,28 @@ export default function Ama({ article, comments }) {
     };
   }, []);
 
+  const { showAlert } = useContext(AlertsContext);
+  const handleShare = (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    copyToClipboard(window.location.href);
+    showAlert({
+      icon: () => <IconShare fill={theme.colors.white} />,
+      text: `Copied source to clipboard`,
+    });
+  };
+
   return (
     <Test>
       <Shadows />
-      <div>
+      <BackLinkContainer>
         <Link href="/ama">
           <BackLink>
             <IconArrowLeft />
           </BackLink>
         </Link>
-      </div>
+      </BackLinkContainer>
       <div style={{ width: "100%" }}>
         <Container>
           <Details ref={conatinerRef}>
@@ -212,7 +225,7 @@ export default function Ama({ article, comments }) {
                   </StyledLink>
                 </Action>
                 <Action>
-                  <StyledButton>
+                  <StyledButton onClick={handleShare}>
                     <IconShare /> <span>Share</span>
                   </StyledButton>
                 </Action>
@@ -287,7 +300,7 @@ const Shadows = styled.div`
       height: 180px;
     }
 
-    ${mq.phablet} {
+    ${mq.tablet} {
       display: none;
     }
   }
@@ -307,10 +320,16 @@ const Shadows = styled.div`
       bottom: 0;
     }
 
-    ${mq.phablet} {
-      height: 60px;
+    ${mq.tablet} {
+      height: 160px;
       background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
     }
+  }
+`;
+
+const BackLinkContainer = styled.div`
+  ${mq.desktopSmall} {
+    display: none;
   }
 `;
 
@@ -330,6 +349,10 @@ const CommentsContainer = styled.div`
   margin-top: 24px;
   padding: 0 0 160px 32px;
   max-width: 689px;
+
+  ${mq.desktopSmall} {
+    padding: 0 0 160px 0;
+  }
 `;
 
 const DateContainer = styled.span`
@@ -366,6 +389,10 @@ const Container = styled.div`
   z-index: 3;
   position: relative;
   padding-left: 32px;
+
+  ${mq.desktopSmall} {
+    padding-left: 0;
+  }
 `;
 
 const Title = styled.h2`
@@ -376,6 +403,10 @@ const Title = styled.h2`
   color: ${(p) => p.theme.colors.white};
   margin-bottom: 8px;
   max-width: 690px;
+
+  ${mq.tablet} {
+    margin-bottom: 6px;
+  }
 `;
 
 const Content = styled.p`
@@ -393,6 +424,10 @@ const Authors = styled.div`
   justify-content: space-between;
   margin-bottom: 8px;
   color: ${(p) => p.theme.colors.off_white};
+
+  ${mq.tablet} {
+    margin-bottom: 3px;
+  }
 `;
 
 const StyledLink = styled.a`

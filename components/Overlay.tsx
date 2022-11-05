@@ -80,7 +80,7 @@ function overlayReducer(
   }
 }
 
-export function OerlayProvider(props: React.PropsWithChildren<{}>) {
+export function OverlayProvider(props: React.PropsWithChildren<{}>) {
   const [{ OverlayComponent, overlayProps }, dispatch] = useReducer(
     overlayReducer,
     initialState

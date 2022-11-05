@@ -307,6 +307,12 @@ const Container = styled.div`
   height: 91px;
   bottom: 42px;
   z-index: 3;
+  overflow: hidden;
+  border-radius: 14px;
+
+  ${mq.tablet} {
+    height: 46px;
+  }
 `;
 
 const ReplyingTo = styled.div`
@@ -359,6 +365,10 @@ const CommentBoxForm = styled.form`
   background: rgba(22, 22, 22, 0.52);
   backdrop-filter: blur(55px);
   border-radius: 14px;
+
+  ${mq.tablet} {
+    height: 46px;
+  }
 `;
 
 const Divider = styled.div`
@@ -482,5 +492,6 @@ const StyledTextarea = styled.textarea`
 
   ${mq.tablet} {
     font-size: 16px;
+    height: 46px;
   }
 `;
