@@ -6,9 +6,11 @@ import { scrollable } from "../helpers/dom";
 import { useDebounce } from "../hooks/useDebounce";
 import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
+import CommentsEmptyState from "./CommentsEmptyState";
 import IconEx from "./Icons/IconEx";
 import IconSend from "./Icons/IconSend";
 import { OverlayContext, OverlayType } from "./Overlay";
+import Portal from "./Portal";
 
 export default function CommentBox({
   article,
@@ -18,6 +20,7 @@ export default function CommentBox({
   setParentId,
   setEditId,
   editId,
+  emptyState,
 }) {
   const [comment, setComment] = useState("");
   const { showOverlay } = useContext(OverlayContext);
@@ -158,7 +161,9 @@ export default function CommentBox({
 
   useEffect(() => {
     const commentFromStorage = localStorage.getItem(`comment-${article.slug}`);
-    setComment(commentFromStorage);
+    if (commentFromStorage) {
+      setComment(commentFromStorage);
+    }
   }, [article.slug]);
 
   useDebounce(
@@ -246,57 +251,60 @@ export default function CommentBox({
   }, [commentToEdit]);
 
   return (
-    <Container style={{ left: offset, width }}>
-      {replyingToComment && (
-        <ReplyingTo>
-          <div>
-            Replying to <span>{replyingToComment.author.name}</span>
-          </div>
-          <button onClick={() => setParentId(null)}>
-            <IconEx size={16} fill={theme.colors.white} />
-          </button>
-        </ReplyingTo>
-      )}
-      {commentToEdit && (
-        <ReplyingTo>
-          <div>Editing message</div>
-          <button
-            onClick={() => {
-              setComment("");
-              setEditId(null);
-            }}
-          >
-            <IconEx size={16} fill={theme.colors.white} />
-          </button>
-        </ReplyingTo>
-      )}
-      <CommentBoxForm
-        onSubmit={handleSubmit}
-        onClick={() => textareaRef.current.focus()}
-      >
-        <BlueGradientContainer>
-          <BlueGradient />
-        </BlueGradientContainer>
-        <StyledTextarea
-          ref={textareaRef}
-          value={comment}
-          onChange={handleCommentChange}
-          placeholder="Ask my anything"
-        />
-
-        {session.data ? (
-          <Submit type="submit">
-            @{session?.data?.user.username}
-            <Divider />
-            <IconSend />
-          </Submit>
-        ) : (
-          <Submit type="submit">
-            <IconSend />
-          </Submit>
+    <Portal>
+      <Container style={{ left: offset, width }}>
+        <CommentsEmptyState show={emptyState} />
+        {replyingToComment && (
+          <ReplyingTo>
+            <div>
+              Replying to <span>{replyingToComment.author.name}</span>
+            </div>
+            <button onClick={() => setParentId(null)}>
+              <IconEx size={16} fill={theme.colors.white} />
+            </button>
+          </ReplyingTo>
         )}
-      </CommentBoxForm>
-    </Container>
+        {commentToEdit && (
+          <ReplyingTo>
+            <div>Editing message</div>
+            <button
+              onClick={() => {
+                setComment("");
+                setEditId(null);
+              }}
+            >
+              <IconEx size={16} fill={theme.colors.white} />
+            </button>
+          </ReplyingTo>
+        )}
+        <CommentBoxForm
+          onSubmit={handleSubmit}
+          onClick={() => textareaRef.current.focus()}
+        >
+          <BlueGradientContainer>
+            <BlueGradient />
+          </BlueGradientContainer>
+          <StyledTextarea
+            ref={textareaRef}
+            value={comment}
+            onChange={handleCommentChange}
+            placeholder="Ask my anything"
+          />
+
+          {session.data ? (
+            <Submit type="submit">
+              @{session?.data?.user.username}
+              <Divider />
+              <IconSend />
+            </Submit>
+          ) : (
+            <Submit type="submit">
+              <IconSend />
+            </Submit>
+          )}
+        </CommentBoxForm>
+      </Container>
+    </Portal>
   );
 }
 
@@ -307,7 +315,6 @@ const Container = styled.div`
   height: 91px;
   bottom: 42px;
   z-index: 3;
-  overflow: hidden;
   border-radius: 14px;
 
   ${mq.tablet} {

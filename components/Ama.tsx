@@ -14,6 +14,7 @@ import { AlertsContext } from "./AlertsProvider";
 import AmaSort from "./AmaSort";
 import CommentBox from "./CommentBox";
 import Comments from "./Comments";
+import CommentsEmptyState from "./CommentsEmptyState";
 import Dot from "./Dot";
 import Hosts from "./Hosts";
 import IconArrowLeft from "./Icons/IconArrowLeft";
@@ -252,6 +253,7 @@ export default function Ama({ article, comments }) {
           parentId={parentId}
           setEditId={setEditId}
           editId={editId}
+          emptyState={groupedComments.length === 0}
         />
       </div>
     </Test>
@@ -261,6 +263,7 @@ export default function Ama({ article, comments }) {
 const Test = styled.div`
   position: relative;
   display: flex;
+  height: 100vh;
 `;
 
 const Absolute = styled.div`
