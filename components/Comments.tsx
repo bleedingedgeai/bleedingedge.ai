@@ -4,6 +4,12 @@ import { useSession } from "next-auth/react";
 import { Fragment, useContext } from "react";
 import styled from "styled-components";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Document from "@tiptap/extension-document";
+import Link from "@tiptap/extension-link";
+import Paragraph from "@tiptap/extension-paragraph";
+import Placeholder from "@tiptap/extension-placeholder";
+import Text from "@tiptap/extension-text";
+import { useEditor } from "@tiptap/react";
 import { clamp } from "../helpers/numbers";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
@@ -11,6 +17,7 @@ import { theme } from "../styles/theme";
 import Avatar from "./Avatar";
 import Badge from "./Badge";
 import Dot from "./Dot";
+import Editor from "./Forms/Editor";
 import IconDelete from "./Icons/IconDelete";
 import IconEdit from "./Icons/IconEdit";
 import IconLike from "./Icons/IconLike";
@@ -303,7 +310,9 @@ function CommentsRecursive({
                     {timeAgo.format(new Date(comment.updatedAt))}
                   </UpdatedAt>
                 </Author>
-                <Content isHost={isHost}>{comment.content}</Content>
+                <Content isHost={isHost}>
+                  <CommentEditor content={comment.content} />
+                </Content>
                 <Bottom>
                   {isEditting ? (
                     <Actions>
@@ -386,6 +395,16 @@ function CommentsRecursive({
       })}
     </>
   );
+}
+
+function CommentEditor({ content }) {
+  const editor = useEditor({
+    extensions: [Document, Paragraph, Text, Link],
+    content,
+    editable: false,
+  });
+
+  return <Editor editor={editor} />;
 }
 
 function CommentDeleted({ parentId }) {

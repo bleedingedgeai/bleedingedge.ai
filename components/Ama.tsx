@@ -6,7 +6,6 @@ import styled from "styled-components";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { copyToClipboard } from "../helpers/string";
 import { formatNestedComments } from "../pages/ama/[slug]";
-import { slugify } from "../prisma/seed";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
@@ -14,7 +13,6 @@ import { AlertsContext } from "./AlertsProvider";
 import AmaSort from "./AmaSort";
 import CommentBox from "./CommentBox";
 import Comments from "./Comments";
-import CommentsEmptyState from "./CommentsEmptyState";
 import Dot from "./Dot";
 import Hosts from "./Hosts";
 import IconArrowLeft from "./Icons/IconArrowLeft";
@@ -263,7 +261,7 @@ export default function Ama({ article, comments }) {
 const Test = styled.div`
   position: relative;
   display: flex;
-  height: 100vh;
+  padding-bottom: 160px;
 `;
 
 const Absolute = styled.div`
@@ -350,11 +348,11 @@ const BackLink = styled.a`
 
 const CommentsContainer = styled.div`
   margin-top: 24px;
-  padding: 0 0 160px 32px;
+  padding-left: 32px;
   max-width: 689px;
 
   ${mq.desktopSmall} {
-    padding: 0 0 160px 0;
+    padding-left: 0;
   }
 `;
 

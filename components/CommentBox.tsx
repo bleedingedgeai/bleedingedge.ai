@@ -2,11 +2,18 @@ import { useSession } from "next-auth/react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Document from "@tiptap/extension-document";
+import Link from "@tiptap/extension-link";
+import Paragraph from "@tiptap/extension-paragraph";
+import Placeholder from "@tiptap/extension-placeholder";
+import Text from "@tiptap/extension-text";
+import { useEditor } from "@tiptap/react";
 import { scrollable } from "../helpers/dom";
 import { useDebounce } from "../hooks/useDebounce";
 import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
 import CommentsEmptyState from "./CommentsEmptyState";
+import Editor from "./Forms/Editor";
 import IconEx from "./Icons/IconEx";
 import IconSend from "./Icons/IconSend";
 import { OverlayContext, OverlayType } from "./Overlay";
@@ -22,12 +29,29 @@ export default function CommentBox({
   editId,
   emptyState,
 }) {
-  const [comment, setComment] = useState("");
   const { showOverlay } = useContext(OverlayContext);
   const session = useSession();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [offset, setOffset] = useState(0);
   const [width, setWidth] = useState(0);
+
+  const editor = useEditor({
+    extensions: [
+      Document,
+      Paragraph,
+      Text,
+      Link,
+      Placeholder.configure({
+        placeholder: "Ask me anything...",
+      }),
+    ],
+    onUpdate({ editor }) {
+      if (editor.isEmpty) {
+        localStorage.removeItem(`comment-${article.slug}`);
+      } else {
+        localStorage.setItem(`comment-${article.slug}`, editor.getHTML());
+      }
+    },
+  });
 
   useEffect(() => {
     function handleResize() {
@@ -85,7 +109,7 @@ export default function CommentBox({
       ]);
 
       setParentId(null);
-      setComment("");
+      editor.commands.clearContent();
       // Return a context object with the snapshotted value
       return { previousComments };
     },
@@ -137,7 +161,7 @@ export default function CommentBox({
       });
 
       setEditId(null);
-      setComment("");
+      editor.commands.clearContent();
       // Return a context object with the snapshotted value
       return { previousComments };
     },
@@ -152,27 +176,14 @@ export default function CommentBox({
     },
   });
 
-  const handleCommentChange = useCallback(
-    (event: React.FormEvent<HTMLTextAreaElement>) => {
-      setComment(event.currentTarget.value);
-    },
-    [setComment]
-  );
-
   useEffect(() => {
     const commentFromStorage = localStorage.getItem(`comment-${article.slug}`);
-    if (commentFromStorage) {
-      setComment(commentFromStorage);
+    console.log(commentFromStorage, editor);
+    if (commentFromStorage && editor) {
+      console.log(commentFromStorage);
+      editor?.commands?.setContent(commentFromStorage);
     }
-  }, [article.slug]);
-
-  useDebounce(
-    () => {
-      localStorage.setItem(`comment-${article.slug}`, comment);
-    },
-    [article.slug, comment],
-    1000
-  );
+  }, [article.slug, editor]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -181,19 +192,21 @@ export default function CommentBox({
       return showOverlay(OverlayType.AUTHENTICATION);
     }
 
-    if (!comment) {
+    const content = editor.getHTML();
+
+    if (!content) {
       return;
     }
 
     if (editId) {
       return editMutation.mutate({
-        content: comment,
+        content,
         commentId: editId,
       });
     }
 
     mutation.mutate({
-      content: comment,
+      content,
       postId: article.id,
       parentId,
       userId: session.data.user.id,
@@ -203,9 +216,9 @@ export default function CommentBox({
   const replyingToComment = comments.find((c) => c.id === parentId);
 
   useEffect(() => {
-    if (parentId) {
+    if (parentId && editor) {
       queueMicrotask(() => {
-        textareaRef.current.focus();
+        editor?.commands?.focus();
       });
     }
   }, [parentId]);
@@ -243,9 +256,10 @@ export default function CommentBox({
 
   useEffect(() => {
     if (commentToEdit) {
-      setComment(commentToEdit.content);
+      editor.commands.setContent(commentToEdit.content);
+
       queueMicrotask(() => {
-        textareaRef.current.focus();
+        editor?.commands?.focus();
       });
     }
   }, [commentToEdit]);
@@ -269,7 +283,7 @@ export default function CommentBox({
             <div>Editing message</div>
             <button
               onClick={() => {
-                setComment("");
+                editor.commands.clearContent();
                 setEditId(null);
               }}
             >
@@ -279,18 +293,12 @@ export default function CommentBox({
         )}
         <CommentBoxForm
           onSubmit={handleSubmit}
-          onClick={() => textareaRef.current.focus()}
+          onClick={() => editor?.commands?.focus()}
         >
           <BlueGradientContainer>
             <BlueGradient />
           </BlueGradientContainer>
-          <StyledTextarea
-            ref={textareaRef}
-            value={comment}
-            onChange={handleCommentChange}
-            placeholder="Ask my anything"
-          />
-
+          <Editor editor={editor} />
           {session.data ? (
             <Submit type="submit">
               @{session?.data?.user.username}
@@ -372,6 +380,9 @@ const CommentBoxForm = styled.form`
   background: rgba(22, 22, 22, 0.52);
   backdrop-filter: blur(55px);
   border-radius: 14px;
+  padding: 16px 18px;
+  height: 91px;
+  overflow: scroll;
 
   ${mq.tablet} {
     height: 46px;
@@ -476,29 +487,3 @@ const BlueGradient = () => (
     </defs>
   </svg>
 );
-
-const StyledTextarea = styled.textarea`
-  width: 100%;
-  resize: none;
-  border: none;
-  padding: 16px 18px;
-  height: 91px;
-  border-radius: 14px;
-  max-width: 687px;
-  width: 90%;
-  caret-color: ${(p) => p.theme.colors.orange};
-  font-size: 14px;
-  font-family: ${(p) => p.theme.fontFamily.nouvelle};
-  background: transparent;
-
-  &::placeholder {
-    font-family: ${(p) => p.theme.fontFamily.space};
-    color: rgba(255, 255, 255, 0.16);
-    line-height: 100%;
-  }
-
-  ${mq.tablet} {
-    font-size: 16px;
-    height: 46px;
-  }
-`;

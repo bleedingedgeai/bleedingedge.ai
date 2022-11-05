@@ -180,7 +180,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                     <Link href={amaHref}>
                       <StyledLink>
                         <IconReply fill={theme.colors.light_grey} />{" "}
-                        {article._count.likes > 0 && (
+                        {article._count.comments > 0 && (
                           <span>{article._count.comments}</span>
                         )}
                       </StyledLink>
