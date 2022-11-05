@@ -45,7 +45,7 @@ export default function Hosts({ authors }) {
           />
         </StackedContainer>
       </Outline>
-      {transitions((style, author) => {
+      {transitions((style, author: any) => {
         if (!author) {
           return null;
         }
