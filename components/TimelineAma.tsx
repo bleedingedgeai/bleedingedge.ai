@@ -131,11 +131,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
         const live = article.live;
 
         return (
-          <Container
-            key={article.id}
-            onClick={() => router.push(amaHref)}
-            live={live}
-          >
+          <Container key={article.id} onClick={() => router.push(amaHref)}>
             {live && <MobileGlow />}
             <AvatarContainer>
               <Avatar src={article.authors[0].image} superHighlight={live} />
@@ -143,7 +139,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                 <AuthorCount>{article.authors.length}</AuthorCount>
               )}
             </AvatarContainer>
-            <Main>
+            <Main live={live}>
               <Top>
                 <span>
                   <Names authors={article.authors} />
@@ -307,9 +303,37 @@ const AuthorCount = styled.span`
   right: -6px;
 `;
 
-const Main = styled.div`
+const Main = styled.div<{ live: boolean }>`
   position: relative;
   padding-bottom: 18px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+
+  ${mq.tablet} {
+    border-bottom: none;
+  }
+
+  ${(p) =>
+    p.live &&
+    `&::before {
+        content: "";
+        position: absolute;
+        height: 1px;
+        width: 100%;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(
+          269.71deg,
+          #fa2162 5.75%,
+          #d0a06a 35.19%,
+          #c69660 67.12%,
+          #fbea9e 98.41%
+        );
+
+        ${mq.phablet} {
+          display: none;
+        }
+      }`}
 `;
 
 const Now = styled.span`
@@ -345,7 +369,7 @@ const Content = styled.p`
   transition: color 0.2s ease;
 `;
 
-const Container = styled.div<{ live: boolean }>`
+const Container = styled.div`
   position: relative;
   display: grid;
   grid-template-columns: 18px 1fr;
@@ -353,59 +377,8 @@ const Container = styled.div<{ live: boolean }>`
   cursor: pointer;
   margin-bottom: 18px;
 
-  &:not(:last-of-type) {
-    ${Main} {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-
-      ${mq.tablet} {
-        border-bottom: none;
-      }
-
-      ${(p) =>
-        p.live &&
-        `&::before {
-        content: "";
-        position: absolute;
-        height: 1px;
-        width: 100%;
-        bottom: 0;
-        right: 0;
-        background: linear-gradient(
-          269.71deg,
-          #fa2162 5.75%,
-          #d0a06a 35.19%,
-          #c69660 67.12%,
-          #fbea9e 98.41%
-        );
-      }`}
-    }
-  }
-
   ${mq.tablet} {
     grid-gap: 18px;
-
-    ${(p) =>
-      p.live
-        ? `&::before {
-        content: "";
-        position: absolute;
-        height: 1px;
-        width: 100%;
-        bottom: 0;
-        right: 0;
-        background: linear-gradient(
-          269.71deg,
-          #fa2162 5.75%,
-          #d0a06a 35.19%,
-          #c69660 67.12%,
-          #fbea9e 98.41%
-        );
-
-        ${mq.phablet} {
-          display: none;
-        }
-      }`
-        : `border-bottom: 1px solid rgba(255, 255, 255, 0.16)`};
   }
 
   ${mq.phablet} {

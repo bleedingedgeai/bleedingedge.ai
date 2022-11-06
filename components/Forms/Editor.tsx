@@ -22,6 +22,9 @@ const Container = styled.div`
     line-height: 100%;
   }
 
+  .mention {
+  }
+
   .ProseMirror {
     caret-color: ${(p) => p.theme.colors.orange};
 

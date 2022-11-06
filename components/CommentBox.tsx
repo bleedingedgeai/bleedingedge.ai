@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Document from "@tiptap/extension-document";
 import History from "@tiptap/extension-history";
 import Link from "@tiptap/extension-link";
+import Mention from "@tiptap/extension-mention";
 import Paragraph from "@tiptap/extension-paragraph";
 import Placeholder from "@tiptap/extension-placeholder";
 import Text from "@tiptap/extension-text";
@@ -15,8 +16,17 @@ import CommentsEmptyState from "./CommentsEmptyState";
 import Editor from "./Forms/Editor";
 import IconEx from "./Icons/IconEx";
 import IconSend from "./Icons/IconSend";
+import suggestion from "./Mention/suggestion";
 import { OverlayContext, OverlayType } from "./Overlay";
 import Portal from "./Portal";
+
+function uniqBy(a, key) {
+  let seen = new Set();
+  return a.filter((item) => {
+    let k = key(item);
+    return seen.has(k) ? false : seen.add(k);
+  });
+}
 
 export default function CommentBox({
   article,
@@ -33,6 +43,12 @@ export default function CommentBox({
   const [offset, setOffset] = useState(0);
   const [width, setWidth] = useState(0);
 
+  const postAuthors = article.authors;
+  const commentAuthors = comments
+    .filter((comment) => comment.author)
+    .map(({ author }) => author);
+
+  console.log();
   const editor = useEditor({
     extensions: [
       Document,
@@ -42,6 +58,12 @@ export default function CommentBox({
       History,
       Placeholder.configure({
         placeholder: "Ask me anything...",
+      }),
+      Mention.configure({
+        HTMLAttributes: { class: "mention" },
+        suggestion: suggestion(
+          uniqBy([...postAuthors, ...commentAuthors], (a) => a.id)
+        ),
       }),
     ],
     onUpdate({ editor }) {
