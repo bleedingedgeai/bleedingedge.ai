@@ -432,8 +432,16 @@ const StyledLink = styled.a`
     margin-left: 8px;
   }
 
+  svg path {
+    transition: fill 0.2s ease;
+  }
+
   &:hover {
     color: ${(p) => p.theme.colors.off_white};
+
+    svg path {
+      fill: ${(p) => p.theme.colors.off_white};
+    }
   }
 `;
 
@@ -444,6 +452,10 @@ const StyledButton = styled.button`
 
   span {
     margin-left: 8px;
+  }
+
+  svg path {
+    transition: fill 0.2s ease;
   }
 
   &:hover {
