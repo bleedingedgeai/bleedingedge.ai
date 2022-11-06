@@ -10,7 +10,7 @@ import React, {
 import styled from "styled-components";
 import Avatar from "../Avatar";
 
-export default forwardRef((props, ref) => {
+export default forwardRef((props: any, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [disableMouse, setDisableMouse] = useState(false);
   const itemsRef = useRef<HTMLDivElement>(null);
