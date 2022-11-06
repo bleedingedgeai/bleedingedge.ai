@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from "react";
 import { animated, useTransition } from "react-spring";
 import styled from "styled-components";
 import { ellipsis } from "../styles/css";
+import { mq } from "../styles/mediaqueries";
 import Avatar from "./Avatar";
 import Badge from "./Badge";
 import Portal from "./Portal";
@@ -29,7 +30,9 @@ export default function Hosts({ authors }) {
   return (
     <Container>
       <Outline>
-        Hosts <span>{authors.length}</span>
+        <Text>
+          Hosts <span>{authors.length}</span>
+        </Text>
         <StackedContainer ref={containerRef}>
           <Stacked
             size={18}
@@ -129,6 +132,12 @@ const Outline = styled.div`
   display: flex;
   align-items: center;
   color: ${(p) => p.theme.colors.light_grey};
+`;
+
+const Text = styled.span`
+  ${mq.phablet} {
+    display: none;
+  }
 
   & > span {
     margin: 0 8px 0 6px;

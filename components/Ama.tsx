@@ -158,7 +158,8 @@ export default function Ama({ article, comments }) {
           </BackLink>
         </Link>
       </BackLinkContainer>
-      <div style={{ width: "100%" }}>
+      <div style={{ width: "100%", position: "relative" }}>
+        <MobileGlow />
         <Container>
           <Details ref={conatinerRef}>
             <FlexBetween>
@@ -483,5 +484,22 @@ const StyledButton = styled.button`
 
   ${mq.tablet} {
     font-size: 12px;
+  }
+`;
+
+const MobileGlow = styled.div`
+  position: absolute;
+  left: 6.53%;
+  right: 6.53%;
+  bottom: 10px;
+  height: 124px;
+  background: radial-gradient(
+    47.07% 100% at 50% 100%,
+    rgba(52, 39, 32, 0.364) 0%,
+    rgba(52, 39, 32, 0) 100%
+  );
+
+  ${mq.desktopSmallUp} {
+    display: none;
   }
 `;

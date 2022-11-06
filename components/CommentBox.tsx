@@ -269,6 +269,9 @@ export default function CommentBox({
     <Portal>
       <Container style={{ left: offset, width }}>
         <CommentsEmptyState show={emptyState} />
+        <BlueGradientContainer>
+          <BlueGradient />
+        </BlueGradientContainer>
         {replyingToComment && (
           <ReplyingTo>
             <div>
@@ -297,15 +300,14 @@ export default function CommentBox({
           onSubmit={handleSubmit}
           onClick={() => editor?.commands?.focus()}
         >
-          <BlueGradientContainer>
-            <BlueGradient />
-          </BlueGradientContainer>
           <Editor editor={editor} />
         </CommentBoxForm>
         {session.data ? (
           <Submit type="submit" onClick={handleSubmit}>
-            @{session?.data?.user.username}
-            <Divider />
+            <span>
+              @{session?.data?.user.username}
+              <Divider />
+            </span>
             <IconSend />
           </Submit>
         ) : (
@@ -415,6 +417,10 @@ const Submit = styled.button`
   transition: background 0.25s ease, color 0.25s ease;
   font-size: 12px;
 
+  span {
+    display: flex;
+    align-items: center;
+  }
   svg path {
     transition: fill 0.25s ease;
   }
@@ -433,6 +439,12 @@ const Submit = styled.button`
 
   ${mq.tablet} {
     top: 14px;
+  }
+
+  ${mq.phablet} {
+    span {
+      display: none;
+    }
   }
 `;
 

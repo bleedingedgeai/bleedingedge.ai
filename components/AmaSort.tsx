@@ -38,10 +38,32 @@ export default function AmaSort({ article, sort, setSort }) {
 }
 
 const Container = styled.div`
+  position: relative;
   display: flex;
   justify-content: space-between;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   padding-top: 17px;
+
+  ${mq.desktopSmall} {
+    border-top: none;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    top: 8px;
+    background: radial-gradient(
+      50% 20416242.35% at 50% 0%,
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+
+    ${mq.desktopSmallUp} {
+      display: none;
+    }
+  }
 `;
 
 const Right = styled.div`

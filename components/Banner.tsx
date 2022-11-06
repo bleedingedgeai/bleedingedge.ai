@@ -2,10 +2,13 @@ import Link from "next/link";
 import styled, { keyframes } from "styled-components";
 import { slugify } from "../helpers/string";
 import { ellipsis } from "../styles/css";
+import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
 import Avatar from "./Avatar";
+import Dot from "./Dot";
 import IconReply from "./Icons/IconReply";
 import Participants from "./Participants";
+import Stacked from "./Stacked";
 
 export default function Banner({ article }) {
   if (!article) {
@@ -15,28 +18,34 @@ export default function Banner({ article }) {
   const author = article.authors[0];
 
   return (
-    <Container>
-      <Author>
-        <Avatar src={author.image} size={28} superHighlight />
-      </Author>
-      <Link href={`/ama/${slugify(article.title)}`}>
-        <BannerContainer>
-          <AnimatedGradient />
-          <Inner>
-            <OrangeGradient />
-            <BlueGradient />
-            <Title>
-              {article.title}
-              <IconReply fill={theme.colors.white} />
-            </Title>
-            <Right>
-              <Live>Live AMA</Live>
-              <Participants article={article} />
-            </Right>
-          </Inner>
-        </BannerContainer>
-      </Link>
-    </Container>
+    <>
+      <MobileBanner article={article} />
+      <ContainerDesktop>
+        <Author>
+          <Avatar src={author.image} size={28} superHighlight />
+        </Author>
+        <Link href={`/ama/${slugify(article.title)}`}>
+          <BannerContainer>
+            <AnimatedGradient />
+            <Inner>
+              <MobileAuthor>
+                <Avatar src={author.image} size={28} outline={false} />
+              </MobileAuthor>
+              <OrangeGradient />
+              <BlueGradient />
+              <Title>
+                {article.title}
+                <IconReply fill={theme.colors.white} />
+              </Title>
+              <Right>
+                <Live>Live AMA</Live>
+                <Participants article={article} />
+              </Right>
+            </Inner>
+          </BannerContainer>
+        </Link>
+      </ContainerDesktop>
+    </>
   );
 }
 
@@ -48,27 +57,38 @@ function AnimatedGradient() {
   );
 }
 
-const Inner = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 7px 0 20px;
-  position: relative;
-  height: 32px;
-  border-radius: 80px;
-  width: calc(100% - 4px);
-  margin: 0 auto;
-  background: ${(p) => p.theme.colors.black};
-`;
+function MobileBanner({ article }) {
+  return (
+    <ContainerMobile>
+      <BannerContainer>
+        <AnimatedGradient />
+        <Inner>
+          <MobileStacked>
+            <Stacked
+              size={32}
+              direction="right"
+              elements={article.authors.map((author) => (
+                <Avatar src={author.image} size={32} outline={false} />
+              ))}
+            />
+          </MobileStacked>
+          <BlueGradient />
+          <OrangeGradient />
+          <Title>{article.title}</Title>
+          <Right>
+            <Live>Live AMA</Live>
+            <Dot />
+            {article.comments.filter((comment) => comment.author).length}{" "}
+            Participants
+          </Right>
+        </Inner>
+      </BannerContainer>
+    </ContainerMobile>
+  );
+}
 
-const Wrapper = styled.div`
-  padding: 1px;
-  margin: -1px;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  isolation: isolate;
-  transform: translateZ(10px);
+const MobileStacked = styled.div`
+  margin-bottom: 12px;
 `;
 
 const gradientAnimation = keyframes`
@@ -110,18 +130,70 @@ const Gradient = styled.div`
     );
 `;
 
-const Right = styled.span`
-  display: flex;
-  align-items: center;
-  ${ellipsis}
+const ContainerMobile = styled.div`
+  margin-bottom: 40px;
+
+  ${mq.phabletUp} {
+    display: none;
+  }
 `;
 
-const Container = styled.div`
+const ContainerDesktop = styled.div`
   margin-bottom: 50px;
   display: flex;
   align-items: center;
   z-index: 3;
   position: relative;
+
+  ${mq.phablet} {
+    display: none;
+  }
+`;
+
+const Inner = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 7px 0 20px;
+  position: relative;
+  height: 32px;
+  border-radius: 80px;
+  width: calc(100% - 4px);
+  margin: 0 auto;
+  background: ${(p) => p.theme.colors.black};
+
+  ${mq.tablet} {
+    padding: 0 7px 0 3px;
+  }
+
+  ${mq.phablet} {
+    height: auto;
+    padding: 16px 50px;
+    border-radius: 16px;
+    flex-direction: column;
+    width: calc(100% - 2px);
+  }
+`;
+
+const Right = styled.span`
+  display: flex;
+  align-items: center;
+  ${ellipsis}
+
+  ${mq.phablet} {
+    color: ${(p) => p.theme.colors.light_grey};
+    font-size: 12px;
+  }
+`;
+
+const Wrapper = styled.div`
+  padding: 1px;
+  margin: -1px;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  isolation: isolate;
+  transform: translateZ(10px);
 `;
 
 const Live = styled.span`
@@ -129,6 +201,11 @@ const Live = styled.span`
   font-size: 10px;
   line-height: 135%;
   margin-right: 8px;
+
+  ${mq.phablet} {
+    color: ${(p) => p.theme.colors.light_grey};
+    margin-right: 0;
+  }
 `;
 
 const BannerContainer = styled.a`
@@ -191,6 +268,14 @@ const BannerContainer = styled.a`
   &:hover::after {
     opacity: 0.88;
   }
+
+  ${mq.phablet} {
+    flex-direction: column;
+    height: auto;
+    border-radius: 16px;
+    text-align: center;
+    padding: 0.5px 0;
+  }
 `;
 
 const Title = styled.span`
@@ -206,27 +291,59 @@ const Title = styled.span`
   svg {
     margin-left: 12px;
   }
+
+  ${mq.phablet} {
+    font-size: 16px;
+    white-space: wrap;
+    overflow: visible;
+    white-space: initial;
+    text-overflow: initial;
+    margin-bottom: 12px;
+
+    svg {
+      display: none;
+    }
+  }
 `;
 
 const Author = styled.span`
   margin-right: 8px;
+
+  ${mq.tablet} {
+    display: none;
+  }
+`;
+
+const MobileAuthor = styled.span`
+  margin-right: 8px;
+
+  ${mq.tabletUp} {
+    display: none;
+  }
 `;
 
 const OrangeGradient = styled.span`
   position: absolute;
   width: 315px;
   height: 40px;
-  left: 607px;
   top: -4px;
   background: rgba(209, 159, 100, 0.42);
   filter: blur(52px);
+  right: 0;
+
+  ${mq.phablet} {
+    height: 100%;
+    top: -40%;
+    right: -24%;
+    background: rgba(209, 159, 100, 0.24);
+  }
 `;
 
 const BlueGradient = styled.span`
   position: absolute;
   width: 288px;
   height: 45px;
-  left: 437px;
+  right: 24%;
   top: 0px;
   background: linear-gradient(
     200.9deg,
@@ -236,4 +353,12 @@ const BlueGradient = styled.span`
   );
   opacity: 0.6;
   filter: blur(52px);
+
+  ${mq.tablet} {
+    height: 100%;
+    top: -40%;
+    left: -30%;
+    opacity: 0.4;
+    filter: blur(64px);
+  }
 `;

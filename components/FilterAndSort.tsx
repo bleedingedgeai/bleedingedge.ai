@@ -105,8 +105,7 @@ const Container = styled.div`
     margin-bottom: 64px;
   }
 
-  ${mq.phablet} {
-    margin-bottom: 28px;
+  ${mq.tablet} {
     display: none;
   }
 `;

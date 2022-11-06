@@ -82,11 +82,13 @@ export default function Navigation() {
                 </BackButton>
                 <List>
                   <Item>
-                    {router.pathname === "/" ? (
-                      <Link href="/about">About</Link>
-                    ) : (
-                      <Link href="/">Home</Link>
-                    )}
+                    <Link href="/">Home</Link>
+                  </Item>
+                  <Item>
+                    <Link href="/ama">AMAs</Link>
+                  </Item>
+                  <Item>
+                    <Link href="/about">About</Link>
                   </Item>
                   <Item>
                     <a href="mailto:lachy@bleedingedge.ai">Email</a>

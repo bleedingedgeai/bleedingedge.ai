@@ -114,7 +114,7 @@ const Container = styled.div`
   backdrop-filter: blur(13px);
   border-radius: 47px;
 
-  ${mq.phabletUp} {
+  ${mq.tabletUp} {
     display: none;
   }
 `;
