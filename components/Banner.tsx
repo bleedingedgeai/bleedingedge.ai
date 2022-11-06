@@ -62,29 +62,31 @@ function AnimatedGradient() {
 function MobileBanner({ article }) {
   return (
     <ContainerMobile>
-      <BannerContainer>
-        <AnimatedGradient />
-        <Inner>
-          <MobileStacked>
-            <Stacked
-              size={32}
-              direction="right"
-              elements={article.authors.map((author) => (
-                <Avatar src={author.image} size={32} outline={false} />
-              ))}
-            />
-          </MobileStacked>
-          <BlueGradient />
-          <OrangeGradient />
-          <Title>{article.title}</Title>
-          <Right>
-            <Live>Live AMA</Live>
-            <Dot />
-            {article.comments.filter((comment) => comment.author).length}{" "}
-            Participants
-          </Right>
-        </Inner>
-      </BannerContainer>
+      <Link href={`/ama/${slugify(article.title)}`}>
+        <BannerContainer>
+          <AnimatedGradient />
+          <Inner>
+            <MobileStacked>
+              <Stacked
+                size={32}
+                direction="right"
+                elements={article.authors.map((author) => (
+                  <Avatar src={author.image} size={32} outline={false} />
+                ))}
+              />
+            </MobileStacked>
+            <BlueGradient />
+            <OrangeGradient />
+            <Title>{article.title}</Title>
+            <Right>
+              <Live>Live AMA</Live>
+              <Dot />
+              {article.comments.filter((comment) => comment.author).length}{" "}
+              Participants
+            </Right>
+          </Inner>
+        </BannerContainer>
+      </Link>
     </ContainerMobile>
   );
 }
