@@ -93,7 +93,6 @@ export default forwardRef((props: any, ref) => {
       return false;
     },
     onKeyUp: () => {
-      console.log("fired");
       setDisableMouse(false);
     },
   }));

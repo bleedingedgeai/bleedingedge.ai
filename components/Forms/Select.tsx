@@ -37,7 +37,6 @@ export default function Select({ options: initialOptions }: SelectProps) {
       router.replace(`${router.pathname}/tags/${value}`);
     } else {
       const withoutTags = router.pathname.split("/tags/")[0] || "/";
-      console.log(withoutTags);
       router.replace(withoutTags);
     }
 

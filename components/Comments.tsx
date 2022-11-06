@@ -122,7 +122,6 @@ function CommentsRecursive({
   const deleteMutation = useMutation({
     mutationKey: ["comments", article.id],
     mutationFn: (commentId: string) => {
-      console.log(commentId);
       return fetch(`/api/articles/${article.slug}/comments/${commentId}`, {
         method: "delete",
         headers: {
@@ -131,7 +130,6 @@ function CommentsRecursive({
       });
     },
     onMutate: async (commentId) => {
-      console.log(commentId);
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({
         queryKey: ["comments", article.id],

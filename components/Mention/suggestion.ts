@@ -5,8 +5,6 @@ import MentionList from "./MentionList";
 
 const suggestion = (authors) => ({
   items: ({ query, ...rest }) => {
-    console.log(query, rest);
-
     const fuse = new Fuse(authors, {
       threshold: 0.25,
       location: 0,

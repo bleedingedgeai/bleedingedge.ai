@@ -48,7 +48,6 @@ export default function CommentBox({
     .filter((comment) => comment.author)
     .map(({ author }) => author);
 
-  console.log();
   const editor = useEditor({
     extensions: [
       Document,

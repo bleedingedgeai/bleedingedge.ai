@@ -12,7 +12,6 @@ export function withValidation<T extends ZodSchema>(
 
       return handler(req, res);
     } catch (error) {
-      console.log(error);
       if (error instanceof z.ZodError) {
         return res.status(422).json(error.issues);
       }

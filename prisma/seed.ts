@@ -130,8 +130,6 @@ async function main() {
   });
 
   const res = await Promise.all(createArticles);
-
-  console.log(res);
 }
 
 main()
