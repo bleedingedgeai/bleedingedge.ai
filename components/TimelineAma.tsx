@@ -6,9 +6,11 @@ import styled from "styled-components";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { copyToClipboard, slugify } from "../helpers/string";
 import { Sort } from "../pages";
+import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
 import { AlertsContext } from "./AlertsProvider";
 import Avatar from "./Avatar";
+import Dot from "./Dot";
 import IconLike from "./Icons/IconLike";
 import IconLiked from "./Icons/IconLiked";
 import IconReply from "./Icons/IconReply";
@@ -134,8 +136,9 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
             onClick={() => router.push(amaHref)}
             live={live}
           >
+            {live && <MobileGlow />}
             <AvatarContainer>
-              <Avatar src={article.authors[0].image} highlight={live} />
+              <Avatar src={article.authors[0].image} superHighlight={live} />
               {article.authors.length > 1 && (
                 <AuthorCount>{article.authors.length}</AuthorCount>
               )}
@@ -144,6 +147,33 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
               <Top>
                 <span>
                   <Names authors={article.authors} />
+                  <TabletDateContainer>
+                    <Dot />
+                    <span>
+                      {new Intl.DateTimeFormat("en", {
+                        day: "numeric",
+                        month: "short",
+                      }).format(new Date(article.updatedAt))}
+                    </span>
+                  </TabletDateContainer>
+                  <MobileDateContainer>
+                    {live ? (
+                      <Now>
+                        <LiveDot style={{ marginRight: 6 }} />
+                        Now
+                      </Now>
+                    ) : (
+                      <>
+                        <Dot />
+                        <span>
+                          {new Intl.DateTimeFormat("en", {
+                            day: "numeric",
+                            month: "short",
+                          }).format(new Date(article.updatedAt))}
+                        </span>
+                      </>
+                    )}
+                  </MobileDateContainer>
                 </span>
                 <Flex>
                   {article.live && <Live />}{" "}
@@ -205,14 +235,55 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
   );
 }
 
+const MobileGlow = styled.div`
+  position: absolute;
+  left: 4.27%;
+  right: 3.73%;
+  height: 115px;
+  bottom: 0;
+
+  background: radial-gradient(
+    47.07% 100% at 50% 100%,
+    rgba(52, 39, 32, 0.52) 0%,
+    rgba(52, 39, 32, 0) 100%
+  );
+
+  ${mq.phabletUp} {
+    display: none;
+  }
+`;
+
 const Flex = styled.div`
   display: flex;
   align-items: center;
+
+  ${mq.phablet} {
+    display: none;
+  }
 `;
 
 const DateContainer = styled.span`
   min-width: 55px;
   text-align: right;
+  ${mq.tablet} {
+    display: none;
+  }
+`;
+
+const TabletDateContainer = styled.span`
+  ${mq.tabletUp} {
+    display: none;
+  }
+
+  ${mq.phablet} {
+    display: none;
+  }
+`;
+
+const MobileDateContainer = styled.span`
+  ${mq.phabletUp} {
+    display: none;
+  }
 `;
 
 const AvatarContainer = styled.div`
@@ -238,6 +309,21 @@ const AuthorCount = styled.span`
 
 const Main = styled.div`
   position: relative;
+  padding-bottom: 18px;
+`;
+
+const Now = styled.span`
+  margin-left: 8px;
+  font-size: 10px;
+  color: ${(p) => p.theme.colors.orange};
+`;
+
+const LiveDot = styled.span`
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: ${(p) => p.theme.colors.orange};
 `;
 
 const Title = styled.h2`
@@ -260,17 +346,20 @@ const Content = styled.p`
 `;
 
 const Container = styled.div<{ live: boolean }>`
+  position: relative;
   display: grid;
   grid-template-columns: 18px 1fr;
   grid-gap: 36px;
   cursor: pointer;
+  margin-bottom: 18px;
 
   &:not(:last-of-type) {
-    margin-bottom: 18px;
-
     ${Main} {
-      padding-bottom: 18px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+
+      ${mq.tablet} {
+        border-bottom: none;
+      }
 
       ${(p) =>
         p.live &&
@@ -291,6 +380,38 @@ const Container = styled.div<{ live: boolean }>`
       }`}
     }
   }
+
+  ${mq.tablet} {
+    grid-gap: 18px;
+
+    ${(p) =>
+      p.live
+        ? `&::before {
+        content: "";
+        position: absolute;
+        height: 1px;
+        width: 100%;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(
+          269.71deg,
+          #fa2162 5.75%,
+          #d0a06a 35.19%,
+          #c69660 67.12%,
+          #fbea9e 98.41%
+        );
+
+        ${mq.phablet} {
+          display: none;
+        }
+      }`
+        : `border-bottom: 1px solid rgba(255, 255, 255, 0.16)`};
+  }
+
+  ${mq.phablet} {
+    grid-gap: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  }
 `;
 
 const Top = styled.div`
@@ -300,6 +421,10 @@ const Top = styled.div`
   margin-bottom: 8px;
   font-size: 10px;
   color: ${(p) => p.theme.colors.off_white};
+
+  ${mq.tablet} {
+    margin-bottom: 4px;
+  }
 `;
 
 const Middle = styled.div`
@@ -313,6 +438,10 @@ const Actions = styled.div`
 
 const Action = styled.div`
   margin-right: 24px;
+
+  ${mq.phablet} {
+    margin-right: 36px;
+  }
 `;
 
 const Bottom = styled.div`

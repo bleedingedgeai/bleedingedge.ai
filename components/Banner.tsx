@@ -28,15 +28,17 @@ export default function Banner({ article }) {
           <BannerContainer>
             <AnimatedGradient />
             <Inner>
-              <MobileAuthor>
-                <Avatar src={author.image} size={28} outline={false} />
-              </MobileAuthor>
-              <OrangeGradient />
-              <BlueGradient />
-              <Title>
-                {article.title}
-                <IconReply fill={theme.colors.white} />
-              </Title>
+              <span style={{ display: "flex", alignItems: "center" }}>
+                <MobileAuthor>
+                  <Avatar src={author.image} size={28} outline={false} />
+                </MobileAuthor>
+                <OrangeGradient />
+                <BlueGradient />
+                <Title>
+                  {article.title}
+                  <IconReply fill={theme.colors.white} />
+                </Title>
+              </span>
               <Right>
                 <Live>Live AMA</Live>
                 <Participants article={article} />
