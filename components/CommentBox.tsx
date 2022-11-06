@@ -61,6 +61,7 @@ export default function CommentBox({
       Mention.configure({
         HTMLAttributes: { class: "mention" },
         suggestion: suggestion(
+          article.authors,
           uniqBy([...postAuthors, ...commentAuthors], (a) => a.id)
         ),
       }),

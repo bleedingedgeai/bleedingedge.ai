@@ -11,6 +11,7 @@ import styled from "styled-components";
 import Avatar from "../Avatar";
 
 export default forwardRef((props: any, ref) => {
+  console.log(props);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [disableMouse, setDisableMouse] = useState(false);
   const itemsRef = useRef<HTMLDivElement>(null);
@@ -110,22 +111,31 @@ export default forwardRef((props: any, ref) => {
   return (
     <Items ref={itemsRef}>
       {props.items.length ? (
-        props.items.map((item, index) => (
-          <Item
-            isSelected={index === selectedIndex}
-            className={`item ${index === selectedIndex ? "is-selected" : ""}`}
-            key={index}
-            onClick={() => selectItem(index)}
-            onMouseEnter={
-              disableMouse ? () => {} : () => setSelectedIndex(index)
-            }
-          >
-            <Avatar src={item.image} size={16} outline={false} />
-            <span>
-              <Name>{item.name}</Name> <Username>@{item.username}</Username>
-            </span>
-          </Item>
-        ))
+        props.items.map((item, index) => {
+          const isAuthorOfArticle = props.authors.some((a) => a.id == item.id);
+
+          return (
+            <Item
+              isSelected={index === selectedIndex}
+              className={`item ${index === selectedIndex ? "is-selected" : ""}`}
+              key={index}
+              onClick={() => selectItem(index)}
+              onMouseEnter={
+                disableMouse ? () => {} : () => setSelectedIndex(index)
+              }
+            >
+              <Avatar
+                src={item.image}
+                size={16}
+                outline={isAuthorOfArticle}
+                highlight={isAuthorOfArticle}
+              />
+              <span>
+                <Name>{item.name}</Name> <Username>@{item.username}</Username>
+              </span>
+            </Item>
+          );
+        })
       ) : (
         <NoResults className="item">No result</NoResults>
       )}

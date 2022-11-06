@@ -3,9 +3,9 @@ import tippy from "tippy.js";
 import { ReactRenderer } from "@tiptap/react";
 import MentionList from "./MentionList";
 
-const suggestion = (authors) => ({
-  items: ({ query, ...rest }) => {
-    const fuse = new Fuse(authors, {
+const suggestion = (authors, allAuthors) => ({
+  items: ({ query }) => {
+    const fuse = new Fuse(allAuthors, {
       threshold: 0.25,
       location: 0,
       distance: 16,
@@ -14,7 +14,7 @@ const suggestion = (authors) => ({
 
     const result = query
       ? fuse.search(query).map((result) => result?.item)
-      : authors;
+      : allAuthors;
 
     return result.slice(0, 10);
   },
@@ -26,7 +26,7 @@ const suggestion = (authors) => ({
     return {
       onStart: (props) => {
         component = new ReactRenderer(MentionList, {
-          props,
+          props: { ...props, authors },
           editor: props.editor,
         });
 
