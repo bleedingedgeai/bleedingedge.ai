@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react";
 import styled from "styled-components";
-import { mq } from "../styles/mediaqueries";
-import Participants from "./Participants";
+import { mq } from "../../styles/mediaqueries";
+import Participants from "../Participants";
 
 export default function AmaSort({ article, sort, setSort }) {
   const conatinerRef = useRef<HTMLDivElement>(null);

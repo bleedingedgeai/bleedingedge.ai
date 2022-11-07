@@ -1,7 +1,6 @@
 import { useSession } from "next-auth/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Document from "@tiptap/extension-document";
 import History from "@tiptap/extension-history";
 import Link from "@tiptap/extension-link";
@@ -10,15 +9,16 @@ import Paragraph from "@tiptap/extension-paragraph";
 import Placeholder from "@tiptap/extension-placeholder";
 import Text from "@tiptap/extension-text";
 import { useEditor } from "@tiptap/react";
-import { mq } from "../styles/mediaqueries";
-import { theme } from "../styles/theme";
-import CommentsEmptyState from "./CommentsEmptyState";
-import Editor from "./Forms/Editor";
-import IconEx from "./Icons/IconEx";
-import IconSend from "./Icons/IconSend";
-import suggestion from "./Mention/suggestion";
-import { OverlayContext, OverlayType } from "./Overlay";
-import Portal from "./Portal";
+import { useCommentMutations } from "../../lib/hooks/useCommentMutations";
+import { mq } from "../../styles/mediaqueries";
+import { theme } from "../../styles/theme";
+import { AlertsContext } from "../Alerts/AlertsProvider";
+import Editor from "../Forms/Editor";
+import IconEx from "../Icons/IconEx";
+import IconSend from "../Icons/IconSend";
+import suggestion from "../Mention/suggestion";
+import { OverlayContext, OverlayType } from "../Overlay/Overlay";
+import Portal from "../Portal";
 
 function uniqBy(a, key) {
   let seen = new Set();
@@ -28,7 +28,7 @@ function uniqBy(a, key) {
   });
 }
 
-export default function CommentBox({
+export default function CommentsInput({
   article,
   comments,
   conatinerRef,
@@ -36,17 +36,21 @@ export default function CommentBox({
   setParentId,
   setEditId,
   editId,
-  emptyState,
 }) {
   const { showOverlay } = useContext(OverlayContext);
   const session = useSession();
   const [offset, setOffset] = useState(0);
   const [width, setWidth] = useState(0);
+  const { showAlert } = useContext(AlertsContext);
+  const replyingToComment = comments.find((c) => c.id === parentId);
 
-  const postAuthors = article.authors;
-  const commentAuthors = comments
-    .filter((comment) => comment.author)
-    .map(({ author }) => author);
+  const allAuthors = useMemo(() => {
+    const postAuthors = article.authors;
+    const commentAuthors = comments
+      .filter((comment) => comment.author)
+      .map(({ author }) => author);
+    return uniqBy([...postAuthors, ...commentAuthors], (a) => a.id);
+  }, [comments, article.authors]);
 
   const editor = useEditor({
     extensions: [
@@ -60,10 +64,7 @@ export default function CommentBox({
       }),
       Mention.configure({
         HTMLAttributes: { class: "mention" },
-        suggestion: suggestion(
-          article.authors,
-          uniqBy([...postAuthors, ...commentAuthors], (a) => a.id)
-        ),
+        suggestion: suggestion(article.authors, allAuthors),
       }),
     ],
     onUpdate({ editor }) {
@@ -74,6 +75,52 @@ export default function CommentBox({
       }
     },
   });
+
+  const resetInput = () => {
+    setParentId(null);
+    editor.commands.clearContent();
+    localStorage.removeItem(`comment-${article.slug}`);
+  };
+
+  const commentMutations = useCommentMutations({
+    article,
+    onCreate: resetInput,
+    onUpdate: resetInput,
+  });
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (session.status === "unauthenticated") {
+      showOverlay(OverlayType.AUTHENTICATION);
+      return;
+    }
+
+    if (editor.isEmpty) {
+      showAlert({
+        icon: IconSend,
+        text: "Empty comments are not allowed",
+      });
+      return;
+    }
+
+    const content = editor.getHTML();
+
+    if (editId) {
+      commentMutations.update.mutate({
+        content,
+        commentId: editId,
+      });
+      return;
+    }
+
+    commentMutations.create.mutate({
+      content,
+      postId: article.id,
+      parentId,
+      userId: session.data.user.id,
+    });
+  };
 
   useEffect(() => {
     function handleResize() {
@@ -87,156 +134,12 @@ export default function CommentBox({
     return () => window.removeEventListener("resize", handleResize);
   }, [conatinerRef]);
 
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationKey: ["comments", article.id],
-    mutationFn: (newComment: any) => {
-      return fetch(`/api/articles/${article.slug}/comments`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newComment),
-      });
-    },
-    onMutate: async (newComment) => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({ queryKey: ["comments", article.id] });
-
-      // Snapshot the previous value
-      const previousComments = queryClient.getQueryData([
-        "comments",
-        article.id,
-      ]);
-
-      if (!session?.data) {
-        return { previousComments };
-      }
-
-      // Optimistically update to the new value
-      queryClient.setQueryData(["comments", article.id], (old) => [
-        ...(old as any),
-        {
-          ...newComment,
-          updatedAt: new Date(),
-          createdAt: new Date(),
-          _count: { likes: 0 },
-          liked: false,
-          author: {
-            name: session?.data.user.name,
-            id: session?.data.user.id,
-            image: session?.data.user.image,
-          },
-        },
-      ]);
-
-      setParentId(null);
-      editor.commands.clearContent();
-      localStorage.removeItem(`comment-${article.slug}`);
-
-      // Return a context object with the snapshotted value
-      return { previousComments };
-    },
-    onError: (err, newTodo, context) => {
-      queryClient.setQueryData(
-        ["comments", article.id],
-        context.previousComments
-      );
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", article.id] });
-    },
-  });
-
-  const editMutation = useMutation({
-    mutationKey: ["comments", article.id],
-    mutationFn: ({ content, commentId }: any) => {
-      return fetch(`/api/articles/${article.slug}/comments/${commentId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ commentId, content }),
-      });
-    },
-    onMutate: async ({ commentId, content }) => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({ queryKey: ["comments", article.id] });
-
-      // Snapshot the previous value
-      const previousComments = queryClient.getQueryData([
-        "comments",
-        article.id,
-      ]);
-
-      if (!session?.data) {
-        return { previousComments };
-      }
-
-      // Optimistically update to the new value
-      queryClient.setQueryData(["comments", article.id], (comments: any) => {
-        return comments.map((comment) => {
-          if (comment.id == commentId) {
-            return { ...comment, content, updatedAt: new Date() };
-          }
-
-          return comment;
-        });
-      });
-
-      setEditId(null);
-      editor.commands.clearContent();
-      localStorage.removeItem(`comment-${article.slug}`);
-      // Return a context object with the snapshotted value
-      return { previousComments };
-    },
-    onError: (err, newTodo, context) => {
-      queryClient.setQueryData(
-        ["comments", article.id],
-        context.previousComments
-      );
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", article.id] });
-    },
-  });
-
   useEffect(() => {
     const commentFromStorage = localStorage.getItem(`comment-${article.slug}`);
     if (commentFromStorage && editor) {
       editor?.commands?.setContent(commentFromStorage);
     }
   }, [article.slug, editor]);
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    if (session.status === "unauthenticated") {
-      return showOverlay(OverlayType.AUTHENTICATION);
-    }
-
-    const content = editor.getHTML();
-
-    if (!content) {
-      return;
-    }
-
-    if (editId) {
-      return editMutation.mutate({
-        content,
-        commentId: editId,
-      });
-    }
-
-    mutation.mutate({
-      content,
-      postId: article.id,
-      parentId,
-      userId: session.data.user.id,
-    });
-  };
-
-  const replyingToComment = comments.find((c) => c.id === parentId);
 
   useEffect(() => {
     if (parentId && editor) {
@@ -290,53 +193,54 @@ export default function CommentBox({
   return (
     <Portal>
       <Container style={{ left: offset, width }}>
-        <CommentsEmptyState show={emptyState} />
-        <BlueGradientContainer>
-          <BlueGradient />
-        </BlueGradientContainer>
-        {replyingToComment && (
-          <ReplyingTo>
-            <div>
-              Replying to <span>{replyingToComment.author.name}</span>
-            </div>
-            <button onClick={() => setParentId(null)}>
-              <IconEx size={16} fill={theme.colors.white} />
-            </button>
-          </ReplyingTo>
-        )}
-        {commentToEdit && (
-          <ReplyingTo>
-            <div>Editing message</div>
-            <button
-              onClick={() => {
-                localStorage.removeItem(`comment-${article.slug}`);
-                editor.commands.clearContent();
-                setEditId(null);
-              }}
-            >
-              <IconEx size={16} fill={theme.colors.white} />
-            </button>
-          </ReplyingTo>
-        )}
-        <CommentBoxForm
-          onSubmit={handleSubmit}
-          onClick={() => editor?.commands?.focus()}
-        >
-          <Editor editor={editor} />
-        </CommentBoxForm>
-        {session.data ? (
-          <Submit type="submit" onClick={handleSubmit}>
-            <span>
-              @{session?.data?.user.username}
-              <Divider />
-            </span>
-            <IconSend />
-          </Submit>
-        ) : (
-          <Submit type="submit" onClick={handleSubmit}>
-            <IconSend />
-          </Submit>
-        )}
+        <Inner>
+          <BlueGradientContainer>
+            <BlueGradient />
+          </BlueGradientContainer>
+          {replyingToComment && (
+            <ReplyingTo>
+              <div>
+                Replying to <span>{replyingToComment.author.name}</span>
+              </div>
+              <button onClick={() => setParentId(null)}>
+                <IconEx size={16} fill={theme.colors.white} />
+              </button>
+            </ReplyingTo>
+          )}
+          {commentToEdit && (
+            <ReplyingTo>
+              <div>Editing message</div>
+              <button
+                onClick={() => {
+                  localStorage.removeItem(`comment-${article.slug}`);
+                  editor.commands.clearContent();
+                  setEditId(null);
+                }}
+              >
+                <IconEx size={16} fill={theme.colors.white} />
+              </button>
+            </ReplyingTo>
+          )}
+          <CommentInputForm
+            onSubmit={handleSubmit}
+            onClick={() => editor?.commands?.focus()}
+          >
+            <Editor editor={editor} />
+          </CommentInputForm>
+          {session.data ? (
+            <Submit type="submit" onClick={handleSubmit}>
+              <span>
+                @{session?.data?.user.username}
+                <Divider />
+              </span>
+              <IconSend />
+            </Submit>
+          ) : (
+            <Submit type="submit" onClick={handleSubmit}>
+              <IconSend />
+            </Submit>
+          )}
+        </Inner>
       </Container>
     </Portal>
   );
@@ -348,13 +252,18 @@ const Container = styled.div`
   width: 841px;
   height: 91px;
   bottom: 42px;
-  z-index: 3;
+  z-index: 12;
   border-radius: 14px;
-  overflow: hidden;
 
   ${mq.tablet} {
     height: 46px;
   }
+`;
+
+const Inner = styled.div`
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
 `;
 
 const ReplyingTo = styled.div`
@@ -400,7 +309,7 @@ const ReplyingTo = styled.div`
   }
 `;
 
-const CommentBoxForm = styled.form`
+const CommentInputForm = styled.form`
   transition: box-shadow 0.25s ease, background 0.25s ease;
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0px 4px 34px rgba(0, 0, 0, 0.55);
@@ -413,7 +322,7 @@ const CommentBoxForm = styled.form`
 
   ${mq.tablet} {
     height: 46px;
-    padding: 13px 18px;
+    padding: 12px 18px;
   }
 `;
 

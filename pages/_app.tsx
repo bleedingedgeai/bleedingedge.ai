@@ -9,17 +9,17 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import AlertsProvider from "../components/AlertsProvider";
+import AlertsProvider from "../components/Alerts/AlertsProvider";
 import Favicon from "../components/Favicon";
-import { OverlayProvider } from "../components/Overlay";
+import { OverlayProvider } from "../components/Overlay/Overlay";
 import { GlobalStyle } from "../styles/global";
 import { theme } from "../styles/theme";
 
-const DynamicAlerts = dynamic(() => import("../components/Alerts"), {
+const DynamicAlerts = dynamic(() => import("../components/Alerts/Alerts"), {
   suspense: true,
 });
 
-const DynamicOverlay = dynamic(() => import("../components/Overlay"), {
+const DynamicOverlay = dynamic(() => import("../components/Overlay/Overlay"), {
   suspense: true,
 });
 
@@ -30,7 +30,6 @@ export default function App({ Component, pageProps }) {
       if (process.env.NODE_ENV === "development") posthog.opt_out_capturing();
     },
   });
-
   const [queryClient] = useState(() => new QueryClient());
 
   return (

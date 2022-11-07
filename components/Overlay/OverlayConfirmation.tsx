@@ -2,21 +2,7 @@ import React, { useCallback, useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { OverlayContext } from "./Overlay";
 
-interface ModalConfirmationProps {
-  heading: string;
-  text: string;
-  left?: {
-    text?: string;
-    action?: () => void;
-  };
-  right: {
-    text: string;
-    action: () => void;
-    color?: string;
-  };
-}
-
-export default function ConfirmationOverlay() {
+export default function OverlayConfirmation() {
   const { hideOverlay, overlayProps } = useContext(OverlayContext);
   const { heading, text, left, right } = overlayProps;
 
@@ -62,35 +48,6 @@ export default function ConfirmationOverlay() {
     },
     [buttonLeftRef, buttonRightRef]
   );
-
-  // const shortcutHandler = useCallback(
-  //   (shortcut, event) => {
-  //     switch (shortcut.id) {
-  //       case ShortcutID.ESCAPE:
-  //         hideModal()
-  //         break
-  //       case ShortcutID.ENTER:
-  //         event.preventDefault()
-  //         event.stopPropagation()
-  //         ;(document.querySelector('button.focus') as HTMLButtonElement)?.click()
-  //         break
-  //       case ShortcutID.RIGHT:
-  //       case ShortcutID.LEFT:
-  //       case ShortcutID.TAB:
-  //       case ShortcutID.TAB_PREVIOUS:
-  //         event.preventDefault()
-  //         if (Array.from(buttonRightRef.current.classList).includes('focus')) {
-  //           handleFocus(buttonLeftRef.current)
-  //         } else {
-  //           handleFocus(buttonRightRef.current)
-  //         }
-  //         break
-  //     }
-  //   },
-  //   [hideModal, handleFocus, buttonLeftRef, buttonRightRef],
-  // )
-
-  // useShortcut(shortcutHandler, { allowWhenModalIsActive: true })
 
   ///////////////////////////////////////////////////////////////////////////
   // Handling Mouse events

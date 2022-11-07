@@ -6,7 +6,7 @@ import Dot from "./Dot";
 import Select from "./Forms/Select";
 import IconArrow from "./Icons/IconArrow";
 import { Sort } from "./Layout";
-import { OverlayContext, OverlayType } from "./Overlay";
+import { OverlayContext, OverlayType } from "./Overlay/Overlay";
 
 interface FilterAndSortProps {
   tags: { id: string; name: string }[];

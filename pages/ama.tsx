@@ -28,7 +28,7 @@ export async function getServerSideProps(context) {
   const [session, tags] = await Promise.all([sessionRequest, tagsRequest]);
 
   const queryClient = new QueryClient();
-  await queryClient.fetchQuery(["ama"], async () => {
+  await queryClient.fetchQuery(["articles"], async () => {
     const rawPosts = await prisma.post.findMany({
       where: { authors: { some: {} } },
       include: {
@@ -89,7 +89,7 @@ export default function Ama({ tags }) {
   const [sort, setSort] = useState<Sort>("Latest");
 
   const { data: articleFromQuery } = useQuery<any>({
-    queryKey: ["ama"],
+    queryKey: ["articles"],
     queryFn: async () => {
       return await (await fetch(`/api/articles`)).json();
     },

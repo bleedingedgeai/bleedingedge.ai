@@ -1,6 +1,6 @@
 import { animated, useTrail } from "react-spring";
 import styled from "styled-components";
-import IconConfirmation from "./Icons/IconConfirmation";
+import IconConfirmation from "../Icons/IconConfirmation";
 
 interface OverlaySuccessProps {
   heading: string;

@@ -5,7 +5,7 @@ import Bounds from "../components/Bounds";
 import Grid from "../components/Grid";
 import IconArrowLeft from "../components/Icons/IconArrowLeft";
 import Navigation from "../components/Navigation";
-import { OverlayContext, OverlayType } from "../components/Overlay";
+import { OverlayContext, OverlayType } from "../components/Overlay/Overlay";
 import SEO from "../components/SEO";
 import Sidebar from "../components/Sidebar";
 import { mq } from "../styles/mediaqueries";

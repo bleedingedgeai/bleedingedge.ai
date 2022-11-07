@@ -3,12 +3,12 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { copyToClipboard, slugify } from "../helpers/string";
+import { useArticleMutations } from "../lib/hooks/useArticleMutations";
 import { Sort } from "../pages";
 import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
-import { AlertsContext } from "./AlertsProvider";
+import { AlertsContext } from "./Alerts/AlertsProvider";
 import Avatar from "./Avatar";
 import Dot from "./Dot";
 import IconLike from "./Icons/IconLike";
@@ -17,19 +17,8 @@ import IconReply from "./Icons/IconReply";
 import IconShare from "./Icons/IconShare";
 import Live from "./Live";
 import Names from "./Names";
-import { OverlayContext, OverlayType } from "./Overlay";
+import { OverlayContext, OverlayType } from "./Overlay/Overlay";
 import Participants from "./Participants";
-
-const placeholderContent =
-  "Hello! My name is Lachy and I created this site! bleeding edge is a feed of noteworthy developments in AI. this site is very much a work in progress. please send suggestions and feedback!";
-
-const sortByLatest = (date1, date2) => {
-  return new Date(date2).getTime() - new Date(date1).getTime();
-};
-
-const sortByEarliest = (date1, date2) => {
-  return new Date(date1).getTime() - new Date(date2).getTime();
-};
 
 interface TimelineProps {
   articles: any[];
@@ -40,61 +29,8 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
   const router = useRouter();
   const session = useSession();
   const { showOverlay } = useContext(OverlayContext);
-  const sortMethod = sort === "Latest" ? sortByLatest : sortByEarliest;
-
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationKey: ["ama"],
-    mutationFn: ({ postId, userId, slug }: any) => {
-      return fetch(`/api/articles/${slug}/like`, {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ postId, userId }),
-      });
-    },
-    onMutate: async (newArticle) => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({
-        queryKey: ["ama"],
-      });
-
-      // Snapshot the previous value
-      const previousPosts = queryClient.getQueryData(["ama"]);
-
-      // Optimistically update to the new value
-      queryClient.setQueryData(["ama"], (articles: any) => {
-        return articles.map((article) => {
-          if (article.id == newArticle.postId) {
-            const shouldLike = !article.liked;
-
-            return {
-              ...article,
-              _count: {
-                ...article._count,
-                likes: shouldLike
-                  ? article._count.likes + 1
-                  : article._count.likes - 1,
-              },
-              liked: shouldLike,
-            };
-          }
-
-          return article;
-        });
-      });
-
-      // Return a context object with the snapshotted value
-      return { previousPosts };
-    },
-    onError: (err, newTodo, context) => {
-      queryClient.setQueryData(["ama"], context.previousPosts);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["ama"] });
-    },
-  });
+  const { showAlert } = useContext(AlertsContext);
+  const articleMutations = useArticleMutations({});
 
   const handleLike = (event: React.MouseEvent, article) => {
     event.preventDefault();
@@ -103,14 +39,13 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
       return showOverlay(OverlayType.AUTHENTICATION);
     }
 
-    mutation.mutate({
+    articleMutations.like.mutate({
       userId: session.data.user.id,
       postId: article.id,
       slug: article.slug,
     });
   };
 
-  const { showAlert } = useContext(AlertsContext);
   const handleShare = (event: React.MouseEvent, article) => {
     event.preventDefault();
     event.stopPropagation();
@@ -128,6 +63,10 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
     <>
       {articles.map((article) => {
         const amaHref = `/ama/${slugify(article.title)}`;
+        const updatedAt = new Intl.DateTimeFormat("en", {
+          day: "numeric",
+          month: "short",
+        }).format(new Date(article.updatedAt));
         const live = article.live;
 
         return (
@@ -145,12 +84,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                   <Names authors={article.authors} />
                   <TabletDateContainer>
                     <Dot />
-                    <span>
-                      {new Intl.DateTimeFormat("en", {
-                        day: "numeric",
-                        month: "short",
-                      }).format(new Date(article.updatedAt))}
-                    </span>
+                    <span>{updatedAt}</span>
                   </TabletDateContainer>
                   <MobileDateContainer>
                     {live ? (
@@ -161,29 +95,19 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                     ) : (
                       <>
                         <Dot />
-                        <span>
-                          {new Intl.DateTimeFormat("en", {
-                            day: "numeric",
-                            month: "short",
-                          }).format(new Date(article.updatedAt))}
-                        </span>
+                        <span>{updatedAt}</span>
                       </>
                     )}
                   </MobileDateContainer>
                 </span>
                 <Flex>
                   {article.live && <Live />}{" "}
-                  <DateContainer>
-                    {new Intl.DateTimeFormat("en", {
-                      day: "numeric",
-                      month: "short",
-                    }).format(new Date(article.updatedAt))}
-                  </DateContainer>
+                  <DateContainer>{updatedAt}</DateContainer>
                 </Flex>
               </Top>
               <Middle>
                 <Title>{article.title}</Title>
-                <Content>{article.content || placeholderContent}</Content>
+                <Content>{article.content}</Content>
               </Middle>
               <Bottom>
                 <Actions>

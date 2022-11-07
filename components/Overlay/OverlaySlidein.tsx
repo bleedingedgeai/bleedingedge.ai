@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { mq } from "../styles/mediaqueries";
-import { theme } from "../styles/theme";
-import IconEx from "./Icons/IconEx";
+import { mq } from "../../styles/mediaqueries";
+import { theme } from "../../styles/theme";
+import IconEx from "../Icons/IconEx";
+import Portal from "../Portal";
 import { OverlayContext } from "./Overlay";
-import Portal from "./Portal";
 
-export default function Slidein() {
+export default function OverlaySlidein() {
   const { OverlayComponent, hideOverlay } = useContext(OverlayContext);
 
   return (

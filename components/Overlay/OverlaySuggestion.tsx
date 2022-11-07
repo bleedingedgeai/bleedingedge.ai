@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react";
 import styled from "styled-components";
-import { useMediaQuery } from "../hooks/useMediaQuery";
-import { mq } from "../styles/mediaqueries";
-import Button from "./Button";
-import Input from "./Forms/Input";
-import Textarea from "./Forms/Textarea";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
+import { mq } from "../../styles/mediaqueries";
+import Button from "../Button";
+import Input from "../Forms/Input";
+import Textarea from "../Forms/Textarea";
 import OverlaySuccess from "./OverlaySuccess";
 
 enum FormSteps {
@@ -15,7 +15,7 @@ enum FormSteps {
 
 const tabs = ["Suggest", "Contribute"];
 
-export default function Suggestion() {
+export default function OverlaySuggestion() {
   const { tablet } = useMediaQuery();
   const [formStep, setFormStep] = useState(FormSteps.Initial);
   const [selectedTab, setSelectedTab] = useState(tabs[0]);

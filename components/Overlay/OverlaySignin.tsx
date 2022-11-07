@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import styled from "styled-components";
-import Button from "./Button";
-import Input from "./Forms/Input";
+import Button from "../Button";
+import Input from "../Forms/Input";
 import OverlaySuccess from "./OverlaySuccess";
 
 enum FormSteps {
@@ -10,7 +10,7 @@ enum FormSteps {
   "Error" = "Error",
 }
 
-export default function SubscribeOverlay() {
+export default function OverlaySignin() {
   const [value, setValue] = useState("");
   const [formStep, setFormStep] = useState(FormSteps.Initial);
   const [loading, setLoading] = useState(false);

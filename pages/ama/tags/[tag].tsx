@@ -1,24 +1,14 @@
 import { useState } from "react";
 import styled from "styled-components";
-import Banner from "../../../components/Banner";
 import FilterAndSort from "../../../components/FilterAndSort";
 import FilterAndSortMobile from "../../../components/FilterAndSortMobile";
 import Layout from "../../../components/Layout";
 import SEO from "../../../components/SEO";
-import Timeline from "../../../components/Timeline";
 import TimelineAma from "../../../components/TimelineAma";
 import prisma from "../../../lib/prisma";
 import { mq } from "../../../styles/mediaqueries";
 import { Sort } from "../..";
 
-// export async function getStaticPaths() {
-//   const tags = await prisma.tag.findMany();
-//   const paths = tags.map((tag) => ({ params: { tag: tag.name } }));
-
-//   return { paths, fallback: false };
-// }
-
-// This also gets called at build time
 export async function getServerSideProps(req, res) {
   const getArticles = prisma.post.findMany({
     where: {

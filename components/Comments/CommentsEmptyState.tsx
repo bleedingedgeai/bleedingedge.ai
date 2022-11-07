@@ -1,13 +1,16 @@
 import Image from "next/image";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { animated, useTransition } from "react-spring";
 import styled from "styled-components";
-import { getRandomWholeNumber } from "../helpers/numbers";
-import { mq } from "../styles/mediaqueries";
+import { getRandomWholeNumber } from "../../helpers/numbers";
+import { mq } from "../../styles/mediaqueries";
 
 const imageBasePath = `/assets/painting/painting-`;
 
-export default function CommentsEmptyState({ show }) {
+export default function CommentsEmptyState({ show, conatinerRef }) {
+  const [offset, setOffset] = useState(0);
+  const [width, setWidth] = useState(0);
+
   const imageSrc = useMemo(() => {
     return `${imageBasePath}${getRandomWholeNumber(1, 4)}.jpg`;
   }, []);
@@ -22,45 +25,50 @@ export default function CommentsEmptyState({ show }) {
     config: { tension: 280, friction: 30 },
   });
 
+  useEffect(() => {
+    function handleResize() {
+      const rect = conatinerRef.current.getBoundingClientRect();
+      setOffset(rect.x);
+      setWidth(rect.width);
+    }
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [conatinerRef]);
+
   return (
     <>
-      {transitions(
-        (style, item) =>
-          item && (
-            <Container style={style}>
-              <ImageContainer>
-                <StyledImage src={imageSrc} layout="fill" />
-              </ImageContainer>
-              <ImageContainerMobile>
-                <StyledImage src={imageSrcMobile} layout="fill" />
-              </ImageContainerMobile>
-              <Text>
-                <span>
-                  This space is currently empty. Ask anything to start a
-                  discussion.
-                </span>
-                <Right>
-                  Painting co-created with{" "}
-                  <a
-                    href="https://www.midjourney.com/home/"
-                    target="_blank"
-                    rel="nonopener"
-                  >
-                    AI
-                  </a>
-                  .
-                </Right>
-              </Text>
-            </Container>
-          )
-      )}
+      <Container style={{ left: offset, width }}>
+        <ImageContainer>
+          <StyledImage src={imageSrc} layout="fill" />
+        </ImageContainer>
+        <ImageContainerMobile>
+          <StyledImage src={imageSrcMobile} layout="fill" />
+        </ImageContainerMobile>
+        <Text>
+          <span>
+            This space is currently empty. Ask anything to start a discussion.
+          </span>
+          <Right>
+            Painting co-created with{" "}
+            <a
+              href="https://www.midjourney.com/home/"
+              target="_blank"
+              rel="nonopener"
+            >
+              AI
+            </a>
+            .
+          </Right>
+        </Text>
+      </Container>
     </>
   );
 }
 
 const ImageContainer = styled.div`
   display: grid;
-  width: auto;
 
   ${mq.tablet} {
     display: none;
@@ -69,23 +77,23 @@ const ImageContainer = styled.div`
 
 const ImageContainerMobile = styled.div`
   display: grid;
-  width: auto;
 
   ${mq.tabletUp} {
     display: none;
   }
 `;
 
-const Container = styled(animated.div)`
-  position: absolute;
+const Container = styled.div`
+  position: fixed;
   left: 0;
-  top: -571px;
   height: 571px;
+  bottom: 132px;
   display: flex;
   align-items: flex-end;
   width: 100%;
+  z-index: 0;
 
-  &::after {
+  &::before {
     content: "";
     position: absolute;
     width: 100%;
@@ -95,6 +103,11 @@ const Container = styled(animated.div)`
     background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
     pointer-events: none;
     z-index: 1;
+  }
+
+  ${mq.phablet} {
+    height: 419px;
+    bottom: 96px;
   }
 `;
 
@@ -112,7 +125,6 @@ const Text = styled.div`
   }
 
   ${mq.phablet} {
-    height: 100%;
     padding: 18px 0 16px;
   }
 `;

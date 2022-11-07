@@ -1,11 +1,11 @@
 import { signIn } from "next-auth/react";
 import styled from "styled-components";
-import { mq } from "../styles/mediaqueries";
-import { theme } from "../styles/theme";
-import Button from "./Button";
-import IconShield from "./Icons/IconShield";
+import { mq } from "../../styles/mediaqueries";
+import { theme } from "../../styles/theme";
+import Button from "../Button";
+import IconShield from "../Icons/IconShield";
 
-export default function AuthenticationOverlay() {
+export default function OverlayAuthentication() {
   return (
     <>
       <RadialShadow />

@@ -3,29 +3,27 @@ import en from "javascript-time-ago/locale/en";
 import { useSession } from "next-auth/react";
 import { Fragment, useContext } from "react";
 import styled from "styled-components";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Document from "@tiptap/extension-document";
 import Link from "@tiptap/extension-link";
 import Paragraph from "@tiptap/extension-paragraph";
-import Placeholder from "@tiptap/extension-placeholder";
 import Text from "@tiptap/extension-text";
 import { useEditor } from "@tiptap/react";
-import { clamp } from "../helpers/numbers";
-import { ellipsis } from "../styles/css";
-import { mq } from "../styles/mediaqueries";
-import { theme } from "../styles/theme";
-import Avatar from "./Avatar";
-import Badge from "./Badge";
-import Dot from "./Dot";
-import Editor from "./Forms/Editor";
-import IconDelete from "./Icons/IconDelete";
-import IconEdit from "./Icons/IconEdit";
-import IconLike from "./Icons/IconLike";
-import IconLiked from "./Icons/IconLiked";
-import IconReplied from "./Icons/IconReplied";
-import IconReply from "./Icons/IconReply";
-import Names from "./Names";
-import { OverlayContext, OverlayType } from "./Overlay";
+import { clamp } from "../../helpers/numbers";
+import { useCommentMutations } from "../../lib/hooks/useCommentMutations";
+import { ellipsis } from "../../styles/css";
+import { mq } from "../../styles/mediaqueries";
+import { theme } from "../../styles/theme";
+import Avatar from "../Avatar";
+import Dot from "../Dot";
+import Editor from "../Forms/Editor";
+import IconDelete from "../Icons/IconDelete";
+import IconEdit from "../Icons/IconEdit";
+import IconLike from "../Icons/IconLike";
+import IconLiked from "../Icons/IconLiked";
+import IconReplied from "../Icons/IconReplied";
+import IconReply from "../Icons/IconReply";
+import Names from "../Names";
+import { OverlayContext, OverlayType } from "../Overlay/Overlay";
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
@@ -43,68 +41,9 @@ function CommentsRecursive({
   editId,
   setEditId,
 }) {
-  const session = useSession();
   const { showOverlay } = useContext(OverlayContext);
-
-  const queryClient = useQueryClient();
-  const likeMutation = useMutation({
-    mutationKey: ["comments", article.id],
-    mutationFn: ({ commentId, userId }: any) => {
-      return fetch(`/api/articles/${article.slug}/comments/${commentId}/like`, {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ commentId, userId }),
-      });
-    },
-    onMutate: async (newComment) => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({
-        queryKey: ["comments", article.id],
-      });
-
-      // Snapshot the previous value
-      const previousComments = queryClient.getQueryData([
-        "comments",
-        article.id,
-      ]);
-
-      // Optimistically update to the new value
-      queryClient.setQueryData(["comments", article.id], (comments: any) => {
-        return comments.map((comment) => {
-          if (comment.id == newComment.commentId) {
-            const shouldLike = !comment.liked;
-
-            return {
-              ...comment,
-              _count: {
-                ...comment._count,
-                likes: shouldLike
-                  ? comment._count.likes + 1
-                  : comment._count.likes - 1,
-              },
-              liked: shouldLike,
-            };
-          }
-
-          return comment;
-        });
-      });
-
-      // Return a context object with the snapshotted value
-      return { previousComments };
-    },
-    onError: (err, newTodo, context) => {
-      queryClient.setQueryData(
-        ["comments", article.id],
-        context.previousComments
-      );
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", article.id] });
-    },
-  });
+  const commentMutations = useCommentMutations({ article });
+  const session = useSession();
 
   const handleLike = (event: React.MouseEvent, comment) => {
     event.preventDefault();
@@ -113,61 +52,11 @@ function CommentsRecursive({
       return showOverlay(OverlayType.AUTHENTICATION);
     }
 
-    likeMutation.mutate({
+    commentMutations.like.mutate({
       userId: session.data.user.id,
       commentId: comment.id,
     });
   };
-
-  const deleteMutation = useMutation({
-    mutationKey: ["comments", article.id],
-    mutationFn: (commentId: string) => {
-      return fetch(`/api/articles/${article.slug}/comments/${commentId}`, {
-        method: "delete",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-    },
-    onMutate: async (commentId) => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({
-        queryKey: ["comments", article.id],
-      });
-
-      // Snapshot the previous value
-      const previousComments = queryClient.getQueryData([
-        "comments",
-        article.id,
-      ]);
-
-      // Optimistically update to the new value
-      queryClient.setQueryData(["comments", article.id], (comments: any) => {
-        return comments.map((comment) => {
-          if (comment.id == commentId) {
-            comment.authorId = null;
-            delete comment.author;
-
-            return comment;
-          }
-
-          return comment;
-        });
-      });
-
-      // Return a context object with the snapshotted value
-      return { previousComments };
-    },
-    onError: (err, newTodo, context) => {
-      queryClient.setQueryData(
-        ["comments", article.id],
-        context.previousComments
-      );
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", article.id] });
-    },
-  });
 
   const handleDelete = (event: React.MouseEvent, commentId) => {
     event.preventDefault();
@@ -178,7 +67,7 @@ function CommentsRecursive({
       text: "Are you sure you want to delete this comment? This cannot be undone. Any replies you may have received will remain visible.",
       right: {
         text: "Delete",
-        action: () => deleteMutation.mutate(commentId),
+        action: () => commentMutations.delete.mutate(commentId),
       },
     });
   };

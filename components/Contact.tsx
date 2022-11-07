@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import styled from "styled-components";
 import IconGoTo from "./Icons/IconGoTo";
-import { OverlayContext, OverlayType } from "./Overlay";
+import { OverlayContext, OverlayType } from "./Overlay/Overlay";
 import Subscribe from "./Subscribe";
 
 export default function Contact() {

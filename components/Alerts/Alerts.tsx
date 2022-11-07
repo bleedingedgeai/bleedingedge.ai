@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { animated, useSpring, useTransition } from "react-spring";
 import styled from "styled-components";
+import Portal from "../Portal";
 import { Alert, AlertsContext } from "./AlertsProvider";
-import Portal from "./Portal";
 
 function Alerts() {
   const { alerts, hideAlert } = useContext(AlertsContext);

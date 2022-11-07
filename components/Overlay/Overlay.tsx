@@ -2,17 +2,17 @@ import React, { useCallback, useContext, useEffect, useReducer } from "react";
 import OutsideClickHandler from "react-outside-click-handler";
 import { animated, useTransition } from "react-spring";
 import styled from "styled-components";
-import { scrollable } from "../helpers/dom";
-import { useMediaQuery } from "../hooks/useMediaQuery";
-import { mq } from "../styles/mediaqueries";
-import { theme } from "../styles/theme";
-import AuthenticationOverlay from "./AuthenticationOverlay";
-import ConfirmationOverlay from "./ConfirmationOverlay";
-import IconEx from "./Icons/IconEx";
-import Slidein from "./OverlaySlidein";
-import Portal from "./Portal";
-import SubscribeOverlay from "./SubscribeOverlay";
-import SuggestionOverlay from "./SuggestionOverlay";
+import { scrollable } from "../../helpers/dom";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
+import { mq } from "../../styles/mediaqueries";
+import { theme } from "../../styles/theme";
+import IconEx from "../Icons/IconEx";
+import Portal from "../Portal";
+import OverlayAuthentication from "./OverlayAuthentication";
+import OverlayConfirmation from "./OverlayConfirmation";
+import OverlaySlidein from "./OverlaySlidein";
+import OverlaySubscribe from "./OverlaySubscribe";
+import OverlaySuggestion from "./OverlaySuggestion";
 
 export enum OverlayType {
   SUGGESTION = "SUGGESTION",
@@ -22,10 +22,10 @@ export enum OverlayType {
 }
 
 const OverlayComponentMap = {
-  [OverlayType.SUGGESTION]: <SuggestionOverlay />,
-  [OverlayType.SUBSCRIBE]: <SubscribeOverlay />,
-  [OverlayType.AUTHENTICATION]: <AuthenticationOverlay />,
-  [OverlayType.CONFIRMATION]: <ConfirmationOverlay />,
+  [OverlayType.SUGGESTION]: <OverlaySuggestion />,
+  [OverlayType.SUBSCRIBE]: <OverlaySubscribe />,
+  [OverlayType.AUTHENTICATION]: <OverlayAuthentication />,
+  [OverlayType.CONFIRMATION]: <OverlayConfirmation />,
 };
 
 enum Action {
@@ -144,7 +144,7 @@ export default function Overlay() {
   }, [OverlayComponent]);
 
   if (phablet) {
-    return <Slidein />;
+    return <OverlaySlidein />;
   }
 
   return (

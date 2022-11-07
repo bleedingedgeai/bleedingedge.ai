@@ -7,7 +7,7 @@ import Bounds from "./Bounds";
 import IconArrowLeft from "./Icons/IconArrowLeft";
 import IconEx from "./Icons/IconEx";
 import IconLogo from "./Icons/IconLogo";
-import { OverlayContext, OverlayType } from "./Overlay";
+import { OverlayContext, OverlayType } from "./Overlay/Overlay";
 import Portal from "./Portal";
 
 export default function Navigation() {
