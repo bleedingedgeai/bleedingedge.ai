@@ -64,48 +64,6 @@ const Right = styled.div`
     max-width: 100%;
     padding-top: 0;
   }
-  /* 
-  &::before {
-    content: "";
-    position: fixed;
-    width: 100%;
-    height: 124px;
-    left: 0;
-    top: 0;
-    background: linear-gradient(#000 50%, transparent 100%);
-    z-index: 2;
-    pointer-events: none;
-
-    ${mq.desktopSmall} {
-      background: linear-gradient(#000 87%, transparent 100%);
-      height: 180px;
-    }
-
-    ${mq.phablet} {
-      display: none;
-    }
-  }
-
-  &::after {
-    content: "";
-    position: fixed;
-    width: 100%;
-    height: 143px;
-    left: 0;
-    bottom: 0;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
-    pointer-events: none;
-    z-index: 2;
-
-    ${mq.desktopSmall} {
-      bottom: 0;
-    }
-
-    ${mq.phablet} {
-      height: 60px;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
-    }
-  } */
 `;
 
 const Glow = styled.div`

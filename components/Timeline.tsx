@@ -104,41 +104,90 @@ export default function Timeline({ articles, sort }: TimelineProps) {
   );
 
   return (
-    <Container>
-      {Object.keys(groupedArticles)
-        .sort(sortMethod)
-        .map((date, index) => {
-          const sortedArticles = [...groupedArticles[date]].sort((a, b) =>
-            sortMethod(a.postedAt, b.postedAt)
-          );
+    <>
+      <Shadow />
 
-          return (
-            <Content key={date}>
-              <Timestamp first={index === 0} dateKey={date} />
-              {sortedArticles.map((article, index) => {
-                const firstArticle = index === 0;
-                const nextArticle = sortedArticles[index + 1];
-                const withMarginTop = firstArticle && Boolean(article?.format);
-                const withMarginBottom =
-                  Boolean(article?.format) && Boolean(nextArticle?.format);
+      <Container>
+        {Object.keys(groupedArticles)
+          .sort(sortMethod)
+          .map((date, index) => {
+            const sortedArticles = [...groupedArticles[date]].sort((a, b) =>
+              sortMethod(a.postedAt, b.postedAt)
+            );
 
-                return (
-                  <Article
-                    key={article.title}
-                    article={article}
-                    dateKey={date}
-                    withMarginTop={withMarginTop}
-                    withMarginBottom={withMarginBottom}
-                    nextArticleIsDefault={!Boolean(nextArticle?.format)}
-                  />
-                );
-              })}
-            </Content>
-          );
-        })}
-    </Container>
+            return (
+              <Content key={date}>
+                <Timestamp first={index === 0} dateKey={date} />
+                {sortedArticles.map((article, index) => {
+                  const firstArticle = index === 0;
+                  const nextArticle = sortedArticles[index + 1];
+                  const withMarginTop =
+                    firstArticle && Boolean(article?.format);
+                  const withMarginBottom =
+                    Boolean(article?.format) && Boolean(nextArticle?.format);
+
+                  return (
+                    <Article
+                      key={article.title}
+                      article={article}
+                      dateKey={date}
+                      withMarginTop={withMarginTop}
+                      withMarginBottom={withMarginBottom}
+                      nextArticleIsDefault={!Boolean(nextArticle?.format)}
+                    />
+                  );
+                })}
+              </Content>
+            );
+          })}
+      </Container>
+    </>
   );
 }
+
+const Shadow = styled.div`
+  &::before {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 124px;
+    left: 0;
+    top: 0;
+    background: linear-gradient(#000 50%, transparent 100%);
+    z-index: 2;
+    pointer-events: none;
+
+    ${mq.desktopSmall} {
+      background: linear-gradient(#000 87%, transparent 100%);
+      height: 180px;
+    }
+
+    ${mq.phablet} {
+      display: none;
+    }
+  }
+
+  &::after {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 143px;
+    left: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
+    pointer-events: none;
+    z-index: 2;
+
+    ${mq.desktopSmall} {
+      bottom: 0;
+    }
+
+    ${mq.phablet} {
+      height: 60px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
+    }
+  }
+`;
 
 const Content = styled.div`
   margin-bottom: 16px;

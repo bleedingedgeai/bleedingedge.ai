@@ -57,11 +57,15 @@ export default function Sidebar() {
         <Row>
           <Subscribe />
         </Row>
-        {!session.data ? (
-          <StyledButton onClick={() => signIn("twitter")}>Sign in</StyledButton>
-        ) : (
-          <StyledButton onClick={() => signOut()}>Sign out</StyledButton>
-        )}
+        <Row style={{ opacity: session.status === "loading" ? 0 : 1 }}>
+          {!session.data ? (
+            <StyledButton onClick={() => signIn("twitter")}>
+              Sign in
+            </StyledButton>
+          ) : (
+            <StyledButton onClick={() => signOut()}>Sign out</StyledButton>
+          )}
+        </Row>
       </div>
       <div>
         <Description>
@@ -89,6 +93,7 @@ export default function Sidebar() {
 
 const Row = styled.div`
   margin-bottom: 8px;
+  transition: opacity 0.2s;
 `;
 
 const Spacer = styled.div`

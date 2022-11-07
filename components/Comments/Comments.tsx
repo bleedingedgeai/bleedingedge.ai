@@ -448,14 +448,6 @@ const IconConnectionCurve = () => (
   </svg>
 );
 
-const BadgeContainer = styled.span`
-  margin-left: 12px;
-`;
-
-const Name = styled.span`
-  color: ${(p) => p.theme.colors.off_white};
-`;
-
 const Content = styled.div<{ isHost: boolean }>`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-size: 14px;
@@ -479,7 +471,7 @@ const UpdatedAt = styled.span`
 
 const Actions = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 54px);
+  grid-template-columns: repeat(4, minmax(54px, auto));
 `;
 
 const Action = styled.div``;

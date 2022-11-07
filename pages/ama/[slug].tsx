@@ -148,7 +148,10 @@ export default function AmaPage({ article }) {
 
   return (
     <>
-      <SEO title="bleeding edge" />
+      <SEO
+        title={`bleeding edge | ${articleFromQuery.title}`}
+        description={article.summary}
+      />
       <Layout>
         <Ama article={articleFromQuery} comments={commentsFromQuery} />
       </Layout>
