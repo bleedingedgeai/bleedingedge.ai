@@ -119,7 +119,7 @@ export default function Ama({ article, comments }) {
   return (
     <>
       <Container>
-        <Shadows />
+        <Shadows showEmptyState={showEmptyState} />
         <BackLinkContainer>
           <Link href="/ama">
             <BackLink>
@@ -208,7 +208,7 @@ export default function Ama({ article, comments }) {
           <CommentsInput {...sharedProps} comments={comments} />
         </div>
       </Container>
-      <CommentsEmptyState conatinerRef={conatinerRef} show={true} />
+      {showEmptyState && <CommentsEmptyState conatinerRef={conatinerRef} />}
     </>
   );
 }
@@ -259,7 +259,7 @@ const AbsoluteTitle = styled.div`
   ${ellipsis};
 `;
 
-const Shadows = styled.div`
+const Shadows = styled.div<{ showEmptyState: boolean }>`
   &::before {
     content: "";
     position: fixed;
@@ -280,7 +280,7 @@ const Shadows = styled.div`
     content: "";
     position: fixed;
     width: 100%;
-    height: 160px;
+    height: ${(p) => (p.showEmptyState ? "0" : "200px")};
     left: 0;
     bottom: 0;
     background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 33%);

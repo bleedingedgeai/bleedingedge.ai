@@ -1,13 +1,12 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { animated, useTransition } from "react-spring";
 import styled from "styled-components";
 import { getRandomWholeNumber } from "../../helpers/numbers";
 import { mq } from "../../styles/mediaqueries";
 
 const imageBasePath = `/assets/painting/painting-`;
 
-export default function CommentsEmptyState({ show, conatinerRef }) {
+export default function CommentsEmptyState({ conatinerRef }) {
   const [offset, setOffset] = useState(0);
   const [width, setWidth] = useState(0);
 
@@ -17,13 +16,6 @@ export default function CommentsEmptyState({ show, conatinerRef }) {
   const imageSrcMobile = useMemo(() => {
     return `${imageBasePath}${getRandomWholeNumber(1, 4)}-mobile.jpg`;
   }, []);
-
-  const transitions = useTransition(show, {
-    from: { opacity: 1 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-    config: { tension: 280, friction: 30 },
-  });
 
   useEffect(() => {
     function handleResize() {
