@@ -479,8 +479,7 @@ const UpdatedAt = styled.span`
 
 const Actions = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, auto);
-  grid-gap: 24px;
+  grid-template-columns: repeat(4, 54px);
 `;
 
 const Action = styled.div``;

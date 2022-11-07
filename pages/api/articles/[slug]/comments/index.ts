@@ -46,29 +46,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "GET") {
       const slug = req.query.slug as string;
 
-      const rawPost = await prisma.post.findUnique({
-        where: { slug },
-      });
+      const rawPost = await prisma.post.findUnique({ where: { slug } });
 
       if (!rawPost) {
         return res.status(200);
       }
 
-      const likes = await prisma.postLike.findMany({
-        where: {
-          userId: session?.user?.id,
-          postId: rawPost.id,
-        },
-      });
-
-      const post = clean({
-        ...rawPost,
-        liked: likes.find((like) => like.postId === rawPost.id),
-      });
-
       const rawComments = await prisma.comment.findMany({
         where: {
-          postId: post.id,
+          postId: rawPost.id,
         },
         include: {
           author: true,
@@ -77,6 +63,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           },
         },
       });
+
+      if (!session) {
+        return res.status(200).json(clean(rawComments));
+      }
+
       const commentLikes = await prisma.commentLike.findMany({
         where: {
           userId: session?.user?.id,

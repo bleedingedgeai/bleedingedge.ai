@@ -5,6 +5,7 @@ import FilterAndSortMobile from "../../../components/FilterAndSortMobile";
 import Layout from "../../../components/Layout";
 import SEO from "../../../components/SEO";
 import TimelineAma from "../../../components/TimelineAma";
+import { clean } from "../../../helpers/json";
 import prisma from "../../../lib/prisma";
 import { mq } from "../../../styles/mediaqueries";
 import { Sort } from "../..";
@@ -45,7 +46,7 @@ export async function getServerSideProps(req, res) {
 
     return {
       props: {
-        articles: JSON.parse(JSON.stringify(articles)),
+        articles: clean(articles),
         tags,
         tag: req.query.tag,
       },

@@ -143,7 +143,7 @@ function AlertsElements({
                   } as any
                 }
               >
-                {Icon && <Icon />}
+                {Icon && <Icon size={18} />}
                 {Text && <Text />}
               </AlertElement>
             </animated.div>
@@ -187,10 +187,12 @@ const AlertElement = styled.span`
   line-height: 1;
   white-space: nowrap;
   overflow: hidden;
-  padding: 0 21px 0px 10px;
+  padding: 0 19px 0px 12px;
   background: rgba(133, 133, 133, 0.21);
   box-shadow: 0px 4px 35px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(13px);
+  font-size: 16px;
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
 
   svg {
     position: relative;
@@ -199,7 +201,7 @@ const AlertElement = styled.span`
 
   & > svg {
     top: 1px;
-    margin-right: 12px;
+    margin-right: 19px;
   }
 `;
 
@@ -207,7 +209,7 @@ const AlertElementHidden = styled.span`
   position: absolute;
   pointer-events: none;
   border-radius: 43px;
-  padding: 0 21px 2px 10px;
+  padding: 0 19px 0px 12px;
   height: 38px;
   display: flex;
   align-items: center;
@@ -216,6 +218,8 @@ const AlertElementHidden = styled.span`
   white-space: nowrap;
   overflow: hidden;
   opacity: 0;
+  font-size: 16px;
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
 
   span {
     padding-top: 1px;
@@ -224,6 +228,6 @@ const AlertElementHidden = styled.span`
   svg {
     position: relative;
     top: 1px;
-    margin-right: 16px;
+    margin-right: 19px;
   }
 `;

@@ -193,34 +193,35 @@ export default function CommentsInput({
   return (
     <Portal>
       <Container style={{ left: offset, width }}>
+        {replyingToComment && (
+          <ReplyingTo>
+            <div>
+              Replying to <span>{replyingToComment.author.name}</span>
+            </div>
+            <button onClick={() => setParentId(null)}>
+              <IconEx size={16} fill={theme.colors.white} />
+            </button>
+          </ReplyingTo>
+        )}
+        {commentToEdit && (
+          <ReplyingTo>
+            <div>Editing message</div>
+            <button
+              onClick={() => {
+                localStorage.removeItem(`comment-${article.slug}`);
+                editor.commands.clearContent();
+                setEditId(null);
+              }}
+            >
+              <IconEx size={16} fill={theme.colors.white} />
+            </button>
+          </ReplyingTo>
+        )}
         <Inner>
           <BlueGradientContainer>
             <BlueGradient />
           </BlueGradientContainer>
-          {replyingToComment && (
-            <ReplyingTo>
-              <div>
-                Replying to <span>{replyingToComment.author.name}</span>
-              </div>
-              <button onClick={() => setParentId(null)}>
-                <IconEx size={16} fill={theme.colors.white} />
-              </button>
-            </ReplyingTo>
-          )}
-          {commentToEdit && (
-            <ReplyingTo>
-              <div>Editing message</div>
-              <button
-                onClick={() => {
-                  localStorage.removeItem(`comment-${article.slug}`);
-                  editor.commands.clearContent();
-                  setEditId(null);
-                }}
-              >
-                <IconEx size={16} fill={theme.colors.white} />
-              </button>
-            </ReplyingTo>
-          )}
+
           <CommentInputForm
             onSubmit={handleSubmit}
             onClick={() => editor?.commands?.focus()}

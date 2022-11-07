@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
+import { clean } from "../../../helpers/json";
 import { withMethods } from "../../../lib/middleware/withMethods";
 import prisma from "../../../lib/prisma";
 import { authOptions } from "../auth/[...nextauth]";
@@ -33,7 +34,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     });
 
     if (!session) {
-      return res.status(200).json(JSON.parse(JSON.stringify(rawPosts)));
+      return res.status(200).json(clean(rawPosts));
     }
 
     const likes = await prisma.postLike.findMany({
@@ -51,7 +52,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       };
     });
 
-    return res.status(200).json(JSON.parse(JSON.stringify(posts)));
+    return res.status(200).json(clean(posts));
   } catch (error) {
     res.status(500);
   }

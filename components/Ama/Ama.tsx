@@ -87,7 +87,7 @@ export default function Ama({ article, comments }) {
     copyToClipboard(window.location.href);
     showAlert({
       icon: () => <IconShare fill={theme.colors.white} />,
-      text: `Copied source to clipboard`,
+      text: `Link copied to clipboard`,
     });
   };
 
