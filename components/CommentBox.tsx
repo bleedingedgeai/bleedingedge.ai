@@ -350,6 +350,7 @@ const Container = styled.div`
   bottom: 42px;
   z-index: 3;
   border-radius: 14px;
+  overflow: hidden;
 
   ${mq.tablet} {
     height: 46px;
@@ -412,7 +413,7 @@ const CommentBoxForm = styled.form`
 
   ${mq.tablet} {
     height: 46px;
-    padding: 12px 18px;
+    padding: 13px 18px;
   }
 `;
 
