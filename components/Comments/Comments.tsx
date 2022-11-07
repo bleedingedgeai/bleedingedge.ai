@@ -470,11 +470,13 @@ const UpdatedAt = styled.span`
 `;
 
 const Actions = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, minmax(54px, auto));
+  display: flex;
 `;
 
-const Action = styled.div``;
+const Action = styled.div`
+  min-width: 30px;
+  margin-right: 24px;
+`;
 
 const Bottom = styled.div`
   display: flex;
