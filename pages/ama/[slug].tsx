@@ -524,6 +524,26 @@ const staticArticle = {
         likes: 34,
       },
     },
+    {
+      id: "_comment-17",
+      content:
+        "<p>not related to YC. YC is the best accelerator in the world and i expect it to remain that way for a long time; this is very specifically to help startups rapidly come up to speed on what's about to happen with AI.</p>",
+      authorId: "_placeholder-sama",
+      postId: "_static-1",
+      parentId: "_comment-16",
+      createdAt: "2022-11-04T00:01:40.522Z",
+      updatedAt: "2022-11-04T00:01:40.522Z",
+      author: {
+        id: "_placeholder-sama",
+        name: "Sam Altman",
+        username: "sama",
+        image:
+          "https://pbs.twimg.com/profile_images/804990434455887872/BG0Xh7Oa_normal.jpg",
+      },
+      _count: {
+        likes: 15,
+      },
+    },
   ],
   _count: {
     comments: 5,

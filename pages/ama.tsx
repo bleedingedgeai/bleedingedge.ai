@@ -13,10 +13,6 @@ import { mq } from "../styles/mediaqueries";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { Sort } from ".";
 
-export const config = {
-  runtime: "experimental-edge",
-};
-
 export async function getServerSideProps(context) {
   context.res.setHeader(
     "Cache-Control",
