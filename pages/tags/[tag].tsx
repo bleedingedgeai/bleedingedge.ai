@@ -88,7 +88,7 @@ export default function Tag({ tag, tags, articles, liveArticle }) {
 
   return (
     <>
-      <SEO title={`bleeding edge | ${tag}`} />
+      <SEO title={`${tag} | bleeding edge`} />
       <Layout>
         {Boolean(liveArticle) && <Banner article={liveArticle} />}
         <FilterAndSortSticky>

@@ -67,7 +67,7 @@ export default function AMATag({ tag, tags, articles }) {
 
   return (
     <>
-      <SEO title={`bleeding edge | ${tag} AMAs`} />
+      <SEO title={`${tag} AMAs | bleeding edge`} />
       <Layout>
         <FilterAndSortSticky>
           <FilterAndSort tags={tags} sort={sort} setSort={setSort} />

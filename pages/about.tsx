@@ -53,7 +53,7 @@ export default function About() {
 
   return (
     <>
-      <SEO title="bleeding edge | About" />
+      <SEO title="About | bleeding edge" />
       <Background>
         <Navigation />
         <Bounds>

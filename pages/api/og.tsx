@@ -97,7 +97,13 @@ export default async function handler(req: NextRequest) {
             }}
           >
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <div style={{ color: theme.colors.light_grey }}>
+              <div
+                style={{
+                  color: theme.colors.light_grey,
+                  fontFamily: theme.fontFamily.space,
+                  fontSize: 25,
+                }}
+              >
                 AMA hosted by
               </div>
               <div

@@ -179,7 +179,7 @@ export default function AmaPage({ article }) {
   return (
     <>
       <SEO
-        title={`bleeding edge | ${articleFromQuery.title}`}
+        title={`${articleFromQuery.title} | bleeding edge`}
         description={article.summary}
         image={generateOgImagePath(article)}
       />

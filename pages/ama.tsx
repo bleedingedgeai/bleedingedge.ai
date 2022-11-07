@@ -98,7 +98,7 @@ export default function Ama({ tags }) {
 
   return (
     <>
-      <SEO title="bleeding edge | AMAs" image="/assets/meta/be-meta-AMA.jpg" />
+      <SEO title="AMAs | bleeding edge" image="/assets/meta/be-meta-AMA.jpg" />
       <Layout>
         <FilterAndSortSticky>
           <FilterAndSort tags={tags} sort={sort} setSort={setSort} />
