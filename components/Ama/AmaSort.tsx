@@ -1,5 +1,6 @@
 import { useCallback, useRef } from "react";
 import styled from "styled-components";
+import { uniqBy } from "../../helpers/methods";
 import { mq } from "../../styles/mediaqueries";
 import Participants from "../Participants";
 
@@ -16,7 +17,10 @@ export default function AmaSort({ article, sort, setSort }) {
     [setSort]
   );
 
-  const participants = article.comments.filter((x) => x?.author).length;
+  const participants = uniqBy(
+    article.comments.filter((x) => x?.author),
+    (a) => a.author.id
+  ).length;
 
   if (participants === 0) {
     return <Container ref={conatinerRef} />;

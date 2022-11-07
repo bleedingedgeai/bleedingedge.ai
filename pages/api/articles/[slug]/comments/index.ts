@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
+import { staticAmas } from "../../../../../db/static";
 import { clean } from "../../../../../helpers/json";
 import { withMethods } from "../../../../../lib/middleware/withMethods";
 import prisma from "../../../../../lib/prisma";
@@ -45,6 +46,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     if (req.method === "GET") {
       const slug = req.query.slug as string;
+      const staticPost = staticAmas.find((a) => slug === a.slug);
+      if (staticPost) {
+        return res.status(200).json(staticPost.comments);
+      }
 
       const rawPost = await prisma.post.findUnique({ where: { slug } });
 

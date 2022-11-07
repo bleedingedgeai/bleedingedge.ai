@@ -7,6 +7,7 @@ import FilterAndSortMobile from "../components/FilterAndSortMobile";
 import Layout from "../components/Layout";
 import SEO from "../components/SEO";
 import TimelineAma from "../components/TimelineAma";
+import { staticAmas } from "../db/static";
 import { clean } from "../helpers/json";
 import prisma from "../lib/prisma";
 import { mq } from "../styles/mediaqueries";
@@ -55,7 +56,7 @@ export async function getServerSideProps(context) {
     });
 
     if (!session) {
-      return clean(rawPosts);
+      return clean([...rawPosts, ...staticAmas]);
     }
 
     const likes = await prisma.postLike.findMany({
@@ -73,7 +74,7 @@ export async function getServerSideProps(context) {
       };
     });
 
-    return clean(posts);
+    return clean([...posts, ...staticAmas]);
   });
 
   return {

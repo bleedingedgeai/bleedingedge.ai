@@ -20,7 +20,7 @@ export default function Participants({
   const overflowParticpants = totalPartipants - particpantsToShow?.length;
 
   return (
-    <>
+    <Container>
       {overflowParticpants && !hideExtraText ? (
         <Extra>+{overflowParticpants}</Extra>
       ) : null}
@@ -36,7 +36,7 @@ export default function Participants({
           />
         ))}
       />
-    </>
+    </Container>
   );
 }
 
@@ -44,4 +44,9 @@ const Extra = styled.span`
   font-size: 10px;
   margin-right: 5px;
   color: ${(p) => p.theme.colors.light_grey};
+`;
+
+const Container = styled.span`
+  display: flex;
+  align-items: center;
 `;

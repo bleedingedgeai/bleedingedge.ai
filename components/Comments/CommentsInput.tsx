@@ -9,6 +9,7 @@ import Paragraph from "@tiptap/extension-paragraph";
 import Placeholder from "@tiptap/extension-placeholder";
 import Text from "@tiptap/extension-text";
 import { useEditor } from "@tiptap/react";
+import { uniqBy } from "../../helpers/methods";
 import { useCommentMutations } from "../../lib/hooks/useCommentMutations";
 import { mq } from "../../styles/mediaqueries";
 import { theme } from "../../styles/theme";
@@ -19,14 +20,6 @@ import IconSend from "../Icons/IconSend";
 import suggestion from "../Mention/suggestion";
 import { OverlayContext, OverlayType } from "../Overlay/Overlay";
 import Portal from "../Portal";
-
-function uniqBy(a, key) {
-  let seen = new Set();
-  return a.filter((item) => {
-    let k = key(item);
-    return seen.has(k) ? false : seen.add(k);
-  });
-}
 
 export default function CommentsInput({
   article,
