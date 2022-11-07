@@ -28,6 +28,10 @@ const Container = styled.div`
   .ProseMirror {
     caret-color: ${(p) => p.theme.colors.orange};
 
+    ${mq.tablet} {
+      font-size: 16px;
+    }
+
     .is-editor-empty:first-of-type::before {
       content: attr(data-placeholder);
       float: left;
