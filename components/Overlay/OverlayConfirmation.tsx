@@ -2,9 +2,8 @@ import React, { useCallback, useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { OverlayContext } from "./Overlay";
 
-export default function OverlayConfirmation() {
-  const { hideOverlay, overlayProps } = useContext(OverlayContext);
-  const { heading, text, left, right } = overlayProps;
+export default function OverlayConfirmation({ heading, text, left, right }) {
+  const { hideOverlay } = useContext(OverlayContext);
 
   const buttonLeftRef = useRef<HTMLButtonElement>(null);
   const buttonRightRef = useRef<HTMLButtonElement>(null);

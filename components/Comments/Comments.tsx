@@ -69,6 +69,7 @@ function CommentsRecursive({
         text: "Delete",
         action: () => commentMutations.delete.mutate(commentId),
       },
+      delete: true,
     });
   };
 

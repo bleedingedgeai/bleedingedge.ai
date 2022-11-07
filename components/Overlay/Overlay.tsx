@@ -22,10 +22,10 @@ export enum OverlayType {
 }
 
 const OverlayComponentMap = {
-  [OverlayType.SUGGESTION]: <OverlaySuggestion />,
-  [OverlayType.SUBSCRIBE]: <OverlaySubscribe />,
-  [OverlayType.AUTHENTICATION]: <OverlayAuthentication />,
-  [OverlayType.CONFIRMATION]: <OverlayConfirmation />,
+  [OverlayType.SUGGESTION]: OverlaySuggestion,
+  [OverlayType.SUBSCRIBE]: OverlaySubscribe,
+  [OverlayType.AUTHENTICATION]: OverlayAuthentication,
+  [OverlayType.CONFIRMATION]: OverlayConfirmation,
 };
 
 enum Action {
@@ -115,9 +115,15 @@ export function OverlayProvider(props: React.PropsWithChildren<{}>) {
 
 export default function Overlay() {
   const { phablet } = useMediaQuery();
-  const { OverlayComponent, hideOverlay } = useContext(OverlayContext);
+  const { OverlayComponent, hideOverlay, overlayProps } =
+    useContext(OverlayContext);
 
-  const overlayTransitions = useTransition(OverlayComponent, {
+  const show = OverlayComponent
+    ? { Component: OverlayComponent, props: overlayProps }
+    : null;
+
+  const overlayTransitions = useTransition(show, {
+    key: (item) => item?.Component,
     from: { opacity: 0.6, transform: `scale(0.98) translateY(4px)` },
     enter: { opacity: 1, transform: `scale(1) translateY(0px)` },
     leave: {
@@ -149,26 +155,31 @@ export default function Overlay() {
 
   return (
     <>
-      {overlayTransitions(
-        (style, item) =>
-          item && (
-            <Portal>
-              <Fixed>
-                <OutsideClickHandler onOutsideClick={() => hideOverlay()}>
-                  <Container style={style}>
-                    <ExitContainer onClick={() => hideOverlay()}>
-                      <IconEx size={24} fill={theme.colors.white} />
-                    </ExitContainer>
-                    <BlueGradientContainer>
-                      <BlueGradient />
-                    </BlueGradientContainer>
-                    {OverlayComponent}
-                  </Container>
-                </OutsideClickHandler>
-              </Fixed>
-            </Portal>
-          )
-      )}
+      {overlayTransitions((style, item) => {
+        if (!item) {
+          return null;
+        }
+
+        const { Component, props } = item;
+
+        return (
+          <Portal>
+            <Fixed style={{ opacity: show ? 1 : 0 }}>
+              <OutsideClickHandler onOutsideClick={() => hideOverlay()}>
+                <Container style={style}>
+                  <ExitContainer onClick={() => hideOverlay()}>
+                    <IconEx size={24} fill={theme.colors.white} />
+                  </ExitContainer>
+                  <GradientContainer>
+                    {props?.delete ? <RedGradient /> : <BlueGradient />}
+                  </GradientContainer>
+                  <Component {...props} />
+                </Container>
+              </OutsideClickHandler>
+            </Fixed>
+          </Portal>
+        );
+      })}
     </>
   );
 }
@@ -183,6 +194,8 @@ const Fixed = styled.div`
   top: 0;
   left: 0;
   z-index: 2147483647;
+  background: rgba(0, 0, 0, 0.28);
+  transition: opacity 0.1s;
 `;
 
 const Container = styled(animated.div)`
@@ -207,8 +220,8 @@ const Container = styled(animated.div)`
 
 const ExitContainer = styled.button`
   position: absolute;
-  right: 18px;
-  top: 18px;
+  right: 16px;
+  top: 16px;
   z-index: 1;
 
   ${mq.tablet} {
@@ -222,7 +235,7 @@ const ExitContainer = styled.button`
   }
 `;
 
-const BlueGradientContainer = styled.div`
+const GradientContainer = styled.div`
   position: absolute;
   bottom: 0;
   right: 0;
@@ -275,6 +288,58 @@ const BlueGradient = () => (
         <stop stopColor="#072839" />
         <stop offset="0.525533" stopColor="#033151" />
         <stop offset="1" stopColor="#28445C" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+const RedGradient = () => (
+  <svg
+    width="401"
+    height="192"
+    viewBox="0 0 401 192"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g filter="url(#filter0_f_878_3265)">
+      <path
+        d="M438 144V222H177.964L144 197.3L177.964 144H438Z"
+        fill="url(#paint0_linear_878_3265)"
+        fillOpacity="0.4"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_f_878_3265"
+        x="0"
+        y="0"
+        width="582"
+        height="366"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="BackgroundImageFix"
+          result="shape"
+        />
+        <feGaussianBlur
+          stdDeviation="72"
+          result="effect1_foregroundBlur_878_3265"
+        />
+      </filter>
+      <linearGradient
+        id="paint0_linear_878_3265"
+        x1="336.5"
+        y1="204.5"
+        x2="258.533"
+        y2="128.005"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#FA2162" stopOpacity="0.89" />
+        <stop offset="1" stopColor="#FA2162" stopOpacity="0" />
       </linearGradient>
     </defs>
   </svg>
