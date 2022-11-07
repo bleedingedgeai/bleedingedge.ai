@@ -1194,10 +1194,95 @@ const staticArticle = {
         likes: 1,
       },
     },
+    {
+      id: "_comment-60",
+      content: "<p>How much equity will teams have to give up?</p>",
+      authorId: "@wichmaennchen",
+      postId: "_static-1",
+      parentId: null,
+      createdAt: "2022-11-04T00:01:40.522Z",
+      updatedAt: "2022-11-04T00:01:40.522Z",
+      author: {
+        id: "wichmaennchen",
+        name: "Pascal Wichmann 🇺🇦",
+        username: "wichmaennchen",
+        image:
+          "https://pbs.twimg.com/profile_images/1531403119371894792/YQPalmOz_400x400.jpg",
+      },
+      _count: {
+        likes: 8,
+      },
+    },
+    {
+      id: "_comment-61",
+      content:
+        "<p>10%. however, we are still iterating on this and open to experimentation.</p>",
+      authorId: sam.id,
+      postId: "_static-1",
+      parentId: "_comment-60",
+      createdAt: "2022-11-04T00:01:40.522Z",
+      updatedAt: "2022-11-04T00:01:40.522Z",
+      author: sam,
+      _count: {
+        likes: 13,
+      },
+    },
+    {
+      id: "_comment-62",
+      content: "<p>hi yes i have a question</p>",
+      authorId: "@jaltma",
+      postId: "_static-1",
+      parentId: null,
+      createdAt: "2022-11-04T00:01:40.522Z",
+      updatedAt: "2022-11-04T00:01:40.522Z",
+      author: {
+        id: "jaltma",
+        name: "Jack Altman",
+        username: "jaltma",
+        image:
+          "https://pbs.twimg.com/profile_images/882693854687776768/UJ4OgdGc_400x400.jpg",
+      },
+      _count: {
+        likes: 34,
+      },
+    },
+    {
+      id: "_comment-63",
+      content: "<p>lets hear it</p>",
+      authorId: sam.id,
+      postId: "_static-1",
+      parentId: "_comment-62",
+      createdAt: "2022-11-04T00:01:40.522Z",
+      updatedAt: "2022-11-04T00:01:40.522Z",
+      author: sam,
+      _count: {
+        likes: 18,
+      },
+    },
+    {
+      id: "_comment-64",
+      content:
+        "<p>now that I have this hot mic I’m at loss. Let me consult gpt3 and get back to you</p>",
+      authorId: "@jaltma",
+      postId: "_static-1",
+      parentId: "_comment-62",
+      createdAt: "2022-11-04T00:01:40.522Z",
+      updatedAt: "2022-11-04T00:01:40.522Z",
+      author: {
+        id: "jaltma",
+        name: "Jack Altman",
+        username: "jaltma",
+        image:
+          "https://pbs.twimg.com/profile_images/882693854687776768/UJ4OgdGc_400x400.jpg",
+      },
+      _count: {
+        likes: 15,
+      },
+    },
   ],
   _count: {
     comments: 5,
-    likes: 85,
+    likes: 1,
   },
 };
 
