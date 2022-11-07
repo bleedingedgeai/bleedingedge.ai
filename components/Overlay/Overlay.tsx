@@ -160,7 +160,7 @@ export default function Overlay() {
           return null;
         }
 
-        const { Component, props } = item;
+        const { Component, props } = item as any;
 
         return (
           <Portal>
