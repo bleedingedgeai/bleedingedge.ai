@@ -94,6 +94,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   );
 
   await queryClient.fetchQuery(["comments", post.id], async () => {
+    if (staticPost) {
+      return staticPost.comments;
+    }
+
     const rawComments = await prisma.comment.findMany({
       where: {
         postId: post.id,
