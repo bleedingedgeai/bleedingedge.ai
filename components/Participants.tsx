@@ -2,7 +2,13 @@ import styled from "styled-components";
 import Avatar from "./Avatar";
 import Stacked from "./Stacked";
 
-export default function Participants({ article, hideExtraText }) {
+export default function Participants({
+  article,
+  hideExtraText,
+}: {
+  article: any;
+  hideExtraText?: boolean;
+}) {
   const commentsWithAuthors = article?.comments?.filter((c) => c.author);
 
   if (commentsWithAuthors.length === 0) {
