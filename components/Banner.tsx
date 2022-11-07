@@ -136,6 +136,8 @@ const Gradient = styled.div`
 
 const ContainerMobile = styled.div`
   margin-bottom: 40px;
+  border-radius: 16px;
+  overflow: hidden;
 
   ${mq.phabletUp} {
     display: none;
@@ -176,6 +178,7 @@ const Inner = styled.div`
     border-radius: 16px;
     flex-direction: column;
     width: calc(100% - 2px);
+    overflow: hidden;
   }
 `;
 
@@ -198,6 +201,9 @@ const Wrapper = styled.div`
   height: 100%;
   isolation: isolate;
   transform: translateZ(10px);
+  border-radius: 16px;
+  overflow: hidden;
+  display: block;
 `;
 
 const Live = styled.span`

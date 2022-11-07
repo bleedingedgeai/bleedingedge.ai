@@ -36,6 +36,11 @@ export function formatNestedComments(comments: Array<any>) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  context.res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
+
   const queryClient = new QueryClient();
 
   const sessionRequest = unstable_getServerSession(

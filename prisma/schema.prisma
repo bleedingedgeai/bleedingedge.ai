@@ -111,6 +111,8 @@ model Comment {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([postId, parentId])
 }
 
 model PostLike {
@@ -120,6 +122,7 @@ model PostLike {
   postId String
 
   @@id([userId, postId])
+  @@index([userId, postId])
 }
 
 model CommentLike {
@@ -129,4 +132,5 @@ model CommentLike {
   commentId String
 
   @@id([userId, commentId])
+  @@index([userId, commentId])
 }

@@ -14,6 +14,11 @@ import { authOptions } from "./api/auth/[...nextauth]";
 import { Sort } from ".";
 
 export async function getServerSideProps(context) {
+  context.res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
+
   const sessionRequest = unstable_getServerSession(
     context.req,
     context.res,
