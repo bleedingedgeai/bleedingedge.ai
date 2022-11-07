@@ -1,5 +1,5 @@
 import React, { useCallback, useReducer } from "react";
-import { Icon } from "./Icons/types";
+import { Icon } from "../Icons/types";
 
 export type Id = string;
 export type Callback = () => void;
