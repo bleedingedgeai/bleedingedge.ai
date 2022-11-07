@@ -31,7 +31,7 @@ export default function AmaSort({ article, sort, setSort }) {
       </SortContainer>
       <Right>
         Participants <Number>{participants}</Number>{" "}
-        <Participants article={article} />
+        <Participants article={article} hideExtraText />
       </Right>
     </Container>
   );

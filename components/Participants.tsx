@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Avatar from "./Avatar";
 import Stacked from "./Stacked";
 
-export default function Participants({ article }) {
+export default function Participants({ article, hideExtraText }) {
   const commentsWithAuthors = article?.comments?.filter((c) => c.author);
 
   if (commentsWithAuthors.length === 0) {
@@ -15,7 +15,9 @@ export default function Participants({ article }) {
 
   return (
     <>
-      {overflowParticpants ? <Extra>+{overflowParticpants}</Extra> : null}
+      {overflowParticpants && !hideExtraText ? (
+        <Extra>+{overflowParticpants}</Extra>
+      ) : null}
       <Stacked
         size={18}
         direction="right"
