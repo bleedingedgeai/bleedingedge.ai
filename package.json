@@ -23,6 +23,7 @@
     "@tiptap/extension-text": "^2.0.0-beta.202",
     "@tiptap/react": "^2.0.0-beta.202",
     "@tiptap/suggestion": "^2.0.0-beta.202",
+    "@vercel/og": "^0.0.20",
     "airtable": "^0.11.5",
     "feed": "^4.2.2",
     "fuse.js": "^6.6.2",

@@ -43,7 +43,7 @@ export default class MyDocument extends Document {
             crossOrigin=""
           />
           <link
-            href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=block"
             rel="stylesheet"
           />
           <link href="/fonts/fonts.css" rel="stylesheet" />
