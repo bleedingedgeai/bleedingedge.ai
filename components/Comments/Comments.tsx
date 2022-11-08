@@ -19,7 +19,7 @@ import { mq } from "../../styles/mediaqueries";
 import { theme } from "../../styles/theme";
 import Avatar from "../Avatar";
 import Dot from "../Dot";
-import Editor from "../Forms/Editor";
+import Editor, { editorCss } from "../Forms/Editor";
 import IconDelete from "../Icons/IconDelete";
 import IconEdit from "../Icons/IconEdit";
 import IconLike from "../Icons/IconLike";
@@ -158,7 +158,10 @@ function CommentsRecursive({
                   <UpdatedAt>{timeAgo(new Date(comment.updatedAt))}</UpdatedAt>
                 </Author>
                 <Content isHostReply={isHostReply}>
-                  <CommentEditor content={comment.content} />
+                  <CommentEditor
+                    fontSize={14}
+                    dangerouslySetInnerHTML={{ __html: comment.content }}
+                  />
                 </Content>
                 <Bottom>
                   {isEditingThisComment ? (
@@ -335,15 +338,9 @@ function CommentDeleted({
   );
 }
 
-function CommentEditor({ content }) {
-  const editor = useEditor({
-    extensions: [Document, Paragraph, Text, Link],
-    content,
-    editable: false,
-  });
-
-  return <Editor editor={editor} fontSize={14} />;
-}
+const CommentEditor = styled.div`
+  ${editorCss}
+`;
 
 const DeletedContainer = styled.div`
   position: relative;
