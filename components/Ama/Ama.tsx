@@ -199,7 +199,6 @@ export default function Ama({ article, comments }) {
           </Link>
         </BackLinkContainer>
         <div style={{ width: "100%", position: "relative" }}>
-          <MobileGlow />
           <Main>
             <div ref={conatinerRef}>
               <FlexBetween>
@@ -225,6 +224,7 @@ export default function Ama({ article, comments }) {
           <MainSticky ref={stickyRef}>
             <div />
             <div>
+              <MobileGlow />
               <FlexBetween>
                 <Absolute
                   style={{
@@ -515,7 +515,7 @@ const MobileGlow = styled.div`
   position: absolute;
   left: 6.53%;
   right: 6.53%;
-  bottom: 10px;
+  bottom: 46px;
   height: 124px;
   background: radial-gradient(
     47.07% 100% at 50% 100%,

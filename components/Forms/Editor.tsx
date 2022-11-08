@@ -40,10 +40,6 @@ export const editorCss = css<{ fontSize: number }>`
     &:not(:last-of-type) {
       margin-bottom: 6px;
     }
-
-    ${mq.tablet} {
-      font-size: 16px;
-    }
   }
 
   a {

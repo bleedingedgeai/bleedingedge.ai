@@ -117,16 +117,8 @@ export default function CommentsInput({
 
   const commentToEdit = comments.find((comment) => comment.id === edittingId);
 
-  // const handleClickOutside = useCallback(() => {
-  //   if (editor.isEmpty && replyingToId) {
-  //     editor?.commands?.blur();
-  //     resetInput();
-  //   }
-  // }, [replyingToId, edittingId, editor, resetInput]);
-
   return (
     <Portal>
-      {/* <OutsideClickHandler onOutsideClick={handleClickOutside}> */}
       <Container style={{ left: offset, width }}>
         {replyingToComment && (
           <ReplyingTo>
@@ -189,7 +181,6 @@ export default function CommentsInput({
           )}
         </Inner>
       </Container>
-      {/* </OutsideClickHandler> */}
     </Portal>
   );
 }
