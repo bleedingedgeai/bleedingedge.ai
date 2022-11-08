@@ -11,10 +11,11 @@ export default function CommentsEmptyState({ conatinerRef }) {
   const [width, setWidth] = useState(0);
 
   const imageSrc = useMemo(() => {
-    return `${imageBasePath}${getRandomWholeNumber(1, 4)}.jpg`;
+    return `${imageBasePath}${getRandomWholeNumber(1, 5)}.jpg`;
   }, []);
+
   const imageSrcMobile = useMemo(() => {
-    return `${imageBasePath}${getRandomWholeNumber(1, 4)}-mobile.jpg`;
+    return `${imageBasePath}${getRandomWholeNumber(1, 5)}-mobile.jpg`;
   }, []);
 
   useEffect(() => {

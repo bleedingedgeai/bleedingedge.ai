@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react";
 import { Fragment, useContext, useMemo } from "react";
 import styled from "styled-components";
+import { Prisma } from "@prisma/client";
 import { timeAgo } from "../../helpers/date";
 import { clamp } from "../../helpers/numbers";
 import {
@@ -70,7 +71,11 @@ function CommentsRecursive({
     ]);
     editor?.commands?.focus();
     setReplyingToId(comment.id);
-    localStorage.setItem(commentKey, editor?.getHTML());
+
+    if (editor?.getHTML()) {
+      localStorage.setItem(commentKey, editor?.getHTML());
+    }
+
     localStorage.setItem(replyKey, comment.id);
   };
 
@@ -132,7 +137,7 @@ function CommentsRecursive({
         const isHostReply = hosts?.some((a) => a.id === comment.author?.id);
         const isUserReply = session?.data?.user.id === comment.author?.id;
 
-        const paddingLeft = clamp(parentIndex * 42 + 9, 0, 42 + 9);
+        const paddingLeft = parentIndex * 42 + 9;
 
         if (!comment.author) {
           return (
@@ -147,6 +152,7 @@ function CommentsRecursive({
               edittingId={edittingId}
               setEdittingId={setEdittingId}
               key={comment.id + comment.content}
+              editor={editor}
             />
           );
         }
@@ -155,7 +161,7 @@ function CommentsRecursive({
           <Fragment key={comment.id + comment.content}>
             <Container
               style={{
-                paddingLeft: clamp(parentIndex * 42, 0, 42),
+                paddingLeft: parentIndex * 42,
                 opacity: eidtOrReplying
                   ? edittingOrReplyingToThisComment
                     ? 1
@@ -168,7 +174,7 @@ function CommentsRecursive({
                   : "initial",
               }}
             >
-              {commentHasReplies && parentIndex === 0 && (
+              {/* {commentHasReplies && parentIndex === 0 && (
                 <Connection style={{ paddingLeft }}>
                   <ConnectionLine />
                 </Connection>
@@ -177,7 +183,7 @@ function CommentsRecursive({
                 <ConnectionCurve style={{ paddingLeft }}>
                   <IconConnectionCurve />
                 </ConnectionCurve>
-              )}
+              )} */}
               <Avatar
                 src={comment.author.image}
                 outline={isHostReply}
@@ -196,13 +202,22 @@ function CommentsRecursive({
                   />
                 </Content>
                 <Bottom>
-                  {isEditingThisComment ? (
+                  {isReplyingToThisComment && (
+                    <Action>
+                      <StyledButton>
+                        {commentHasReplies ? <IconReplied /> : <IconReply />}{" "}
+                        <span>Replying to...</span>
+                      </StyledButton>
+                    </Action>
+                  )}
+                  {isEditingThisComment && (
                     <Actions>
                       <Action>
                         <IconEdit />
                       </Action>
                     </Actions>
-                  ) : (
+                  )}
+                  {!isReplyingToThisComment && !isEditingThisComment && (
                     <Actions>
                       <Action>
                         <CommentLike
@@ -293,6 +308,7 @@ function CommentDeleted({
   setEdittingId,
   article,
   commentIndex,
+  editor,
 }) {
   const edittingOrReplyingToThisComment =
     parentId === comment.id || edittingId === comment.id;
@@ -310,7 +326,7 @@ function CommentDeleted({
     <Fragment>
       <Container
         style={{
-          paddingLeft: clamp(parentIndex * 42, 0, 42),
+          paddingLeft: parentIndex * 42,
           opacity: eidtOrReplying
             ? edittingOrReplyingToThisComment
               ? 1
@@ -326,7 +342,7 @@ function CommentDeleted({
         {commentHasReplies && parentIndex === 0 && (
           <Connection
             style={{
-              paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
+              paddingLeft: parentIndex * 42 + 9,
             }}
           >
             <ConnectionLine />
@@ -335,7 +351,7 @@ function CommentDeleted({
         {firstReply && (
           <ConnectionCurve
             style={{
-              paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
+              paddingLeft: parentIndex * 42 + 9,
             }}
           >
             <IconConnectionCurve />
@@ -360,6 +376,7 @@ function CommentDeleted({
         setEdittingId={setEdittingId}
         edittingId={edittingId}
         article={article}
+        editor={editor}
       />
     </Fragment>
   );

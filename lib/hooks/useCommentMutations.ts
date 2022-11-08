@@ -60,6 +60,7 @@ export function useCommentMutations({
           liked: false,
           author: {
             name: session?.data.user.name,
+            username: session?.data.user.username,
             id: session?.data.user.id,
             image: session?.data.user.image,
           },
