@@ -74,6 +74,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       const deletedComment = await prisma.comment.update({
         where: { id: commentId },
         data: {
+          content: null,
           author: {
             disconnect: true,
           },
