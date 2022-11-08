@@ -326,6 +326,7 @@ function CommentDeleted({
         index={parentIndex + 1}
         setReplyingToId={setReplyingToId}
         parentId={parentId}
+        replyingToId={replyingToId}
         setEdittingId={setEdittingId}
         edittingId={edittingId}
         article={article}
