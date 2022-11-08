@@ -58,8 +58,6 @@ function CommentsRecursive({
       return showOverlay(OverlayType.AUTHENTICATION);
     }
 
-    setReplyingToId(comment.id);
-    localStorage.setItem(replyKey, comment.id);
     editor?.commands?.setContent([
       {
         type: "mention",
@@ -70,8 +68,10 @@ function CommentsRecursive({
         text: " ",
       },
     ]);
-    localStorage.setItem(commentKey, editor?.getHTML());
     editor?.commands?.focus();
+    setReplyingToId(comment.id);
+    localStorage.setItem(commentKey, editor?.getHTML());
+    localStorage.setItem(replyKey, comment.id);
   };
 
   const handleCommentEdit = (event: React.MouseEvent, comment) => {

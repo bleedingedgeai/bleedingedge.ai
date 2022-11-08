@@ -167,7 +167,6 @@ const Top = styled(Flex)`
 
 const Title = styled.h4`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
-  font-family: "NN Nouvelle Grotesk STD";
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;
