@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
+import sanitize from "sanitize-html";
 import { clean } from "../../../../../../helpers/json";
 import { withMethods } from "../../../../../../lib/middleware/withMethods";
 import prisma from "../../../../../../lib/prisma";
@@ -51,11 +52,19 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(403).end();
     }
 
+    const author = await prisma.comment
+      .findUnique({ where: { id: commentId } })
+      .author();
+
+    if (author.id !== session.user.id) {
+      return res.status(403).end();
+    }
+
     if (req.method === "PATCH") {
       const udpatedComment = await prisma.comment.update({
         where: { id: commentId },
         data: {
-          content: req.body.content,
+          content: sanitize(req.body.content),
         },
       });
       return res.status(200).json(clean(udpatedComment));

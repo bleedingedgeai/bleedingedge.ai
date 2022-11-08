@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
+import sanitize from "sanitize-html";
 import { staticAmas } from "../../../../../db/static";
 import { clean } from "../../../../../helpers/json";
 import { withMethods } from "../../../../../lib/middleware/withMethods";
@@ -19,7 +20,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
       const comment = await prisma.comment.create({
         data: {
-          content: content,
+          content: sanitize(content),
           post: {
             connect: {
               id: postId,

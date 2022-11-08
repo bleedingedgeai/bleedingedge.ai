@@ -84,6 +84,8 @@ export default function CommentsInput({
   const resetInput = () => {
     setReplyingToId(null);
     editor.commands.clearContent();
+    localStorage.removeItem(replyKey);
+    localStorage.removeItem(editKey);
     localStorage.removeItem(commentKey);
   };
 
