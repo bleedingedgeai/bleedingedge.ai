@@ -8,6 +8,11 @@ import Text from "@tiptap/extension-text";
 import { useEditor } from "@tiptap/react";
 import { timeAgo } from "../../helpers/date";
 import { clamp } from "../../helpers/numbers";
+import {
+  STORAGE_COMMENT,
+  STORAGE_EDIT,
+  STORAGE_REPLY,
+} from "../../helpers/storage";
 import { useCommentMutations } from "../../lib/hooks/useCommentMutations";
 import { ellipsis } from "../../styles/css";
 import { mq } from "../../styles/mediaqueries";
@@ -33,13 +38,18 @@ function CommentsRecursive({
   comments,
   index: parentIndex = 0,
   parentId,
-  setParentId,
-  editId,
-  setEditId,
+  setReplyingToId,
+  replyingToId,
+  edittingId,
+  setEdittingId,
 }) {
   const { showOverlay } = useContext(OverlayContext);
   const commentMutations = useCommentMutations({ article });
   const session = useSession();
+
+  const commentKey = `${STORAGE_COMMENT}-${article.slug}`;
+  const editKey = `${STORAGE_EDIT}-${article.slug}`;
+  const replyKey = `${STORAGE_REPLY}-${article.slug}`;
 
   const handleLike = (event: React.MouseEvent, comment) => {
     event.preventDefault();
@@ -74,13 +84,13 @@ function CommentsRecursive({
   }
 
   const hosts = article.authors;
-  const eidtOrReplying = parentId || editId;
+  const eidtOrReplying = replyingToId || edittingId;
 
   return (
     <>
       {comments.map((comment, commentIndex) => {
-        const isEditingThisComment = editId === comment.id;
-        const isReplyingToThisComment = parentId === comment.id;
+        const isEditingThisComment = edittingId === comment.id;
+        const isReplyingToThisComment = replyingToId === comment.id;
 
         const edittingOrReplyingToThisComment =
           isReplyingToThisComment || isEditingThisComment;
@@ -98,17 +108,19 @@ function CommentsRecursive({
               comment={comment}
               parentIndex={parentIndex}
               commentIndex={commentIndex}
-              setParentId={setParentId}
+              setReplyingToId={setReplyingToId}
               parentId={parentId}
+              replyingToId={replyingToId}
               article={article}
-              editId={editId}
-              setEditId={setEditId}
+              edittingId={edittingId}
+              setEdittingId={setEdittingId}
+              key={comment.id + comment.content}
             />
           );
         }
 
         return (
-          <Fragment key={comment.id}>
+          <Fragment key={comment.id + comment.content}>
             <Container
               style={{
                 paddingLeft: clamp(parentIndex * 42, 0, 42),
@@ -164,7 +176,12 @@ function CommentsRecursive({
                         />
                       </Action>
                       <Action>
-                        <StyledButton onClick={() => setParentId(comment.id)}>
+                        <StyledButton
+                          onClick={() => {
+                            setReplyingToId(comment.id);
+                            localStorage.setItem(replyKey, comment.id);
+                          }}
+                        >
                           {commentHasReplies ? <IconReplied /> : <IconReply />}{" "}
                           <span>
                             {edittingOrReplyingToThisComment
@@ -176,7 +193,16 @@ function CommentsRecursive({
                       {isUserReply && (
                         <>
                           <Action>
-                            <StyledButton onClick={() => setEditId(comment.id)}>
+                            <StyledButton
+                              onClick={() => {
+                                setEdittingId(comment.id);
+                                localStorage.setItem(
+                                  commentKey,
+                                  comment.content
+                                );
+                                localStorage.setItem(editKey, comment.id);
+                              }}
+                            >
                               <IconEdit /> <span>Edit</span>
                             </StyledButton>
                           </Action>
@@ -199,11 +225,12 @@ function CommentsRecursive({
             <CommentsRecursive
               comments={comment.children}
               index={parentIndex + 1}
-              setParentId={setParentId}
+              setReplyingToId={setReplyingToId}
               parentId={parentId}
+              replyingToId={replyingToId}
               article={article}
-              editId={editId}
-              setEditId={setEditId}
+              edittingId={edittingId}
+              setEdittingId={setEdittingId}
             />
           </Fragment>
         );
@@ -229,16 +256,17 @@ function CommentLike({ comment, handleLike }) {
 function CommentDeleted({
   comment,
   parentIndex,
-  editId,
+  edittingId,
   parentId,
-  setParentId,
-  setEditId,
+  replyingToId,
+  setReplyingToId,
+  setEdittingId,
   article,
   commentIndex,
 }) {
   const edittingOrReplyingToThisComment =
-    parentId === comment.id || editId === comment.id;
-  const eidtOrReplying = parentId || editId;
+    parentId === comment.id || edittingId === comment.id;
+  const eidtOrReplying = replyingToId || edittingId;
   const commentsWithReplies = comment.children.filter((x) => x?.author);
   const firstReply = parentIndex === 1 && commentIndex === 0;
 
@@ -249,7 +277,7 @@ function CommentDeleted({
   const commentHasReplies = comment.children.length > 0;
 
   return (
-    <Fragment key={comment.id}>
+    <Fragment>
       <Container
         style={{
           paddingLeft: clamp(parentIndex * 42, 0, 42),
@@ -296,10 +324,10 @@ function CommentDeleted({
       <CommentsRecursive
         comments={comment.children}
         index={parentIndex + 1}
-        setParentId={setParentId}
+        setReplyingToId={setReplyingToId}
         parentId={parentId}
-        setEditId={setEditId}
-        editId={editId}
+        setEdittingId={setEdittingId}
+        edittingId={edittingId}
         article={article}
       />
     </Fragment>
@@ -313,7 +341,7 @@ function CommentEditor({ content }) {
     editable: false,
   });
 
-  return <Editor editor={editor} />;
+  return <Editor editor={editor} fontSize={14} />;
 }
 
 const DeletedContainer = styled.div`

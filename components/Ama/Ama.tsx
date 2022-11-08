@@ -2,6 +2,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
+import { STORAGE_EDIT, STORAGE_REPLY } from "../../helpers/storage";
 import { copyToClipboard } from "../../helpers/string";
 import { useArticleMutations } from "../../lib/hooks/useArticleMutations";
 import { formatNestedComments } from "../../pages/ama/[slug]";
@@ -27,8 +28,8 @@ import AmaSort from "./AmaSort";
 export type Sort = "Top questions" | "New questions";
 
 export default function Ama({ article, comments }) {
-  const [parentId, setParentId] = useState(null);
-  const [editId, setEditId] = useState(null);
+  const [replyingToId, setReplyingToId] = useState(null);
+  const [edittingId, setEdittingId] = useState(null);
   const [showSticky, setShowSticky] = useState(false);
   const [sort, setSort] = useState<Sort>("Top questions");
 
@@ -62,6 +63,14 @@ export default function Ama({ article, comments }) {
   }, [sort, comments]);
 
   const showEmptyState = groupedComments.length === 0;
+
+  const editKey = `${STORAGE_EDIT}-${article.slug}`;
+  const replyKey = `${STORAGE_REPLY}-${article.slug}`;
+
+  useEffect(() => {
+    setEdittingId(localStorage.getItem(editKey));
+    setReplyingToId(localStorage.getItem(replyKey));
+  }, []);
 
   /////////////////////////////////////////////////////////
   // Handle methods
@@ -110,10 +119,10 @@ export default function Ama({ article, comments }) {
   const sharedProps = {
     article,
     conatinerRef,
-    setParentId,
-    parentId,
-    setEditId,
-    editId,
+    setReplyingToId,
+    replyingToId,
+    setEdittingId,
+    edittingId,
   };
 
   return (

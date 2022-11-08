@@ -11,6 +11,11 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Text from "@tiptap/extension-text";
 import { useEditor } from "@tiptap/react";
 import { uniqBy } from "../../helpers/methods";
+import {
+  STORAGE_COMMENT,
+  STORAGE_EDIT,
+  STORAGE_REPLY,
+} from "../../helpers/storage";
 import { useCommentMutations } from "../../lib/hooks/useCommentMutations";
 import { mq } from "../../styles/mediaqueries";
 import { theme } from "../../styles/theme";
@@ -29,17 +34,20 @@ export default function CommentsInput({
   article,
   comments,
   conatinerRef,
-  parentId,
-  setParentId,
-  setEditId,
-  editId,
+  replyingToId,
+  setReplyingToId,
+  setEdittingId,
+  edittingId,
 }) {
   const { showOverlay } = useContext(OverlayContext);
   const session = useSession();
   const [offset, setOffset] = useState(0);
   const [width, setWidth] = useState(0);
   const { showAlert } = useContext(AlertsContext);
-  const replyingToComment = comments.find((c) => c.id === parentId);
+  const replyingToComment = comments.find((c) => c.id === replyingToId);
+  const editKey = `${STORAGE_EDIT}-${article.slug}`;
+  const replyKey = `${STORAGE_REPLY}-${article.slug}`;
+  const commentKey = `${STORAGE_COMMENT}-${article.slug}`;
 
   const allAuthors = useMemo(() => {
     const postAuthors = article.authors;
@@ -66,17 +74,17 @@ export default function CommentsInput({
     ],
     onUpdate({ editor }) {
       if (editor.isEmpty) {
-        localStorage.removeItem(`comment-${article.slug}`);
+        localStorage.removeItem(commentKey);
       } else {
-        localStorage.setItem(`comment-${article.slug}`, editor.getHTML());
+        localStorage.setItem(commentKey, editor.getHTML());
       }
     },
   });
 
   const resetInput = () => {
-    setParentId(null);
+    setReplyingToId(null);
     editor.commands.clearContent();
-    localStorage.removeItem(`comment-${article.slug}`);
+    localStorage.removeItem(commentKey);
   };
 
   const commentMutations = useCommentMutations({
@@ -103,10 +111,10 @@ export default function CommentsInput({
 
     const content = editor.getHTML();
 
-    if (editId) {
+    if (edittingId) {
       commentMutations.update.mutate({
         content,
-        commentId: editId,
+        commentId: edittingId,
       });
       return;
     }
@@ -114,7 +122,7 @@ export default function CommentsInput({
     commentMutations.create.mutate({
       content,
       postId: article.id,
-      parentId,
+      parentId: replyingToId,
       userId: session.data.user.id,
     });
   };
@@ -132,35 +140,37 @@ export default function CommentsInput({
   }, [conatinerRef]);
 
   useEffect(() => {
-    const commentFromStorage = localStorage.getItem(`comment-${article.slug}`);
+    const commentFromStorage = localStorage.getItem(commentKey);
     if (commentFromStorage && editor) {
       editor?.commands?.setContent(commentFromStorage);
     }
-  }, [article.slug, editor]);
+  }, [commentKey, editor]);
 
   useEffect(() => {
-    if (parentId && editor) {
+    if (replyingToId && editor) {
       queueMicrotask(() => {
         editor?.commands?.focus();
       });
     }
-  }, [parentId]);
+  }, [replyingToId]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setParentId(null);
-        setEditId(null);
+        setReplyingToId(null);
+        setEdittingId(null);
+        localStorage.removeItem(editKey);
+        localStorage.removeItem(replyKey);
       }
     };
 
-    if (parentId || editId) {
+    if (replyingToId || edittingId) {
       document.addEventListener("keydown", handleKeyDown);
       return () => {
         document.removeEventListener("keydown", handleKeyDown);
       };
     }
-  }, [parentId, editId, handleSubmit]);
+  }, [replyingToId, edittingId, handleSubmit]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -173,9 +183,9 @@ export default function CommentsInput({
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [parentId, handleSubmit]);
+  }, [replyingToId, handleSubmit]);
 
-  const commentToEdit = comments.find((comment) => comment.id === editId);
+  const commentToEdit = comments.find((comment) => comment.id === edittingId);
 
   useEffect(() => {
     if (commentToEdit) {
@@ -195,7 +205,15 @@ export default function CommentsInput({
             <div>
               Replying to <span>{replyingToComment.author.name}</span>
             </div>
-            <button onClick={() => setParentId(null)}>
+            <button
+              onClick={() => {
+                setReplyingToId(null);
+                localStorage.removeItem(replyKey);
+                localStorage.removeItem(editKey);
+                localStorage.removeItem(commentKey);
+                editor.commands.clearContent();
+              }}
+            >
               <IconEx size={16} fill={theme.colors.white} />
             </button>
           </ReplyingTo>
@@ -205,9 +223,11 @@ export default function CommentsInput({
             <div>Editing message</div>
             <button
               onClick={() => {
-                localStorage.removeItem(`comment-${article.slug}`);
+                setEdittingId(null);
+                localStorage.removeItem(replyKey);
+                localStorage.removeItem(editKey);
+                localStorage.removeItem(commentKey);
                 editor.commands.clearContent();
-                setEditId(null);
               }}
             >
               <IconEx size={16} fill={theme.colors.white} />

@@ -43,7 +43,7 @@ export type ShowOverlayFn = (type: OverlayType, props?: any) => void;
 export type HideOverlayFn = (bypassReset?: boolean) => void;
 
 export interface Context {
-  OverlayComponent: React.ReactElement;
+  OverlayComponent: any;
   showOverlay: ShowOverlayFn;
   hideOverlay: HideOverlayFn;
   overlayProps: any;

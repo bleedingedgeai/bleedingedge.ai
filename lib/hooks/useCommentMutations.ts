@@ -68,7 +68,7 @@ export function useCommentMutations({
       ]);
 
       onCreate?.();
-      //   setParentId(null);
+      //   setReplyingToId(null);
       //   editor.commands.clearContent();
       //   localStorage.removeItem(`comment-${article.slug}`);
 
@@ -115,7 +115,7 @@ export function useCommentMutations({
       });
 
       onUpdate?.();
-      //   setEditId(null);
+      //   setEdittingId(null);
       //   editor.commands.clearContent();
       //   localStorage.removeItem(`comment-${article.slug}`);
       return { previousComments };

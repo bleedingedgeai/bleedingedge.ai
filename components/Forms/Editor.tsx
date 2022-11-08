@@ -2,15 +2,21 @@ import styled from "styled-components";
 import { EditorContent, Editor as EditorType } from "@tiptap/react";
 import { mq } from "../../styles/mediaqueries";
 
-export default function Editor({ editor }: { editor: EditorType }) {
+export default function Editor({
+  editor,
+  fontSize = 16,
+}: {
+  editor: EditorType;
+  fontSize?: number;
+}) {
   return (
-    <Container>
+    <Container fontSize={fontSize}>
       <EditorContent editor={editor} />
     </Container>
   );
 }
 
-const Container = styled.div`
+const Container = styled.div<{ fontSize: number }>`
   width: 100%;
   border-radius: 14px;
   max-width: 687px;
@@ -31,14 +37,18 @@ const Container = styled.div`
       float: left;
       pointer-events: none;
       height: 0;
-      font-size: 16px;
+      font-size: ${(p) => p.fontSize}px;
       font-family: ${(p) => p.theme.fontFamily.nouvelle};
       color: rgba(255, 255, 255, 0.16);
     }
 
     p {
-      font-size: 16px;
+      font-size: ${(p) => p.fontSize}px;
       font-family: ${(p) => p.theme.fontFamily.nouvelle};
+
+      &:not(:last-of-type) {
+        margin-bottom: 6px;
+      }
 
       ${mq.tablet} {
         font-size: 16px;

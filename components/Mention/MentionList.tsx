@@ -1,5 +1,3 @@
-// import "./MentionList.css";
-
 import React, {
   forwardRef,
   useEffect,

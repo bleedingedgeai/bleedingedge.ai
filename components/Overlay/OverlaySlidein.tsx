@@ -7,7 +7,8 @@ import Portal from "../Portal";
 import { OverlayContext } from "./Overlay";
 
 export default function OverlaySlidein() {
-  const { OverlayComponent, hideOverlay } = useContext(OverlayContext);
+  const { OverlayComponent, hideOverlay, overlayProps } =
+    useContext(OverlayContext);
 
   return (
     <Portal>
@@ -20,7 +21,9 @@ export default function OverlaySlidein() {
         <BlueGradientContainer>
           <BlueGradient />
         </BlueGradientContainer>
-        <Content>{OverlayComponent}</Content>
+        <Content>
+          {OverlayComponent ? <OverlayComponent {...overlayProps} /> : null}
+        </Content>
       </Container>
     </Portal>
   );
