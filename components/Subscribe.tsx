@@ -60,11 +60,6 @@ export default function Subscribe() {
         }
         return;
       }
-
-      if (event.code === "KeyS") {
-        event.preventDefault();
-        handleSubscribeClick();
-      }
     };
 
     document.addEventListener("keydown", handleKeyDown);

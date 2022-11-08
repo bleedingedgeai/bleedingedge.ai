@@ -50,7 +50,6 @@ export function useCommentMutations({
         return { previousComments };
       }
 
-      // Optimistically update to the new value
       queryClient.setQueryData(COMMENTS_KEY, (old) => [
         ...(old as any),
         {
@@ -68,11 +67,6 @@ export function useCommentMutations({
       ]);
 
       onCreate?.();
-      //   setReplyingToId(null);
-      //   editor.commands.clearContent();
-      //   localStorage.removeItem(`comment-${article.slug}`);
-
-      // Return a context object with the snapshotted value
       return { previousComments };
     },
     onError: (err, _, context) => {
@@ -115,9 +109,6 @@ export function useCommentMutations({
       });
 
       onUpdate?.();
-      //   setEdittingId(null);
-      //   editor.commands.clearContent();
-      //   localStorage.removeItem(`comment-${article.slug}`);
       return { previousComments };
     },
     onError: (err, _, context) => {
