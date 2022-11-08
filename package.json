@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "analyze": "ANALYZE=true yarn build"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
@@ -28,7 +29,6 @@
     "airtable": "^0.11.5",
     "feed": "^4.2.2",
     "fuse.js": "^6.6.2",
-    "javascript-time-ago": "^2.5.7",
     "next": "latest",
     "next-auth": "^4.15.0",
     "next-use-posthog": "^1.16.0",
@@ -44,6 +44,7 @@
     "zod": "^3.19.1"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^13.0.2",
     "@types/node": "^18.11.7",
     "@types/react": "^18.0.18",
     "@types/styled-components": "5.1.26",

@@ -1,5 +1,3 @@
-import TimeAgo from "javascript-time-ago";
-import en from "javascript-time-ago/locale/en";
 import { useSession } from "next-auth/react";
 import { Fragment, useContext } from "react";
 import styled from "styled-components";
@@ -8,6 +6,7 @@ import Link from "@tiptap/extension-link";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
 import { useEditor } from "@tiptap/react";
+import { timeAgo } from "../../helpers/date";
 import { clamp } from "../../helpers/numbers";
 import { useCommentMutations } from "../../lib/hooks/useCommentMutations";
 import { ellipsis } from "../../styles/css";
@@ -24,9 +23,6 @@ import IconReplied from "../Icons/IconReplied";
 import IconReply from "../Icons/IconReply";
 import Names from "../Names";
 import { OverlayContext, OverlayType } from "../Overlay/Overlay";
-
-TimeAgo.addDefaultLocale(en);
-const timeAgo = new TimeAgo("en-US");
 
 export default function Comments(props) {
   return <CommentsRecursive {...props} />;
@@ -77,132 +73,83 @@ function CommentsRecursive({
     return null;
   }
 
+  const hosts = article.authors;
+  const eidtOrReplying = parentId || editId;
+
   return (
     <>
       {comments.map((comment, commentIndex) => {
-        const eddittingOrReplyingToThisComment =
-          parentId === comment.id || editId === comment.id;
-        const eidtOrReply = parentId || editId;
-        const isEditting = editId === comment.id;
-        const childrenWithAUthors = comment.children.filter((x) => x?.author);
+        const isEditingThisComment = editId === comment.id;
+        const isReplyingToThisComment = parentId === comment.id;
+
+        const edittingOrReplyingToThisComment =
+          isReplyingToThisComment || isEditingThisComment;
+        const commentHasReplies =
+          comment.children.filter((c) => c?.author).length > 0;
         const firstReply = parentIndex === 1 && commentIndex === 0;
+        const isHostReply = hosts?.some((a) => a.id === comment.author?.id);
+        const isUserReply = session?.data?.user.id === comment.author?.id;
+
+        const paddingLeft = clamp(parentIndex * 42 + 9, 0, 42 + 9);
 
         if (!comment.author) {
-          if (childrenWithAUthors.length === 0) {
-            return null;
-          }
-
-          const hasReplies = comment.children.length > 0;
-
           return (
-            <Fragment key={comment.id + comment.content}>
-              <Container
-                style={{
-                  paddingLeft: clamp(parentIndex * 42, 0, 42),
-                  opacity: eidtOrReply
-                    ? eddittingOrReplyingToThisComment
-                      ? 1
-                      : 0.32
-                    : 1,
-                  pointerEvents: eidtOrReply
-                    ? eddittingOrReplyingToThisComment
-                      ? "none"
-                      : "initial"
-                    : "none",
-                }}
-              >
-                {hasReplies && parentIndex === 0 && (
-                  <Connection
-                    style={{
-                      paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
-                    }}
-                  >
-                    <ConnectionLine />
-                  </Connection>
-                )}
-                {firstReply && (
-                  <ConnectionCurve
-                    style={{
-                      paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
-                    }}
-                  >
-                    <IconConnectionCurve />
-                  </ConnectionCurve>
-                )}
-                <Avatar outline={false} />
-                <CommentDeleted parentId={comment.parentId} />
-              </Container>
-              <CommentsRecursive
-                comments={comment.children}
-                index={parentIndex + 1}
-                setParentId={setParentId}
-                parentId={parentId}
-                setEditId={setEditId}
-                editId={editId}
-                article={article}
-              />
-            </Fragment>
+            <CommentDeleted
+              comment={comment}
+              parentIndex={parentIndex}
+              commentIndex={commentIndex}
+              setParentId={setParentId}
+              parentId={parentId}
+              article={article}
+              editId={editId}
+              setEditId={setEditId}
+            />
           );
         }
 
-        const isHost = article.authors?.some((a) => a.id === comment.author.id);
-        const isOwn = session?.data?.user.id === comment.author.id;
-        const hasReplies = childrenWithAUthors.length > 0;
-
         return (
-          <Fragment key={comment.id + comment.content}>
+          <Fragment key={comment.id}>
             <Container
               style={{
                 paddingLeft: clamp(parentIndex * 42, 0, 42),
-                opacity: eidtOrReply
-                  ? parentId === comment.id || editId === comment.id
+                opacity: eidtOrReplying
+                  ? edittingOrReplyingToThisComment
                     ? 1
                     : 0.32
                   : 1,
-                pointerEvents: eidtOrReply
-                  ? eddittingOrReplyingToThisComment
+                pointerEvents: eidtOrReplying
+                  ? edittingOrReplyingToThisComment
                     ? "initial"
                     : "none"
                   : "initial",
               }}
             >
-              {hasReplies && parentIndex === 0 && (
-                <Connection
-                  style={{
-                    paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
-                  }}
-                >
+              {commentHasReplies && parentIndex === 0 && (
+                <Connection style={{ paddingLeft }}>
                   <ConnectionLine />
                 </Connection>
               )}
               {firstReply && (
-                <ConnectionCurve
-                  style={{
-                    paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
-                  }}
-                >
+                <ConnectionCurve style={{ paddingLeft }}>
                   <IconConnectionCurve />
                 </ConnectionCurve>
               )}
               <Avatar
                 src={comment.author.image}
-                outline={isHost}
-                highlight={isHost}
+                outline={isHostReply}
+                highlight={isHostReply}
               />
-
               <div>
                 <Author>
                   <Names authors={[comment.author]} />
                   <Dot />
-                  <UpdatedAt>
-                    {timeAgo.format(new Date(comment.updatedAt))}
-                  </UpdatedAt>
+                  <UpdatedAt>{timeAgo(new Date(comment.updatedAt))}</UpdatedAt>
                 </Author>
-                <Content isHost={isHost}>
+                <Content isHostReply={isHostReply}>
                   <CommentEditor content={comment.content} />
                 </Content>
                 <Bottom>
-                  {isEditting ? (
+                  {isEditingThisComment ? (
                     <Actions>
                       <Action>
                         <IconEdit />
@@ -211,45 +158,25 @@ function CommentsRecursive({
                   ) : (
                     <Actions>
                       <Action>
-                        <StyledButton
-                          onClick={(event) => handleLike(event, comment)}
-                        >
-                          {comment.liked ? <IconLiked /> : <IconLike />}{" "}
-                          {comment._count?.likes > 0 && (
-                            <span
-                              style={
-                                comment.liked
-                                  ? { color: theme.colors.white }
-                                  : {}
-                              }
-                            >
-                              {comment._count?.likes}
-                            </span>
-                          )}
-                        </StyledButton>
+                        <CommentLike
+                          comment={comment}
+                          handleLike={handleLike}
+                        />
                       </Action>
                       <Action>
-                        <StyledButton
-                          onClick={() => {
-                            setParentId(comment.id);
-                          }}
-                        >
-                          {hasReplies ? <IconReplied /> : <IconReply />}{" "}
+                        <StyledButton onClick={() => setParentId(comment.id)}>
+                          {commentHasReplies ? <IconReplied /> : <IconReply />}{" "}
                           <span>
-                            {eddittingOrReplyingToThisComment
+                            {edittingOrReplyingToThisComment
                               ? "Replying to..."
                               : "Reply"}
                           </span>
                         </StyledButton>
                       </Action>
-                      {isOwn && (
+                      {isUserReply && (
                         <>
                           <Action>
-                            <StyledButton
-                              onClick={() => {
-                                setEditId(comment.id);
-                              }}
-                            >
+                            <StyledButton onClick={() => setEditId(comment.id)}>
                               <IconEdit /> <span>Edit</span>
                             </StyledButton>
                           </Action>
@@ -285,6 +212,100 @@ function CommentsRecursive({
   );
 }
 
+function CommentLike({ comment, handleLike }) {
+  const liked = comment.liked;
+  const likes = comment._count?.likes;
+
+  return (
+    <StyledButton onClick={(event) => handleLike(event, comment)}>
+      {liked ? <IconLiked /> : <IconLike />}{" "}
+      {likes > 0 && (
+        <span style={liked ? { color: theme.colors.white } : {}}>{likes}</span>
+      )}
+    </StyledButton>
+  );
+}
+
+function CommentDeleted({
+  comment,
+  parentIndex,
+  editId,
+  parentId,
+  setParentId,
+  setEditId,
+  article,
+  commentIndex,
+}) {
+  const edittingOrReplyingToThisComment =
+    parentId === comment.id || editId === comment.id;
+  const eidtOrReplying = parentId || editId;
+  const commentsWithReplies = comment.children.filter((x) => x?.author);
+  const firstReply = parentIndex === 1 && commentIndex === 0;
+
+  if (commentsWithReplies.length === 0) {
+    return null;
+  }
+
+  const commentHasReplies = comment.children.length > 0;
+
+  return (
+    <Fragment key={comment.id}>
+      <Container
+        style={{
+          paddingLeft: clamp(parentIndex * 42, 0, 42),
+          opacity: eidtOrReplying
+            ? edittingOrReplyingToThisComment
+              ? 1
+              : 0.32
+            : 1,
+          pointerEvents: eidtOrReplying
+            ? edittingOrReplyingToThisComment
+              ? "none"
+              : "initial"
+            : "none",
+        }}
+      >
+        {commentHasReplies && parentIndex === 0 && (
+          <Connection
+            style={{
+              paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
+            }}
+          >
+            <ConnectionLine />
+          </Connection>
+        )}
+        {firstReply && (
+          <ConnectionCurve
+            style={{
+              paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
+            }}
+          >
+            <IconConnectionCurve />
+          </ConnectionCurve>
+        )}
+        <Avatar outline={false} />
+        <DeletedContainer>
+          <IconDeletedContainer>
+            <IconDeletedBoder />
+          </IconDeletedContainer>
+          <span>
+            This {parentId ? "response" : "question"} was deleted by the author.
+          </span>
+        </DeletedContainer>
+      </Container>
+      <CommentsRecursive
+        comments={comment.children}
+        index={parentIndex + 1}
+        setParentId={setParentId}
+        parentId={parentId}
+        setEditId={setEditId}
+        editId={editId}
+        article={article}
+      />
+    </Fragment>
+  );
+}
+
 function CommentEditor({ content }) {
   const editor = useEditor({
     extensions: [Document, Paragraph, Text, Link],
@@ -293,19 +314,6 @@ function CommentEditor({ content }) {
   });
 
   return <Editor editor={editor} />;
-}
-
-function CommentDeleted({ parentId }) {
-  return (
-    <DeletedContainer>
-      <IconDeletedContainer>
-        <IconDeletedBoder />
-      </IconDeletedContainer>
-      <span>
-        This {parentId ? "response" : "question"} was deleted by the author.
-      </span>
-    </DeletedContainer>
-  );
 }
 
 const DeletedContainer = styled.div`
@@ -449,12 +457,12 @@ const IconConnectionCurve = () => (
   </svg>
 );
 
-const Content = styled.div<{ isHost: boolean }>`
+const Content = styled.div<{ isHostReply: boolean }>`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-size: 14px;
   line-height: 130%;
   color: ${(p) =>
-    p.isHost ? p.theme.colors.white : p.theme.colors.light_grey};
+    p.isHostReply ? p.theme.colors.white : p.theme.colors.light_grey};
   margin-bottom: 8px;
 `;
 

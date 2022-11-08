@@ -16,12 +16,6 @@ const Container = styled.div`
   max-width: 687px;
   width: 90%;
 
-  &::placeholder {
-    font-family: ${(p) => p.theme.fontFamily.space};
-    color: rgba(255, 255, 255, 0.16);
-    line-height: 100%;
-  }
-
   .mention {
   }
 
@@ -37,13 +31,13 @@ const Container = styled.div`
       float: left;
       pointer-events: none;
       height: 0;
-      font-family: ${(p) => p.theme.fontFamily.space};
+      font-size: 16px;
+      font-family: ${(p) => p.theme.fontFamily.nouvelle};
       color: rgba(255, 255, 255, 0.16);
-      line-height: 100%;
     }
 
     p {
-      font-size: 14px;
+      font-size: 16px;
       font-family: ${(p) => p.theme.fontFamily.nouvelle};
 
       ${mq.tablet} {

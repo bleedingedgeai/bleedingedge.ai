@@ -48,6 +48,8 @@ export default async function handler(req: NextRequest) {
             display: "flex",
             justifyContent: "space-between",
             flexDirection: "column",
+            position: "relative",
+            overflow: "hidden",
           }}
         >
           <div
@@ -61,7 +63,7 @@ export default async function handler(req: NextRequest) {
               style={{
                 color: theme.colors.white,
                 fontSize: 52,
-                maxWidth: 649,
+                maxWidth: 696,
                 fontWeight: 500,
                 fontFamily: theme.fontFamily.nouvelle,
                 lineHeight: "120%",
@@ -102,6 +104,7 @@ export default async function handler(req: NextRequest) {
                   color: theme.colors.light_grey,
                   fontFamily: theme.fontFamily.space,
                   fontSize: 25,
+                  lineHeight: 1,
                 }}
               >
                 AMA hosted by

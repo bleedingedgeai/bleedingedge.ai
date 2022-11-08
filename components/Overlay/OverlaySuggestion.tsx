@@ -209,7 +209,7 @@ const Tab = styled.button<{ selected: boolean }>`
 `;
 
 const InuputContainer = styled.div`
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 `;
 
 const TextareaContainer = styled.div`
@@ -301,7 +301,7 @@ function GitHub() {
 
 const GithubContainer = styled.div`
   display: inline-block;
-  padding: 12px 0px 7px 0px;
+  padding: 14px 0px 9px 0px;
   border-radius: 7px;
   margin-bottom: 45px;
   margin-top: 10px;

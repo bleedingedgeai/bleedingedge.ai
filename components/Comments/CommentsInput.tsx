@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
-import { useContext, useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+import { Suspense, useContext, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import Document from "@tiptap/extension-document";
 import History from "@tiptap/extension-history";
@@ -14,12 +15,15 @@ import { useCommentMutations } from "../../lib/hooks/useCommentMutations";
 import { mq } from "../../styles/mediaqueries";
 import { theme } from "../../styles/theme";
 import { AlertsContext } from "../Alerts/AlertsProvider";
-import Editor from "../Forms/Editor";
 import IconEx from "../Icons/IconEx";
 import IconSend from "../Icons/IconSend";
 import suggestion from "../Mention/suggestion";
 import { OverlayContext, OverlayType } from "../Overlay/Overlay";
 import Portal from "../Portal";
+
+const DynamicEditor = dynamic(() => import("../Forms/Editor"), {
+  suspense: true,
+});
 
 export default function CommentsInput({
   article,
@@ -214,12 +218,13 @@ export default function CommentsInput({
           <BlueGradientContainer>
             <BlueGradient />
           </BlueGradientContainer>
-
           <CommentInputForm
             onSubmit={handleSubmit}
             onClick={() => editor?.commands?.focus()}
           >
-            <Editor editor={editor} />
+            <Suspense fallback={null}>
+              <DynamicEditor editor={editor} />
+            </Suspense>
           </CommentInputForm>
           {session.data ? (
             <Submit type="submit" onClick={handleSubmit}>
@@ -336,8 +341,8 @@ const Submit = styled.button`
   display: flex;
   align-items: center;
   margin-right: -10px;
-  margin-top: -5px;
-  padding: 5px 10px;
+  margin-top: -6px;
+  padding: 6px 10px;
   background: rgba(255, 255, 255, 0);
   border-radius: 7px;
   transition: background 0.25s ease, color 0.25s ease;
@@ -353,7 +358,7 @@ const Submit = styled.button`
 
   &:hover {
     color: ${(p) => p.theme.colors.white};
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.06);
     svg path {
       fill: ${(p) => p.theme.colors.white};
     }
