@@ -1085,7 +1085,7 @@ const samAndBradAmas = {
         "<p>now that I have this hot mic I’m at loss. Let me consult gpt3 and get back to you</p>",
       authorId: "@jaltma",
       postId: "_static-1",
-      parentId: "_comment-62",
+      parentId: "_comment-63",
       createdAt: "2022-11-04T00:01:40.522Z",
       updatedAt: "2022-11-04T00:01:40.522Z",
       author: {
