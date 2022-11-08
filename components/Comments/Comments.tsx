@@ -1,11 +1,6 @@
 import { useSession } from "next-auth/react";
-import { Fragment, useContext } from "react";
+import { Fragment, useContext, useMemo } from "react";
 import styled from "styled-components";
-import Document from "@tiptap/extension-document";
-import Link from "@tiptap/extension-link";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
-import { useEditor } from "@tiptap/react";
 import { timeAgo } from "../../helpers/date";
 import { clamp } from "../../helpers/numbers";
 import {
@@ -19,7 +14,7 @@ import { mq } from "../../styles/mediaqueries";
 import { theme } from "../../styles/theme";
 import Avatar from "../Avatar";
 import Dot from "../Dot";
-import Editor, { editorCss } from "../Forms/Editor";
+import { editorCss } from "../Forms/Editor";
 import IconDelete from "../Icons/IconDelete";
 import IconEdit from "../Icons/IconEdit";
 import IconLike from "../Icons/IconLike";
@@ -42,6 +37,7 @@ function CommentsRecursive({
   replyingToId,
   edittingId,
   setEdittingId,
+  editor,
 }) {
   const { showOverlay } = useContext(OverlayContext);
   const commentMutations = useCommentMutations({ article });
@@ -50,6 +46,42 @@ function CommentsRecursive({
   const commentKey = `${STORAGE_COMMENT}-${article.slug}`;
   const editKey = `${STORAGE_EDIT}-${article.slug}`;
   const replyKey = `${STORAGE_REPLY}-${article.slug}`;
+
+  //////////////////////////////////////////////////////////////////////////
+  // Methods
+  //////////////////////////////////////////////////////////////////////////
+
+  const handleCommentReply = (event: React.MouseEvent, comment) => {
+    event.preventDefault();
+
+    if (session.status === "unauthenticated") {
+      return showOverlay(OverlayType.AUTHENTICATION);
+    }
+
+    setReplyingToId(comment.id);
+    localStorage.setItem(replyKey, comment.id);
+    editor?.commands?.setContent([
+      {
+        type: "mention",
+        attrs: { id: comment.author.username },
+      },
+      {
+        type: "text",
+        text: " ",
+      },
+    ]);
+    localStorage.setItem(commentKey, editor?.getHTML());
+    editor?.commands?.focus();
+  };
+
+  const handleCommentEdit = (event: React.MouseEvent, comment) => {
+    event.preventDefault();
+    setEdittingId(comment.id);
+    editor?.commands?.setContent(comment.content);
+    editor?.commands?.focus();
+    localStorage.setItem(commentKey, comment.content);
+    localStorage.setItem(editKey, comment.id);
+  };
 
   const handleLike = (event: React.MouseEvent, comment) => {
     event.preventDefault();
@@ -180,10 +212,9 @@ function CommentsRecursive({
                       </Action>
                       <Action>
                         <StyledButton
-                          onClick={() => {
-                            setReplyingToId(comment.id);
-                            localStorage.setItem(replyKey, comment.id);
-                          }}
+                          onClick={(event) =>
+                            handleCommentReply(event, comment)
+                          }
                         >
                           {commentHasReplies ? <IconReplied /> : <IconReply />}{" "}
                           <span>
@@ -197,14 +228,9 @@ function CommentsRecursive({
                         <>
                           <Action>
                             <StyledButton
-                              onClick={() => {
-                                setEdittingId(comment.id);
-                                localStorage.setItem(
-                                  commentKey,
-                                  comment.content
-                                );
-                                localStorage.setItem(editKey, comment.id);
-                              }}
+                              onClick={(event) =>
+                                handleCommentEdit(event, comment)
+                              }
                             >
                               <IconEdit /> <span>Edit</span>
                             </StyledButton>
@@ -234,6 +260,7 @@ function CommentsRecursive({
               article={article}
               edittingId={edittingId}
               setEdittingId={setEdittingId}
+              editor={editor}
             />
           </Fragment>
         );

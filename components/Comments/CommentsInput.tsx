@@ -1,16 +1,8 @@
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
-import { Suspense, useContext, useEffect, useMemo, useState } from "react";
+import { Suspense, useContext, useEffect, useState } from "react";
+// import OutsideClickHandler from "react-outside-click-handler";
 import styled from "styled-components";
-import Document from "@tiptap/extension-document";
-import History from "@tiptap/extension-history";
-import Link from "@tiptap/extension-link";
-import Mention from "@tiptap/extension-mention";
-import Paragraph from "@tiptap/extension-paragraph";
-import Placeholder from "@tiptap/extension-placeholder";
-import Text from "@tiptap/extension-text";
-import { useEditor } from "@tiptap/react";
-import { uniqBy } from "../../helpers/methods";
 import {
   STORAGE_COMMENT,
   STORAGE_EDIT,
@@ -22,7 +14,6 @@ import { theme } from "../../styles/theme";
 import { AlertsContext } from "../Alerts/AlertsProvider";
 import IconEx from "../Icons/IconEx";
 import IconSend from "../Icons/IconSend";
-import suggestion from "../Mention/suggestion";
 import { OverlayContext, OverlayType } from "../Overlay/Overlay";
 import Portal from "../Portal";
 
@@ -34,10 +25,11 @@ export default function CommentsInput({
   article,
   comments,
   conatinerRef,
-  replyingToId,
   setReplyingToId,
   setEdittingId,
+  replyingToId,
   edittingId,
+  editor,
 }) {
   const { showOverlay } = useContext(OverlayContext);
   const session = useSession();
@@ -48,38 +40,6 @@ export default function CommentsInput({
   const editKey = `${STORAGE_EDIT}-${article.slug}`;
   const replyKey = `${STORAGE_REPLY}-${article.slug}`;
   const commentKey = `${STORAGE_COMMENT}-${article.slug}`;
-
-  const allAuthors = useMemo(() => {
-    const postAuthors = article.authors;
-    const commentAuthors = comments
-      .filter((comment) => comment.author)
-      .map(({ author }) => author);
-    return uniqBy([...postAuthors, ...commentAuthors], (a) => a.id);
-  }, [comments, article.authors]);
-
-  const editor = useEditor({
-    extensions: [
-      Document,
-      Paragraph,
-      Text,
-      Link,
-      History,
-      Placeholder.configure({
-        placeholder: "Ask me anything...",
-      }),
-      Mention.configure({
-        HTMLAttributes: { class: "mention" },
-        suggestion: suggestion(article.authors, allAuthors),
-      }),
-    ],
-    onUpdate({ editor }) {
-      if (editor.isEmpty) {
-        localStorage.removeItem(commentKey);
-      } else {
-        localStorage.setItem(commentKey, editor.getHTML());
-      }
-    },
-  });
 
   const resetInput = () => {
     setReplyingToId(null);
@@ -96,7 +56,7 @@ export default function CommentsInput({
     onUpdate: resetInput,
   });
 
-  const handleSubmit = (event) => {
+  function handleSubmit(event) {
     event.preventDefault();
 
     if (session.status === "unauthenticated") {
@@ -128,7 +88,7 @@ export default function CommentsInput({
       parentId: replyingToId,
       userId: session.data.user.id,
     });
-  };
+  }
 
   useEffect(() => {
     function handleResize() {
@@ -141,39 +101,6 @@ export default function CommentsInput({
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [conatinerRef]);
-
-  useEffect(() => {
-    const commentFromStorage = localStorage.getItem(commentKey);
-    if (commentFromStorage && editor) {
-      editor?.commands?.setContent(commentFromStorage);
-    }
-  }, [commentKey, editor]);
-
-  useEffect(() => {
-    if (replyingToId && editor) {
-      queueMicrotask(() => {
-        editor?.commands?.focus();
-      });
-    }
-  }, [replyingToId]);
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setReplyingToId(null);
-        setEdittingId(null);
-        localStorage.removeItem(editKey);
-        localStorage.removeItem(replyKey);
-      }
-    };
-
-    if (replyingToId || edittingId) {
-      document.addEventListener("keydown", handleKeyDown);
-      return () => {
-        document.removeEventListener("keydown", handleKeyDown);
-      };
-    }
-  }, [replyingToId, edittingId, handleSubmit]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -190,18 +117,16 @@ export default function CommentsInput({
 
   const commentToEdit = comments.find((comment) => comment.id === edittingId);
 
-  useEffect(() => {
-    if (commentToEdit) {
-      editor.commands.setContent(commentToEdit.content);
-
-      queueMicrotask(() => {
-        editor?.commands?.focus();
-      });
-    }
-  }, [commentToEdit]);
+  // const handleClickOutside = useCallback(() => {
+  //   if (editor.isEmpty && replyingToId) {
+  //     editor?.commands?.blur();
+  //     resetInput();
+  //   }
+  // }, [replyingToId, edittingId, editor, resetInput]);
 
   return (
     <Portal>
+      {/* <OutsideClickHandler onOutsideClick={handleClickOutside}> */}
       <Container style={{ left: offset, width }}>
         {replyingToComment && (
           <ReplyingTo>
@@ -264,6 +189,7 @@ export default function CommentsInput({
           )}
         </Inner>
       </Container>
+      {/* </OutsideClickHandler> */}
     </Portal>
   );
 }

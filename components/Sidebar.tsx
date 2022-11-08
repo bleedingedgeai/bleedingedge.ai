@@ -47,7 +47,7 @@ export default function Sidebar() {
                     active ? { color: theme.colors.white, fontWeight: 600 } : {}
                   }
                 >
-                  {link.text} {router.pathname === link.path && "—"}
+                  {link.text} {active && "—"}
                 </StyledLink>
               </Link>
             </Row>

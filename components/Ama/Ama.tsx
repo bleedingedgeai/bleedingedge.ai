@@ -2,7 +2,20 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import { STORAGE_EDIT, STORAGE_REPLY } from "../../helpers/storage";
+import Document from "@tiptap/extension-document";
+import History from "@tiptap/extension-history";
+import TipTapLink from "@tiptap/extension-link";
+import Mention from "@tiptap/extension-mention";
+import Paragraph from "@tiptap/extension-paragraph";
+import Placeholder from "@tiptap/extension-placeholder";
+import Text from "@tiptap/extension-text";
+import { useEditor } from "@tiptap/react";
+import { uniqBy } from "../../helpers/methods";
+import {
+  STORAGE_COMMENT,
+  STORAGE_EDIT,
+  STORAGE_REPLY,
+} from "../../helpers/storage";
 import { copyToClipboard } from "../../helpers/string";
 import { useArticleMutations } from "../../lib/hooks/useArticleMutations";
 import { formatNestedComments } from "../../pages/ama/[slug]";
@@ -21,6 +34,7 @@ import IconLike from "../Icons/IconLike";
 import IconLiked from "../Icons/IconLiked";
 import IconShare from "../Icons/IconShare";
 import Live from "../Live";
+import suggestion from "../Mention/suggestion";
 import Names from "../Names";
 import { OverlayContext, OverlayType } from "../Overlay/Overlay";
 import AmaSort from "./AmaSort";
@@ -40,6 +54,56 @@ export default function Ama({ article, comments }) {
 
   const session = useSession();
   const articleMutations = useArticleMutations({});
+
+  /////////////////////////////////////////////////////////
+  // Storage Keys
+  /////////////////////////////////////////////////////////
+
+  const editKey = `${STORAGE_EDIT}-${article.slug}`;
+  const replyKey = `${STORAGE_REPLY}-${article.slug}`;
+  const commentKey = `${STORAGE_COMMENT}-${article.slug}`;
+
+  /////////////////////////////////////////////////////////
+  // Editor
+  /////////////////////////////////////////////////////////
+
+  const allAuthors = useMemo(() => {
+    const postAuthors = article.authors;
+    const commentAuthors = comments
+      .filter((comment) => comment.author)
+      .map(({ author }) => author);
+    return uniqBy([...postAuthors, ...commentAuthors], (a) => a.id);
+  }, [comments, article.authors]);
+
+  const editor = useEditor({
+    extensions: [
+      Document,
+      Paragraph,
+      Text,
+      TipTapLink,
+      History,
+      Placeholder.configure({
+        placeholder: "Ask me anything...",
+      }),
+      Mention.configure({
+        HTMLAttributes: { class: "mention" },
+        suggestion: suggestion(article.authors, allAuthors),
+      }),
+    ],
+    onCreate({ editor }) {
+      const fromStorage = localStorage.getItem(commentKey);
+      if (fromStorage) {
+        editor.commands.setContent(fromStorage);
+      }
+    },
+    onUpdate({ editor }) {
+      if (editor.isEmpty) {
+        localStorage.removeItem(commentKey);
+      } else {
+        localStorage.setItem(commentKey, editor.getHTML());
+      }
+    },
+  });
 
   /////////////////////////////////////////////////////////
   // Comments
@@ -64,9 +128,6 @@ export default function Ama({ article, comments }) {
 
   const showEmptyState = groupedComments.length === 0;
 
-  const editKey = `${STORAGE_EDIT}-${article.slug}`;
-  const replyKey = `${STORAGE_REPLY}-${article.slug}`;
-
   useEffect(() => {
     setEdittingId(localStorage.getItem(editKey));
     setReplyingToId(localStorage.getItem(replyKey));
@@ -76,7 +137,7 @@ export default function Ama({ article, comments }) {
   // Handle methods
   /////////////////////////////////////////////////////////
 
-  const handleLike = (event: React.MouseEvent, article) => {
+  const handleAmaLike = (event: React.MouseEvent, article) => {
     event.preventDefault();
     event.stopPropagation();
     if (session.status === "unauthenticated") {
@@ -89,7 +150,7 @@ export default function Ama({ article, comments }) {
     });
   };
 
-  const handleShare = (event: React.MouseEvent) => {
+  const handleAmaShare = (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -123,6 +184,7 @@ export default function Ama({ article, comments }) {
     replyingToId,
     setEdittingId,
     edittingId,
+    editor,
   };
 
   return (
@@ -181,7 +243,7 @@ export default function Ama({ article, comments }) {
                 >
                   <Action>
                     <StyledButton
-                      onClick={(event) => handleLike(event, article)}
+                      onClick={(event) => handleAmaLike(event, article)}
                       style={article.liked ? { color: theme.colors.white } : {}}
                     >
                       {article.liked ? <IconLiked /> : <IconLike />}{" "}
@@ -200,7 +262,7 @@ export default function Ama({ article, comments }) {
                     </StyledLink>
                   </Action>
                   <Action>
-                    <StyledButton onClick={handleShare}>
+                    <StyledButton onClick={handleAmaShare}>
                       <IconShare /> <span>Share</span>
                     </StyledButton>
                   </Action>
