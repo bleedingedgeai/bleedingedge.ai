@@ -19,6 +19,7 @@ const samAndBradAmas = {
   slug: "sam-altman-and-brad-lightcap-answer-questions-about-ai-and-their-new-ai-fund",
   published: true,
   live: false,
+  disabled: true,
   format: "highlight",
   postedAt: "2018-02-16T01:05:00.000Z",
   title:

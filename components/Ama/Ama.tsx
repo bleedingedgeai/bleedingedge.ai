@@ -33,6 +33,7 @@ import IconArticle from "../Icons/IconArticle";
 import IconLike from "../Icons/IconLike";
 import IconLiked from "../Icons/IconLiked";
 import IconShare from "../Icons/IconShare";
+import IconTwitter from "../Icons/IconTwitter";
 import Live from "../Live";
 import suggestion from "../Mention/suggestion";
 import Names from "../Names";
@@ -139,7 +140,11 @@ export default function Ama({ article, comments }) {
 
   const handleAmaLike = (event: React.MouseEvent, article) => {
     event.preventDefault();
-    event.stopPropagation();
+
+    if (article.disabled) {
+      return;
+    }
+
     if (session.status === "unauthenticated") {
       return showOverlay(OverlayType.AUTHENTICATION);
     }
@@ -214,6 +219,10 @@ export default function Ama({ article, comments }) {
                     </DateContainer>
                     {article.live && <Live onlyDot />}{" "}
                   </Flex>
+                  <Badge>
+                    <span>Imported</span>
+                    <IconTwitter size={14} />
+                  </Badge>
                 </Authors>
                 <Hosts authors={article.authors} />
               </FlexBetween>
@@ -243,6 +252,7 @@ export default function Ama({ article, comments }) {
                 >
                   <Action>
                     <StyledButton
+                      disabled={article.disabled}
                       onClick={(event) => handleAmaLike(event, article)}
                       style={article.liked ? { color: theme.colors.white } : {}}
                     >
@@ -307,6 +317,26 @@ const MainSticky = styled(Main)`
 
   ${mq.desktopSmall} {
     position: relative;
+  }
+`;
+
+const Badge = styled.div`
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 130%;
+  color: ${(p) => p.theme.colors.light_grey};
+  background: #141414;
+  border-radius: 77px;
+  display: flex;
+
+  align-items: center;
+
+  padding: 1px 4px 1px 8px;
+
+  svg {
+    margin-left: 6px;
   }
 `;
 
@@ -483,7 +513,7 @@ const StyledLink = styled.a`
   }
 `;
 
-const StyledButton = styled.button`
+const StyledButton = styled.button<{ disabled?: boolean }>`
   display: flex;
   align-items: center;
   color: ${(p) => p.theme.colors.light_grey};
@@ -498,13 +528,16 @@ const StyledButton = styled.button`
     transition: fill 0.2s ease;
   }
 
-  &:hover {
-    color: ${(p) => p.theme.colors.off_white};
+  ${(p) =>
+    p.disabled
+      ? "cursor: default;"
+      : `&:hover {
+    color: ${p.theme.colors.off_white};
 
     svg path {
-      fill: ${(p) => p.theme.colors.off_white};
+      fill: ${p.theme.colors.off_white};
     }
-  }
+  }`}
 
   ${mq.tablet} {
     font-size: 12px;

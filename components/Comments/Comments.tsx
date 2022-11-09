@@ -22,6 +22,7 @@ import IconLike from "../Icons/IconLike";
 import IconLiked from "../Icons/IconLiked";
 import IconReplied from "../Icons/IconReplied";
 import IconReply from "../Icons/IconReply";
+import IconTwitter from "../Icons/IconTwitter";
 import Names from "../Names";
 import { OverlayContext, OverlayType } from "../Overlay/Overlay";
 
@@ -59,16 +60,16 @@ function CommentsRecursive({
       return showOverlay(OverlayType.AUTHENTICATION);
     }
 
-    editor?.commands?.setContent([
-      {
-        type: "mention",
-        attrs: { id: comment.author.username },
-      },
-      {
-        type: "text",
-        text: " ",
-      },
-    ]);
+    // editor?.commands?.setContent([
+    //   {
+    //     type: "mention",
+    //     attrs: { id: comment.author.username },
+    //   },
+    //   {
+    //     type: "text",
+    //     text: " ",
+    //   },
+    // ]);
     editor?.commands?.focus();
     setReplyingToId(comment.id);
 
@@ -137,7 +138,7 @@ function CommentsRecursive({
         const isHostReply = hosts?.some((a) => a.id === comment.author?.id);
         const isUserReply = session?.data?.user.id === comment.author?.id;
 
-        const paddingLeft = parentIndex * 42 + 9;
+        const paddingLeft = clamp(parentIndex * 42 + 9, 0, 42 + 9);
 
         if (!comment.author) {
           return (
@@ -157,11 +158,14 @@ function CommentsRecursive({
           );
         }
 
+        // const showConnectionLine =
+        //   (commentHasReplies && parentIndex === 0) || parentIndex !== 0;
+
         return (
           <Fragment key={comment.id + comment.content}>
             <Container
+              index={parentIndex}
               style={{
-                paddingLeft: parentIndex * 42,
                 opacity: eidtOrReplying
                   ? edittingOrReplyingToThisComment
                     ? 1
@@ -174,7 +178,7 @@ function CommentsRecursive({
                   : "initial",
               }}
             >
-              {/* {commentHasReplies && parentIndex === 0 && (
+              {/* {showConnectionLine && (
                 <Connection style={{ paddingLeft }}>
                   <ConnectionLine />
                 </Connection>
@@ -223,22 +227,29 @@ function CommentsRecursive({
                         <CommentLike
                           comment={comment}
                           handleLike={handleLike}
+                          disabled={article.disabled}
                         />
                       </Action>
-                      <Action>
-                        <StyledButton
-                          onClick={(event) =>
-                            handleCommentReply(event, comment)
-                          }
-                        >
-                          {commentHasReplies ? <IconReplied /> : <IconReply />}{" "}
-                          <span>
-                            {edittingOrReplyingToThisComment
-                              ? "Replying to..."
-                              : "Reply"}
-                          </span>
-                        </StyledButton>
-                      </Action>
+                      {article.disabled ? null : (
+                        <Action>
+                          <StyledButton
+                            onClick={(event) =>
+                              handleCommentReply(event, comment)
+                            }
+                          >
+                            {commentHasReplies ? (
+                              <IconReplied />
+                            ) : (
+                              <IconReply />
+                            )}{" "}
+                            <span>
+                              {edittingOrReplyingToThisComment
+                                ? "Replying to..."
+                                : "Reply"}
+                            </span>
+                          </StyledButton>
+                        </Action>
+                      )}
                       {isUserReply && (
                         <>
                           <Action>
@@ -284,12 +295,15 @@ function CommentsRecursive({
   );
 }
 
-function CommentLike({ comment, handleLike }) {
+function CommentLike({ comment, handleLike, disabled }) {
   const liked = comment.liked;
   const likes = comment._count?.likes;
 
   return (
-    <StyledButton onClick={(event) => handleLike(event, comment)}>
+    <StyledButton
+      disabled={disabled}
+      onClick={(event) => handleLike(event, comment)}
+    >
       {liked ? <IconLiked /> : <IconLike />}{" "}
       {likes > 0 && (
         <span style={liked ? { color: theme.colors.white } : {}}>{likes}</span>
@@ -325,8 +339,8 @@ function CommentDeleted({
   return (
     <Fragment>
       <Container
+        index={parentIndex}
         style={{
-          paddingLeft: parentIndex * 42,
           opacity: eidtOrReplying
             ? edittingOrReplyingToThisComment
               ? 1
@@ -339,10 +353,10 @@ function CommentDeleted({
             : "none",
         }}
       >
-        {commentHasReplies && parentIndex === 0 && (
+        {/* {commentHasReplies && parentIndex === 0 && (
           <Connection
             style={{
-              paddingLeft: parentIndex * 42 + 9,
+              paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
             }}
           >
             <ConnectionLine />
@@ -351,12 +365,12 @@ function CommentDeleted({
         {firstReply && (
           <ConnectionCurve
             style={{
-              paddingLeft: parentIndex * 42 + 9,
+              paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
             }}
           >
             <IconConnectionCurve />
           </ConnectionCurve>
-        )}
+        )} */}
         <Avatar outline={false} />
         <DeletedContainer>
           <IconDeletedContainer>
@@ -478,22 +492,28 @@ const IconDeletedBoder = () => (
   </svg>
 );
 
-const Container = styled.div`
+const Container = styled.div<{ index: number }>`
   position: relative;
   margin-bottom: 24px;
   display: grid;
   grid-template-columns: 18px 1fr;
   grid-gap: 24px;
   transition: opacity 0.25s ease;
+  padding-left: ${(p) => p.index * 42}px;
 
   ${mq.desktopSmall} {
     grid-gap: 21px;
     margin-bottom: 18px;
   }
 
+  ${mq.tablet} {
+    padding-left: ${(p) => p.index * 32}px;
+  }
+
   ${mq.phablet} {
     grid-gap: 12px;
     margin-bottom: 24px;
+    padding-left: ${(p) => p.index * 24}px;
   }
 `;
 
@@ -542,10 +562,13 @@ const Author = styled.div`
   line-height: 135%;
   color: ${(p) => p.theme.colors.light_grey};
   margin-bottom: 8px;
+
+  width: 100%;
 `;
 
 const UpdatedAt = styled.span`
-  ${ellipsis}
+  ${mq.tablet} {
+  }
 `;
 
 const Actions = styled.div`
@@ -564,7 +587,7 @@ const Bottom = styled.div`
   font-size: 10px;
 `;
 
-const StyledButton = styled.button`
+const StyledButton = styled.button<{ disabled?: boolean }>`
   display: flex;
   align-items: center;
   color: ${(p) => p.theme.colors.light_grey};
@@ -573,11 +596,14 @@ const StyledButton = styled.button`
     margin-left: 8px;
   }
 
-  &:hover {
-    color: ${(p) => p.theme.colors.off_white};
+  ${(p) =>
+    p.disabled
+      ? "cursor: default"
+      : `&:hover {
+    color: ${p.theme.colors.off_white};
 
     svg path {
-      fill: ${(p) => p.theme.colors.off_white};
+      fill: ${p.theme.colors.off_white};
     }
-  }
+  }`}
 `;
