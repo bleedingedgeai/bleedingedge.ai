@@ -306,6 +306,10 @@ const Container = styled.div`
   position: relative;
   display: flex;
   padding-bottom: 160px;
+
+  ${mq.phablet} {
+    padding-bottom: 120px;
+  }
 `;
 
 const Main = styled.div`

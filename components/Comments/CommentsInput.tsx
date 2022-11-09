@@ -203,6 +203,7 @@ const Container = styled.div`
   bottom: 42px;
   z-index: 12;
   border-radius: 14px;
+  isolation: isolate;
 
   ${mq.tablet} {
     height: 46px;

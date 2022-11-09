@@ -50,7 +50,7 @@ export function timeAgo(time, stringFormat: "short" | "long" = "long") {
   let token = stringFormat === "long" ? "ago" : "";
   let list_choice = 1;
 
-  if (seconds == 0) {
+  if (seconds < 10) {
     return "Just now";
   }
   if (seconds < 0) {
