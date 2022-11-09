@@ -167,20 +167,11 @@ export default function TimelineAma({ articles }: TimelineProps) {
   );
 }
 
-const AbsoluteLink = styled.a`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`;
-
 const Container = styled.div`
   position: relative;
   display: grid;
   grid-template-columns: 18px 1fr;
   grid-gap: 36px;
-  cursor: pointer;
   margin-bottom: 18px;
 
   ${mq.tablet} {
