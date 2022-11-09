@@ -34,12 +34,7 @@ export default function Banner({ article }: BannerProps) {
           <Inner>
             <span style={{ display: "flex", alignItems: "center" }}>
               <MobileAuthor>
-                <Avatar
-                  src={author.image}
-                  alt={author.name}
-                  size={28}
-                  outline={false}
-                />
+                <Avatar src={author.image} size={28} outline={false} />
               </MobileAuthor>
               <OrangeGradient />
               <BlueGradient />
@@ -78,12 +73,7 @@ function MobileBanner({ article }) {
               size={32}
               direction="right"
               elements={article.authors.map((author) => (
-                <Avatar
-                  src={author.image}
-                  alt={author.username}
-                  size={32}
-                  outline={false}
-                />
+                <Avatar src={author.image} size={32} outline={false} />
               ))}
             />
           </MobileStacked>
