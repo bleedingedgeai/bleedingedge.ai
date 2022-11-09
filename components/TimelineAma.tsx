@@ -74,7 +74,7 @@ export default function TimelineAma({ articles }: TimelineProps) {
         const live = article.live;
 
         return (
-          <Container key={article.id} onClick={() => router.push(amaHref)}>
+          <Container>
             {live && <MobileGlow />}
             <AvatarContainer>
               <Avatar src={article.authors[0].image} superHighlight={live} />
@@ -83,36 +83,41 @@ export default function TimelineAma({ articles }: TimelineProps) {
               )}
             </AvatarContainer>
             <Main live={live}>
-              <Top>
-                <span>
-                  <Names authors={article.authors} />
-                  <TabletDateContainer>
-                    <Dot />
-                    <span>{updatedAt}</span>
-                  </TabletDateContainer>
-                  <MobileDateContainer>
-                    {live ? (
-                      <Now>
-                        <LiveDot style={{ marginRight: 6 }} />
-                        Now
-                      </Now>
-                    ) : (
-                      <>
+              <Link key={article.id} href={amaHref}>
+                <a>
+                  <Top>
+                    <span>
+                      <Names authors={article.authors} />
+                      <TabletDateContainer>
                         <Dot />
                         <span>{updatedAt}</span>
-                      </>
-                    )}
-                  </MobileDateContainer>
-                </span>
-                <Flex>
-                  {article.live && <Live />}{" "}
-                  <DateContainer>{updatedAt}</DateContainer>
-                </Flex>
-              </Top>
-              <Middle>
-                <Title>{article.title}</Title>
-                <Content>{article.content}</Content>
-              </Middle>
+                      </TabletDateContainer>
+                      <MobileDateContainer>
+                        {live ? (
+                          <Now>
+                            <LiveDot style={{ marginRight: 6 }} />
+                            Now
+                          </Now>
+                        ) : (
+                          <>
+                            <Dot />
+                            <span>{updatedAt}</span>
+                          </>
+                        )}
+                      </MobileDateContainer>
+                    </span>
+                    <Flex>
+                      {article.live && <Live />}{" "}
+                      <DateContainer>{updatedAt}</DateContainer>
+                    </Flex>
+                  </Top>
+                  <Middle>
+                    <Title>{article.title}</Title>
+                    <Content>{article.content}</Content>
+                  </Middle>
+                </a>
+              </Link>
+
               <Bottom>
                 <Actions>
                   <Action>
@@ -134,12 +139,14 @@ export default function TimelineAma({ articles }: TimelineProps) {
                   </Action>
                   <Action>
                     <Link href={amaHref}>
-                      <StyledLink>
-                        <IconReply fill={theme.colors.light_grey} />{" "}
-                        {article._count.comments > 0 && (
-                          <span>{article._count.comments}</span>
-                        )}
-                      </StyledLink>
+                      <a>
+                        <StyledButton>
+                          <IconReply fill={theme.colors.light_grey} />{" "}
+                          {article._count.comments > 0 && (
+                            <span>{article._count.comments}</span>
+                          )}
+                        </StyledButton>
+                      </a>
                     </Link>
                   </Action>
                   <Action>
@@ -159,6 +166,32 @@ export default function TimelineAma({ articles }: TimelineProps) {
     </>
   );
 }
+
+const AbsoluteLink = styled.a`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+`;
+
+const Container = styled.div`
+  position: relative;
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  grid-gap: 36px;
+  cursor: pointer;
+  margin-bottom: 18px;
+
+  ${mq.tablet} {
+    grid-gap: 18px;
+  }
+
+  ${mq.phablet} {
+    grid-gap: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  }
+`;
 
 const MobileGlow = styled.div`
   position: absolute;
@@ -298,24 +331,6 @@ const Content = styled.p`
   transition: color 0.2s ease;
 `;
 
-const Container = styled.div`
-  position: relative;
-  display: grid;
-  grid-template-columns: 18px 1fr;
-  grid-gap: 36px;
-  cursor: pointer;
-  margin-bottom: 18px;
-
-  ${mq.tablet} {
-    grid-gap: 18px;
-  }
-
-  ${mq.phablet} {
-    grid-gap: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-  }
-`;
-
 const Top = styled.div`
   display: flex;
   justify-content: space-between;
@@ -351,27 +366,6 @@ const Bottom = styled.div`
   align-items: center;
   justify-content: space-between;
   color: ${(p) => p.theme.colors.light_grey};
-`;
-
-const StyledLink = styled.a`
-  display: flex;
-  color: ${(p) => p.theme.colors.light_grey};
-
-  span {
-    margin-left: 8px;
-  }
-
-  svg path {
-    transition: fill 0.2s ease;
-  }
-
-  &:hover {
-    color: ${(p) => p.theme.colors.off_white};
-
-    svg path {
-      fill: ${(p) => p.theme.colors.off_white};
-    }
-  }
 `;
 
 const StyledButton = styled.button<{ disabled?: boolean }>`
