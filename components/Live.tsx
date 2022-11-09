@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { mq } from "../styles/mediaqueries";
 
 interface LiveProps {
   onlyDot?: boolean;
@@ -20,6 +21,10 @@ export default function Live({ onlyDot }: LiveProps) {
 const Container = styled.span`
   font-size: 10px;
   color: ${(p) => p.theme.colors.orange};
+
+  ${mq.desktopMaxUp} {
+    font-size: 12px;
+  }
 `;
 
 const LiveDot = styled.span`

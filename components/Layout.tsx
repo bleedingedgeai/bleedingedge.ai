@@ -57,7 +57,7 @@ const Left = styled.div`
 const Right = styled.div`
   padding-top: 40px;
   width: 100%;
-  max-width: 896px;
+  /* max-width: 896px; */
   position: relative;
 
   ${mq.desktopSmall} {

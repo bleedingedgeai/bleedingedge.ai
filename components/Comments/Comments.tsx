@@ -561,6 +561,10 @@ const Content = styled.div<{ isHostReply: boolean }>`
   color: ${(p) =>
     p.isHostReply ? p.theme.colors.white : p.theme.colors.light_grey};
   margin-bottom: 8px;
+
+  ${mq.desktopMaxUp} {
+    font-size: 16px;
+  }
 `;
 
 const Author = styled.div`
@@ -568,9 +572,12 @@ const Author = styled.div`
   font-size: 10px;
   line-height: 135%;
   color: ${(p) => p.theme.colors.light_grey};
-  margin-bottom: 8px;
-
+  margin-bottom: 4px;
   width: 100%;
+
+  ${mq.desktopMaxUp} {
+    font-size: 12px;
+  }
 `;
 
 const UpdatedAt = styled.span`

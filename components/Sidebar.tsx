@@ -42,7 +42,7 @@ export default function Sidebar() {
               <StyledLink
                 href={link.path}
                 style={
-                  active ? { color: theme.colors.white, fontWeight: 600 } : {}
+                  active ? { color: theme.colors.white, fontWeight: 700 } : {}
                 }
               >
                 {link.text} {active && "—"}
@@ -100,7 +100,7 @@ const Container = styled.div`
   justify-content: space-between;
   flex-direction: column;
   height: 100vh;
-  padding: 38px 0 42px;
+  padding: 38px 0 40px;
 `;
 
 const LogoContainer = styled.div`
@@ -110,7 +110,7 @@ const LogoContainer = styled.div`
 
 const Description = styled.div`
   color: ${(p) => p.theme.colors.light_grey};
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   line-height: 130%;
 `;
 

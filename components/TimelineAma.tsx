@@ -15,6 +15,7 @@ import IconLike from "./Icons/IconLike";
 import IconLiked from "./Icons/IconLiked";
 import IconReply from "./Icons/IconReply";
 import IconShare from "./Icons/IconShare";
+import IconTwitter from "./Icons/IconTwitter";
 import Live from "./Live";
 import Names from "./Names";
 import { OverlayContext, OverlayType } from "./Overlay/Overlay";
@@ -104,11 +105,15 @@ export default function TimelineAma({ articles }: TimelineProps) {
                         </>
                       )}
                     </MobileDateContainer>
-                  </span>
-                  <Flex>
-                    {article.live && <Live />}{" "}
                     <DateContainer>{updatedAt}</DateContainer>
-                  </Flex>
+                    {/* {article.imported && (
+                      <Badge>
+                        <span>Imported</span>
+                        <IconTwitter size={14} />
+                      </Badge>
+                    )} */}
+                  </span>
+                  <Flex>{article.live && <Live />} </Flex>
                 </Top>
                 <Middle>
                   <Title>{article.title}</Title>
@@ -193,6 +198,26 @@ const MobileGlow = styled.div`
 
   ${mq.phabletUp} {
     display: none;
+  }
+`;
+
+const Badge = styled.div`
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 130%;
+  color: ${(p) => p.theme.colors.light_grey};
+  background: #141414;
+  border-radius: 77px;
+  display: flex;
+
+  align-items: center;
+
+  padding: 1px 4px 1px 8px;
+
+  svg {
+    margin-left: 6px;
   }
 `;
 
@@ -305,6 +330,10 @@ const Title = styled.h2`
   color: ${(p) => p.theme.colors.off_white};
   margin-bottom: 4px;
   transition: color 0.2s ease;
+
+  ${mq.desktopMaxUp} {
+    font-size: 16px;
+  }
 `;
 
 const Content = styled.p`
@@ -314,6 +343,10 @@ const Content = styled.p`
   color: ${(p) => p.theme.colors.light_grey};
   max-width: 612px;
   transition: color 0.2s ease;
+
+  ${mq.desktopMaxUp} {
+    font-size: 14px;
+  }
 `;
 
 const Top = styled.div`
@@ -323,6 +356,10 @@ const Top = styled.div`
   margin-bottom: 8px;
   font-size: 10px;
   color: ${(p) => p.theme.colors.off_white};
+
+  ${mq.desktopMaxUp} {
+    font-size: 12px;
+  }
 
   ${mq.tablet} {
     margin-bottom: 4px;

@@ -149,6 +149,10 @@ const Host = styled.div`
   color: ${(p) => p.theme.colors.light_grey};
   margin-top: 2px;
 
+  ${mq.desktopMaxUp} {
+    font-size: 12px;
+  }
+
   ${mq.desktopSmall} {
     display: none;
   }
@@ -165,6 +169,10 @@ const Title = styled.h3`
   width: 100%;
   padding-right: 6px;
   transition: color 0.15s ease;
+
+  ${mq.desktopMaxUp} {
+    font-size: 16px;
+  }
 
   ${mq.tablet} {
     font-size: 16px;
@@ -186,6 +194,11 @@ const Blurb = styled.p`
   line-height: 120%;
   max-width: 613px;
 
+  ${mq.desktopMaxUp} {
+    max-width: 734px;
+    font-size: 14px;
+  }
+
   ${mq.phablet} {
     margin-top: 4px;
     margin-bottom: 8px;
@@ -196,6 +209,10 @@ const ArticleDefaultContainer = styled.a<{ nextArticleIsDefault?: boolean }>`
   display: block;
   position: relative;
   margin-bottom: 16px;
+
+  ${mq.desktopMaxUp} {
+    margin-bottom: 18px;
+  }
 
   ${mq.tablet} {
     margin-bottom: 24px;
@@ -492,6 +509,10 @@ const PostedAt = styled.div`
   color: ${(p) => p.theme.colors.light_grey};
   min-width: 55px;
 
+  ${mq.desktopMaxUp} {
+    font-size: 12px;
+  }
+
   ${mq.desktopSmall} {
     min-width: auto;
     margin-right: 6px;
@@ -583,7 +604,7 @@ const ArticleWithBackgroundContent = styled.div`
 const ArticleFeaturedSourceDesktop = styled.div`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-weight: 400;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 120%;
   color: ${(p) => p.theme.colors.light_grey};
   margin-top: 2px;

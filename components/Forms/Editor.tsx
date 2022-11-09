@@ -37,6 +37,10 @@ export const editorCss = css<{ fontSize: number }>`
     font-size: ${(p) => p.fontSize}px;
     font-family: ${(p) => p.theme.fontFamily.nouvelle};
 
+    ${mq.desktopMaxUp} {
+      font-size: 16px;
+    }
+
     &:not(:last-of-type) {
       margin-bottom: 6px;
     }

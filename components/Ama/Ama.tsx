@@ -428,6 +428,10 @@ const CommentsContainer = styled.div`
   padding-left: 32px;
   max-width: 689px;
 
+  ${mq.desktopMaxUp} {
+    max-width: 734px;
+  }
+
   ${mq.desktopSmall} {
     padding-left: 0;
   }
