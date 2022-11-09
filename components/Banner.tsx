@@ -29,28 +29,31 @@ export default function Banner({ article }: BannerProps) {
         <Author>
           <Avatar src={author.image} size={28} superHighlight />
         </Author>
-        <Link href={`/ama/${slugify(article.title)}`}>
-          <BannerContainer>
-            <AnimatedGradient />
-            <Inner>
-              <span style={{ display: "flex", alignItems: "center" }}>
-                <MobileAuthor>
-                  <Avatar src={author.image} size={28} outline={false} />
-                </MobileAuthor>
-                <OrangeGradient />
-                <BlueGradient />
-                <Title>
-                  {article.title}
-                  <IconReply fill={theme.colors.white} />
-                </Title>
-              </span>
-              <Right>
-                <Live>Live AMA</Live>
-                <Participants article={article} />
-              </Right>
-            </Inner>
-          </BannerContainer>
-        </Link>
+        <BannerContainer href={`/ama/${slugify(article.title)}`}>
+          <AnimatedGradient />
+          <Inner>
+            <span style={{ display: "flex", alignItems: "center" }}>
+              <MobileAuthor>
+                <Avatar
+                  src={author.image}
+                  alt={author.name}
+                  size={28}
+                  outline={false}
+                />
+              </MobileAuthor>
+              <OrangeGradient />
+              <BlueGradient />
+              <Title>
+                {article.title}
+                <IconReply fill={theme.colors.white} />
+              </Title>
+            </span>
+            <Right>
+              <Live>Live AMA</Live>
+              <Participants article={article} />
+            </Right>
+          </Inner>
+        </BannerContainer>
       </ContainerDesktop>
     </>
   );
@@ -67,31 +70,34 @@ function AnimatedGradient() {
 function MobileBanner({ article }) {
   return (
     <ContainerMobile>
-      <Link href={`/ama/${slugify(article.title)}`}>
-        <BannerContainer>
-          <AnimatedGradient />
-          <Inner>
-            <MobileStacked>
-              <Stacked
-                size={32}
-                direction="right"
-                elements={article.authors.map((author) => (
-                  <Avatar src={author.image} size={32} outline={false} />
-                ))}
-              />
-            </MobileStacked>
-            <BlueGradient />
-            <OrangeGradient />
-            <Title>{article.title}</Title>
-            <Right>
-              <Live>Live AMA</Live>
-              <Dot />
-              {article.comments.filter((comment) => comment.author).length}{" "}
-              Participants
-            </Right>
-          </Inner>
-        </BannerContainer>
-      </Link>
+      <BannerContainer href={`/ama/${slugify(article.title)}`}>
+        <AnimatedGradient />
+        <Inner>
+          <MobileStacked>
+            <Stacked
+              size={32}
+              direction="right"
+              elements={article.authors.map((author) => (
+                <Avatar
+                  src={author.image}
+                  alt={author.username}
+                  size={32}
+                  outline={false}
+                />
+              ))}
+            />
+          </MobileStacked>
+          <BlueGradient />
+          <OrangeGradient />
+          <Title>{article.title}</Title>
+          <Right>
+            <Live>Live AMA</Live>
+            <Dot />
+            {article.comments.filter((comment) => comment.author).length}{" "}
+            Participants
+          </Right>
+        </Inner>
+      </BannerContainer>
     </ContainerMobile>
   );
 }
@@ -223,7 +229,7 @@ const Live = styled.span`
   }
 `;
 
-const BannerContainer = styled.a`
+const BannerContainer = styled(Link)`
   display: flex;
   justify-content: space-between;
   align-items: center;

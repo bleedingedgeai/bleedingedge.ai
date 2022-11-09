@@ -74,7 +74,7 @@ export default function TimelineAma({ articles }: TimelineProps) {
         const live = article.live;
 
         return (
-          <Container>
+          <Container key={article.id}>
             {live && <MobileGlow />}
             <AvatarContainer>
               <Avatar src={article.authors[0].image} superHighlight={live} />
@@ -84,38 +84,36 @@ export default function TimelineAma({ articles }: TimelineProps) {
             </AvatarContainer>
             <Main live={live}>
               <Link key={article.id} href={amaHref}>
-                <a>
-                  <Top>
-                    <span>
-                      <Names authors={article.authors} />
-                      <TabletDateContainer>
-                        <Dot />
-                        <span>{updatedAt}</span>
-                      </TabletDateContainer>
-                      <MobileDateContainer>
-                        {live ? (
-                          <Now>
-                            <LiveDot style={{ marginRight: 6 }} />
-                            Now
-                          </Now>
-                        ) : (
-                          <>
-                            <Dot />
-                            <span>{updatedAt}</span>
-                          </>
-                        )}
-                      </MobileDateContainer>
-                    </span>
-                    <Flex>
-                      {article.live && <Live />}{" "}
-                      <DateContainer>{updatedAt}</DateContainer>
-                    </Flex>
-                  </Top>
-                  <Middle>
-                    <Title>{article.title}</Title>
-                    <Content>{article.content}</Content>
-                  </Middle>
-                </a>
+                <Top>
+                  <span>
+                    <Names authors={article.authors} />
+                    <TabletDateContainer>
+                      <Dot />
+                      <span>{updatedAt}</span>
+                    </TabletDateContainer>
+                    <MobileDateContainer>
+                      {live ? (
+                        <Now>
+                          <LiveDot style={{ marginRight: 6 }} />
+                          Now
+                        </Now>
+                      ) : (
+                        <>
+                          <Dot />
+                          <span>{updatedAt}</span>
+                        </>
+                      )}
+                    </MobileDateContainer>
+                  </span>
+                  <Flex>
+                    {article.live && <Live />}{" "}
+                    <DateContainer>{updatedAt}</DateContainer>
+                  </Flex>
+                </Top>
+                <Middle>
+                  <Title>{article.title}</Title>
+                  <Content>{article.content}</Content>
+                </Middle>
               </Link>
 
               <Bottom>
@@ -138,16 +136,12 @@ export default function TimelineAma({ articles }: TimelineProps) {
                     </StyledButton>
                   </Action>
                   <Action>
-                    <Link href={amaHref}>
-                      <a>
-                        <StyledButton>
-                          <IconReply fill={theme.colors.light_grey} />{" "}
-                          {article._count.comments > 0 && (
-                            <span>{article._count.comments}</span>
-                          )}
-                        </StyledButton>
-                      </a>
-                    </Link>
+                    <StyledButton onClick={() => router.push(amaHref)}>
+                      <IconReply fill={theme.colors.light_grey} />{" "}
+                      {article._count.comments > 0 && (
+                        <span>{article._count.comments}</span>
+                      )}
+                    </StyledButton>
                   </Action>
                   <Action>
                     <StyledButton

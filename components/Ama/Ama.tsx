@@ -203,11 +203,9 @@ export default function Ama({ article, comments }: AmaProps) {
       <Container>
         <Shadows showEmptyState={showEmptyState} />
         <BackLinkContainer>
-          <Link href="/ama">
-            <BackLink>
-              <IconArrowLeft />
-            </BackLink>
-          </Link>
+          <BackLink href="/ama">
+            <IconArrowLeft />
+          </BackLink>
         </BackLinkContainer>
         <div style={{ width: "100%", position: "relative" }}>
           <Main>
@@ -413,7 +411,7 @@ const BackLinkContainer = styled.div`
   }
 `;
 
-const BackLink = styled.a`
+const BackLink = styled(Link)`
   display: inline-block;
   position: sticky;
   top: 16px;

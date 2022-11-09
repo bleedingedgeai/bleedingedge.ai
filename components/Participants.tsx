@@ -32,6 +32,7 @@ export default function Participants({
         direction="right"
         elements={particpantsToShow.map((comment) => (
           <Avatar
+            alt={comment.author.username}
             src={comment.author.image}
             size={18}
             outline={false}

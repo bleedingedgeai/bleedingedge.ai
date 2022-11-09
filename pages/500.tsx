@@ -12,9 +12,9 @@ export default function ServerError() {
         <AdjustedBounds>
           <LogoContainer>
             <Link href="/">
-              <a>
-                <IconLogo />
-              </a>
+
+              <IconLogo />
+
             </Link>
           </LogoContainer>
         </AdjustedBounds>

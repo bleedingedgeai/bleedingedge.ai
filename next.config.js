@@ -3,8 +3,14 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 });
 
 module.exports = withBundleAnalyzer({
+  experimental: {
+    appDir: true,
+  },
   images: {
     domains: ["pbs.twimg.com"],
+  },
+  compiler: {
+    styledComponents: true,
   },
   headers() {
     return [

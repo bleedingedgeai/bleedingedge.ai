@@ -199,6 +199,7 @@ function CommentsRecursive({
               )} */}
               <Avatar
                 src={comment.author.image}
+                alt={comment.author.username}
                 outline={isHostReply}
                 highlight={isHostReply}
               />

@@ -40,10 +40,18 @@ export default function CommentsEmptyState({
     <>
       <Container style={{ left: offset, width }}>
         <ImageContainer>
-          <StyledImage src={imageSrc} layout="fill" />
+          <StyledImage
+            src={imageSrc}
+            layout="fill"
+            alt="AI generated painting of person"
+          />
         </ImageContainer>
         <ImageContainerMobile>
-          <StyledImage src={imageSrcMobile} layout="fill" />
+          <StyledImage
+            src={imageSrcMobile}
+            layout="fill"
+            alt="AI generated painting of person"
+          />
         </ImageContainerMobile>
         <Text>
           <span>

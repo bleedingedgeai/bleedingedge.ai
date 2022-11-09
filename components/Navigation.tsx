@@ -33,9 +33,7 @@ export default function Navigation() {
           <Content>
             <LogoContainer>
               <Link href="/">
-                <a>
-                  <IconLogo />
-                </a>
+                <IconLogo />
               </Link>
             </LogoContainer>
             <DesktopLinks>

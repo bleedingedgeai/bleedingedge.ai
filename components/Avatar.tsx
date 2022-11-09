@@ -37,7 +37,7 @@ export default function Avatar({
       superHighlight={superHighlight}
       greyScale={greyScale}
     >
-      <StyledImage src={imageSrc} width={size} height={size} />
+      <StyledImage src={imageSrc} width={size} height={size} alt="" />
     </AvatarContainer>
   );
 }

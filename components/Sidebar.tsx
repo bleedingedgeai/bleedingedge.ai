@@ -28,9 +28,7 @@ export default function Sidebar() {
       <div>
         <LogoContainer>
           <Link href="/">
-            <a>
-              <IconLogo />
-            </a>
+            <IconLogo />
           </Link>
         </LogoContainer>
         {links.map((link) => {
@@ -41,15 +39,14 @@ export default function Sidebar() {
 
           return (
             <Row key={link.path}>
-              <Link href={link.path}>
-                <StyledLink
-                  style={
-                    active ? { color: theme.colors.white, fontWeight: 600 } : {}
-                  }
-                >
-                  {link.text} {active && "—"}
-                </StyledLink>
-              </Link>
+              <StyledLink
+                href={link.path}
+                style={
+                  active ? { color: theme.colors.white, fontWeight: 600 } : {}
+                }
+              >
+                {link.text} {active && "—"}
+              </StyledLink>
             </Row>
           );
         })}
@@ -73,9 +70,7 @@ export default function Sidebar() {
           very much a work in progress. please send suggestions and feedback!
         </Description>
         <div>
-          <Link href="/about">
-            <StyledLinkBottom>About</StyledLinkBottom>
-          </Link>
+          <StyledLinkBottom href="/about">About</StyledLinkBottom>
           <DotSpacer>
             <Dot />
           </DotSpacer>
@@ -119,7 +114,7 @@ const Description = styled.div`
   line-height: 130%;
 `;
 
-const StyledLink = styled.a`
+const StyledLink = styled(Link)`
   color: ${(p) => p.theme.colors.light_grey};
   transition: color 0.25s ease;
 
@@ -128,7 +123,7 @@ const StyledLink = styled.a`
   }
 `;
 
-const StyledLinkBottom = styled.a`
+const StyledLinkBottom = styled(Link)`
   color: ${(p) => p.theme.colors.off_white};
   transition: color 0.25s ease;
 

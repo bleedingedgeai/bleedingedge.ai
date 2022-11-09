@@ -6,6 +6,7 @@ import React, {
   useState,
 } from "react";
 import styled from "styled-components";
+import { User } from "@prisma/client";
 import Avatar from "../Avatar";
 
 export default forwardRef((props: any, ref) => {
@@ -108,7 +109,7 @@ export default forwardRef((props: any, ref) => {
   return (
     <Items ref={itemsRef}>
       {props.items.length ? (
-        props.items.map((item, index) => {
+        props.items.map((item: User, index: number) => {
           const isAuthorOfArticle = props.authors.some((a) => a.id == item.id);
 
           return (

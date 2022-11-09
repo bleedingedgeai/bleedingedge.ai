@@ -16,19 +16,15 @@ export default function NotFound() {
           <AdjustedBounds>
             <LogoContainer>
               <Link href="/">
-                <a>
-                  <IconLogo />
-                </a>
+                <IconLogo />
               </Link>
             </LogoContainer>
-            <Link href="/">
-              <StyledLink>
-                Go back home
-                <ArrowContainer>
-                  <IconArrowRight />
-                </ArrowContainer>
-              </StyledLink>
-            </Link>
+            <StyledLink href="/">
+              Go back home
+              <ArrowContainer>
+                <IconArrowRight />
+              </ArrowContainer>
+            </StyledLink>
           </AdjustedBounds>
         </Top>
         <Middle>
@@ -182,7 +178,7 @@ const ArrowContainer = styled.span`
   }
 `;
 
-const StyledLink = styled.a`
+const StyledLink = styled(Link)`
   &:hover ${ArrowContainer} svg {
     opacity: 1;
     transform: translateX(4px);

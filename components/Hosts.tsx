@@ -47,7 +47,12 @@ export default function Hosts({ authors }: HostsProps) {
                 onMouseEnter={() => handleMouseEnter(author)}
                 onMouseLeave={() => setHovered(null)}
               >
-                <Avatar src={author.image} size={18} outline={false} />
+                <Avatar
+                  src={author.image}
+                  alt={author.username}
+                  size={18}
+                  outline={false}
+                />
               </span>
             ))}
           />
@@ -67,7 +72,12 @@ export default function Hosts({ authors }: HostsProps) {
             >
               <Top>
                 <Title>{author.name}</Title>
-                <Avatar src={author.image} size={24} outline={false} />
+                <Avatar
+                  src={author.image}
+                  alt={author.username}
+                  size={24}
+                  outline={false}
+                />
               </Top>
               <Flex>
                 <Username
