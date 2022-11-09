@@ -12,8 +12,6 @@ interface AvatarProps {
   greyScale?: boolean;
 }
 
-const fallbackNames = ["alexandra", "annunciata", "francesca", "maria"];
-
 export default function Avatar({
   src,
   highlight,
@@ -27,6 +25,7 @@ export default function Avatar({
       return src;
     }
 
+    const fallbackNames = ["alexandra", "annunciata", "francesca", "maria"];
     return `/assets/avatar/${fallbackNames[getRandomWholeNumber(0, 3)]}.jpg`;
   }, [src]);
 

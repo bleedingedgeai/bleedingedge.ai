@@ -1,5 +1,6 @@
 import { useCallback, useContext, useEffect } from "react";
 import styled from "styled-components";
+import { Tag } from "@prisma/client";
 import { inputIsFocused } from "../helpers/input";
 import { mq } from "../styles/mediaqueries";
 import Dot from "./Dot";
@@ -9,7 +10,7 @@ import { Sort } from "./Layout";
 import { OverlayContext, OverlayType } from "./Overlay/Overlay";
 
 interface FilterAndSortProps {
-  tags: { id: string; name: string }[];
+  tags: Tag[];
   sort: Sort;
   setSort: React.Dispatch<React.SetStateAction<Sort>>;
 }

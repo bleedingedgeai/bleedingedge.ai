@@ -5,7 +5,7 @@ import React, { useContext } from "react";
 import styled from "styled-components";
 import { copyToClipboard, slugify } from "../helpers/string";
 import { useArticleMutations } from "../lib/hooks/useArticleMutations";
-import { Sort } from "../pages";
+import { ArticleWithLike } from "../prisma/types";
 import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
 import { AlertsContext } from "./Alerts/AlertsProvider";
@@ -21,11 +21,10 @@ import { OverlayContext, OverlayType } from "./Overlay/Overlay";
 import Participants from "./Participants";
 
 interface TimelineProps {
-  articles: any[];
-  sort: Sort;
+  articles: ArticleWithLike[];
 }
 
-export default function TimelineAma({ articles, sort }: TimelineProps) {
+export default function TimelineAma({ articles }: TimelineProps) {
   const router = useRouter();
   const session = useSession();
   const { showOverlay } = useContext(OverlayContext);

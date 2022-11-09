@@ -1,14 +1,17 @@
 import styled from "styled-components";
+import { ArticleLive, ArticleWithLike } from "../prisma/types";
 import Avatar from "./Avatar";
 import Stacked from "./Stacked";
+
+interface ParticipantsProps {
+  article: ArticleWithLike | ArticleLive;
+  hideExtraText?: boolean;
+}
 
 export default function Participants({
   article,
   hideExtraText,
-}: {
-  article: any;
-  hideExtraText?: boolean;
-}) {
+}: ParticipantsProps) {
   const commentsWithAuthors = article?.comments?.filter((c) => c.author);
 
   if (commentsWithAuthors.length === 0) {

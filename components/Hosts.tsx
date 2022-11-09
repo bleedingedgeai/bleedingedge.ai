@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 import { animated, useTransition } from "react-spring";
 import styled from "styled-components";
+import { User } from "@prisma/client";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 import Avatar from "./Avatar";
@@ -8,7 +9,11 @@ import Badge from "./Badge";
 import Portal from "./Portal";
 import Stacked from "./Stacked";
 
-export default function Hosts({ authors }) {
+interface HostsProps {
+  authors: User[];
+}
+
+export default function Hosts({ authors }: HostsProps) {
   const [hovered, setHovered] = useState();
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const containerRef = useRef<HTMLDivElement>(null);

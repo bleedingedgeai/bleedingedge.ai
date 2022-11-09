@@ -1,6 +1,7 @@
 import Link from "next/link";
 import styled, { keyframes } from "styled-components";
 import { slugify } from "../helpers/string";
+import { ArticleLive } from "../prisma/types";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
@@ -10,7 +11,11 @@ import IconReply from "./Icons/IconReply";
 import Participants from "./Participants";
 import Stacked from "./Stacked";
 
-export default function Banner({ article }) {
+interface BannerProps {
+  article: ArticleLive;
+}
+
+export default function Banner({ article }: BannerProps) {
   if (!article) {
     return null;
   }

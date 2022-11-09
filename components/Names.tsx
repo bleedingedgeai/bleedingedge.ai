@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import { User } from "@prisma/client";
 import { ellipsis } from "../styles/css";
 
 const twitter = "https://twitter.com";
 
-const getLinkProps = (author) => ({
+const getLinkProps = (author: User) => ({
   key: author.id,
   href: `${twitter}/${author.username}`,
   target: "_blank",
@@ -12,7 +13,11 @@ const getLinkProps = (author) => ({
   onClick: (event: React.MouseEvent) => event.stopPropagation(),
 });
 
-export default function Names({ authors }) {
+interface NamesProps {
+  authors: User[];
+}
+
+export default function Names({ authors }: NamesProps) {
   if (authors.length === 1) {
     const author = authors[0];
     return (

@@ -1,12 +1,18 @@
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { RefObject, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { getRandomWholeNumber } from "../../helpers/numbers";
 import { mq } from "../../styles/mediaqueries";
 
 const imageBasePath = `/assets/painting/painting-`;
 
-export default function CommentsEmptyState({ conatinerRef }) {
+interface CommentsEmptyStateProps {
+  containerRef: RefObject<HTMLDivElement>;
+}
+
+export default function CommentsEmptyState({
+  containerRef,
+}: CommentsEmptyStateProps) {
   const [offset, setOffset] = useState(0);
   const [width, setWidth] = useState(0);
 
@@ -20,7 +26,7 @@ export default function CommentsEmptyState({ conatinerRef }) {
 
   useEffect(() => {
     function handleResize() {
-      const rect = conatinerRef.current.getBoundingClientRect();
+      const rect = containerRef.current.getBoundingClientRect();
       setOffset(rect.x);
       setWidth(rect.width);
     }
@@ -28,7 +34,7 @@ export default function CommentsEmptyState({ conatinerRef }) {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [conatinerRef]);
+  }, [containerRef]);
 
   return (
     <>

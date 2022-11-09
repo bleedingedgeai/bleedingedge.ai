@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import React from "react";
 import { animated, useTransition } from "react-spring";
 import styled from "styled-components";
+import { Tag } from "@prisma/client";
 import { scrollable } from "../helpers/dom";
 import { hideScrollBar } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
@@ -10,7 +11,7 @@ import { Sort } from "./Layout";
 import Portal from "./Portal";
 
 interface FilterAndSortMobileProps {
-  tags: { id: string; name: string }[];
+  tags: Tag[];
   sort: Sort;
   setSort: React.Dispatch<React.SetStateAction<Sort>>;
 }

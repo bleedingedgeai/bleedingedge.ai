@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { Tag } from "@prisma/client";
 import FilterAndSort from "../../../components/FilterAndSort";
 import FilterAndSortMobile from "../../../components/FilterAndSortMobile";
 import Layout from "../../../components/Layout";
@@ -7,6 +8,7 @@ import SEO from "../../../components/SEO";
 import TimelineAma from "../../../components/TimelineAma";
 import { clean } from "../../../helpers/json";
 import prisma from "../../../lib/prisma";
+import { ArticleWithLike } from "../../../prisma/types";
 import { mq } from "../../../styles/mediaqueries";
 import { Sort } from "../..";
 
@@ -62,7 +64,13 @@ export async function getServerSideProps(req, res) {
   }
 }
 
-export default function AMATag({ tag, tags, articles }) {
+interface AMATagProps {
+  tag: Tag;
+  tags: Tag[];
+  articles: ArticleWithLike[];
+}
+
+export default function AMATag({ tag, tags, articles }: AMATagProps) {
   const [sort, setSort] = useState<Sort>("Latest");
 
   return (
@@ -72,7 +80,7 @@ export default function AMATag({ tag, tags, articles }) {
         <FilterAndSortSticky>
           <FilterAndSort tags={tags} sort={sort} setSort={setSort} />
         </FilterAndSortSticky>
-        <TimelineAma sort={sort} articles={articles} />
+        <TimelineAma articles={articles} />
       </Layout>
       <FilterAndSortMobile tags={tags} sort={sort} setSort={setSort} />
     </>

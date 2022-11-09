@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
+import { ArticleHome } from "../prisma/types";
 import { mq } from "../styles/mediaqueries";
 import Article from "./Article";
 import { Sort } from "./Layout";
@@ -92,7 +93,7 @@ const sortByEarliest = (date1, date2) => {
 };
 
 interface TimelineProps {
-  articles: any[];
+  articles: ArticleHome[];
   sort: Sort;
 }
 
@@ -106,7 +107,6 @@ export default function Timeline({ articles, sort }: TimelineProps) {
   return (
     <>
       <Shadow />
-
       <Container>
         {Object.keys(groupedArticles)
           .sort(sortMethod)

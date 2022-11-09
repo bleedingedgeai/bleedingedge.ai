@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { Tag as ITag } from "@prisma/client";
 import Banner from "../../components/Banner";
 import FilterAndSort from "../../components/FilterAndSort";
 import FilterAndSortMobile from "../../components/FilterAndSortMobile";
@@ -8,6 +9,7 @@ import SEO from "../../components/SEO";
 import Timeline from "../../components/Timeline";
 import { clean } from "../../helpers/json";
 import prisma from "../../lib/prisma";
+import { ArticleHome, ArticleLive } from "../../prisma/types";
 import { mq } from "../../styles/mediaqueries";
 import { Sort } from "..";
 
@@ -83,7 +85,14 @@ export async function getStaticProps({ params }) {
   }
 }
 
-export default function Tag({ tag, tags, articles, liveArticle }) {
+interface TagProps {
+  tag: ITag;
+  tags: ITag[];
+  articles: ArticleHome[];
+  liveArticle: ArticleLive;
+}
+
+export default function Tag({ tag, tags, articles, liveArticle }: TagProps) {
   const [sort, setSort] = useState<Sort>("Latest");
 
   return (

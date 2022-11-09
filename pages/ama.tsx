@@ -1,6 +1,7 @@
 import { unstable_getServerSession } from "next-auth";
 import { useState } from "react";
 import styled from "styled-components";
+import { Post, PostLike, Tag, User } from "@prisma/client";
 import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
 import FilterAndSort from "../components/FilterAndSort";
 import FilterAndSortMobile from "../components/FilterAndSortMobile";
@@ -10,6 +11,7 @@ import TimelineAma from "../components/TimelineAma";
 import { staticAmas } from "../db/static";
 import { clean } from "../helpers/json";
 import prisma from "../lib/prisma";
+import { ArticleLike, ArticleWithLike } from "../prisma/types";
 import { mq } from "../styles/mediaqueries";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { Sort } from ".";
@@ -86,10 +88,10 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default function Ama({ tags }) {
+export default function Ama({ tags }: { tags: Tag[] }) {
   const [sort, setSort] = useState<Sort>("Latest");
 
-  const { data: articleFromQuery } = useQuery<any>({
+  const { data: articleFromQuery } = useQuery<ArticleWithLike[]>({
     queryKey: ["articles"],
     queryFn: async () => {
       return await (await fetch(`/api/articles`)).json();
@@ -103,7 +105,7 @@ export default function Ama({ tags }) {
         <FilterAndSortSticky>
           <FilterAndSort tags={tags} sort={sort} setSort={setSort} />
         </FilterAndSortSticky>
-        <TimelineAma sort={sort} articles={articleFromQuery} />
+        <TimelineAma articles={articleFromQuery} />
       </Layout>
       <FilterAndSortMobile tags={tags} sort={sort} setSort={setSort} />
     </>

@@ -19,6 +19,7 @@ import {
 import { copyToClipboard } from "../../helpers/string";
 import { useArticleMutations } from "../../lib/hooks/useArticleMutations";
 import { formatNestedComments } from "../../pages/ama/[slug]";
+import { ArticleWithLike, CommentWithChildren } from "../../prisma/types";
 import { ellipsis } from "../../styles/css";
 import { mq } from "../../styles/mediaqueries";
 import { theme } from "../../styles/theme";
@@ -42,7 +43,12 @@ import AmaSort from "./AmaSort";
 
 export type Sort = "Top questions" | "New questions";
 
-export default function Ama({ article, comments }) {
+interface AmaProps {
+  article: ArticleWithLike;
+  comments: CommentWithChildren[];
+}
+
+export default function Ama({ article, comments }: AmaProps) {
   const [replyingToId, setReplyingToId] = useState(null);
   const [edittingId, setEdittingId] = useState(null);
   const [showSticky, setShowSticky] = useState(false);
@@ -50,7 +56,7 @@ export default function Ama({ article, comments }) {
 
   const { showAlert } = useContext(AlertsContext);
   const { showOverlay } = useContext(OverlayContext);
-  const conatinerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
 
   const session = useSession();
@@ -184,7 +190,7 @@ export default function Ama({ article, comments }) {
 
   const sharedProps = {
     article,
-    conatinerRef,
+    containerRef,
     setReplyingToId,
     replyingToId,
     setEdittingId,
@@ -205,7 +211,7 @@ export default function Ama({ article, comments }) {
         </BackLinkContainer>
         <div style={{ width: "100%", position: "relative" }}>
           <Main>
-            <div ref={conatinerRef}>
+            <div ref={containerRef}>
               <FlexBetween>
                 <Authors>
                   <Names authors={article.authors} />
@@ -291,7 +297,7 @@ export default function Ama({ article, comments }) {
           <CommentsInput {...sharedProps} comments={comments} />
         </div>
       </Container>
-      {showEmptyState && <CommentsEmptyState conatinerRef={conatinerRef} />}
+      {showEmptyState && <CommentsEmptyState containerRef={containerRef} />}
     </>
   );
 }

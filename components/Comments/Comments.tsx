@@ -1,16 +1,15 @@
 import { useSession } from "next-auth/react";
-import { Fragment, useContext, useMemo } from "react";
+import { Fragment, useContext } from "react";
 import styled from "styled-components";
-import { Prisma } from "@prisma/client";
+import { Editor } from "@tiptap/react";
 import { timeAgo } from "../../helpers/date";
-import { clamp } from "../../helpers/numbers";
 import {
   STORAGE_COMMENT,
   STORAGE_EDIT,
   STORAGE_REPLY,
 } from "../../helpers/storage";
 import { useCommentMutations } from "../../lib/hooks/useCommentMutations";
-import { ellipsis } from "../../styles/css";
+import { ArticleWithLike, CommentWithChildren } from "../../prisma/types";
 import { mq } from "../../styles/mediaqueries";
 import { theme } from "../../styles/theme";
 import Avatar from "../Avatar";
@@ -22,11 +21,22 @@ import IconLike from "../Icons/IconLike";
 import IconLiked from "../Icons/IconLiked";
 import IconReplied from "../Icons/IconReplied";
 import IconReply from "../Icons/IconReply";
-import IconTwitter from "../Icons/IconTwitter";
 import Names from "../Names";
 import { OverlayContext, OverlayType } from "../Overlay/Overlay";
 
-export default function Comments(props) {
+interface CommentProps {
+  article: ArticleWithLike;
+  comments: CommentWithChildren[];
+  index?: number;
+  parentId?: string;
+  setReplyingToId: React.Dispatch<React.SetStateAction<string>>;
+  replyingToId: string;
+  edittingId: string;
+  setEdittingId: React.Dispatch<React.SetStateAction<string>>;
+  editor: Editor;
+}
+
+export default function Comments(props: CommentProps) {
   return <CommentsRecursive {...props} />;
 }
 
@@ -40,7 +50,7 @@ function CommentsRecursive({
   edittingId,
   setEdittingId,
   editor,
-}) {
+}: CommentProps) {
   const { showOverlay } = useContext(OverlayContext);
   const commentMutations = useCommentMutations({ article });
   const session = useSession();
@@ -60,6 +70,7 @@ function CommentsRecursive({
       return showOverlay(OverlayType.AUTHENTICATION);
     }
 
+    // Might want this back soon
     // editor?.commands?.setContent([
     //   {
     //     type: "mention",
@@ -137,8 +148,6 @@ function CommentsRecursive({
         const firstReply = parentIndex === 1 && commentIndex === 0;
         const isHostReply = hosts?.some((a) => a.id === comment.author?.id);
         const isUserReply = session?.data?.user.id === comment.author?.id;
-
-        const paddingLeft = clamp(parentIndex * 42 + 9, 0, 42 + 9);
 
         if (!comment.author) {
           return (

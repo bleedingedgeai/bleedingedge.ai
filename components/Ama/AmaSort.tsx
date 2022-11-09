@@ -1,11 +1,19 @@
 import { useCallback, useRef } from "react";
 import styled from "styled-components";
 import { uniqBy } from "../../helpers/methods";
+import { ArticleWithLike } from "../../prisma/types";
 import { mq } from "../../styles/mediaqueries";
 import Participants from "../Participants";
+import { Sort } from "./Ama";
 
-export default function AmaSort({ article, sort, setSort }) {
-  const conatinerRef = useRef<HTMLDivElement>(null);
+interface AmaSortProps {
+  article: ArticleWithLike;
+  sort: Sort;
+  setSort: React.Dispatch<React.SetStateAction<Sort>>;
+}
+
+export default function AmaSort({ article, sort, setSort }: AmaSortProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleSortClick = useCallback(
     (event: React.MouseEvent) => {
@@ -18,16 +26,16 @@ export default function AmaSort({ article, sort, setSort }) {
   );
 
   const participants = uniqBy(
-    article.comments.filter((x) => x?.author),
-    (a) => a.author.id
+    article.comments.filter((c) => c?.author),
+    ({ author }) => author.id
   ).length;
 
   if (participants === 0) {
-    return <Container ref={conatinerRef} />;
+    return <Container ref={containerRef} />;
   }
 
   return (
-    <Container ref={conatinerRef}>
+    <Container ref={containerRef}>
       <SortContainer onClick={handleSortClick}>
         <SortButton>
           Sort by <span>:: {sort}</span>

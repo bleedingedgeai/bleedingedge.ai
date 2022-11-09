@@ -1,14 +1,15 @@
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
-import { Suspense, useContext, useEffect, useState } from "react";
-// import OutsideClickHandler from "react-outside-click-handler";
+import { RefObject, Suspense, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+import { Editor } from "@tiptap/react";
 import {
   STORAGE_COMMENT,
   STORAGE_EDIT,
   STORAGE_REPLY,
 } from "../../helpers/storage";
 import { useCommentMutations } from "../../lib/hooks/useCommentMutations";
+import { ArticleWithLike, CommentWithChildren } from "../../prisma/types";
 import { mq } from "../../styles/mediaqueries";
 import { theme } from "../../styles/theme";
 import { AlertsContext } from "../Alerts/AlertsProvider";
@@ -21,25 +22,46 @@ const DynamicEditor = dynamic(() => import("../Forms/Editor"), {
   suspense: true,
 });
 
+interface CommentsInputProps {
+  article: ArticleWithLike;
+  comments: CommentWithChildren[];
+  containerRef: RefObject<HTMLDivElement>;
+  setReplyingToId: React.Dispatch<React.SetStateAction<string>>;
+  replyingToId: string;
+  edittingId: string;
+  setEdittingId: React.Dispatch<React.SetStateAction<string>>;
+  editor: Editor;
+}
+
 export default function CommentsInput({
   article,
   comments,
-  conatinerRef,
+  containerRef,
   setReplyingToId,
   setEdittingId,
   replyingToId,
   edittingId,
   editor,
-}) {
+}: CommentsInputProps) {
   const { showOverlay } = useContext(OverlayContext);
   const session = useSession();
   const [offset, setOffset] = useState(0);
   const [width, setWidth] = useState(0);
   const { showAlert } = useContext(AlertsContext);
   const replyingToComment = comments.find((c) => c.id === replyingToId);
+  const commentToEdit = comments.find((comment) => comment.id === edittingId);
+
+  //////////////////////////////////////////////////////////////////////////
+  // Keys
+  //////////////////////////////////////////////////////////////////////////
+
   const editKey = `${STORAGE_EDIT}-${article.slug}`;
   const replyKey = `${STORAGE_REPLY}-${article.slug}`;
   const commentKey = `${STORAGE_COMMENT}-${article.slug}`;
+
+  //////////////////////////////////////////////////////////////////////////
+  // Submit
+  //////////////////////////////////////////////////////////////////////////
 
   const resetInput = () => {
     setReplyingToId(null);
@@ -91,8 +113,27 @@ export default function CommentsInput({
   }
 
   useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter" && event.metaKey) {
+        handleSubmit(event);
+      }
+    };
+
+    if (editor?.isFocused) {
+      document.addEventListener("keydown", handleKeyDown);
+      return () => {
+        document.removeEventListener("keydown", handleKeyDown);
+      };
+    }
+  }, [replyingToId, handleSubmit, editor?.isFocused]);
+
+  //////////////////////////////////////////////////////////////////////////
+  // Resize to get input the correct size
+  //////////////////////////////////////////////////////////////////////////
+
+  useEffect(() => {
     function handleResize() {
-      const rect = conatinerRef.current.getBoundingClientRect();
+      const rect = containerRef.current.getBoundingClientRect();
       setOffset(rect.x);
       setWidth(rect.width);
     }
@@ -100,22 +141,7 @@ export default function CommentsInput({
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [conatinerRef]);
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Enter" && event.metaKey) {
-        handleSubmit(event);
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [replyingToId, handleSubmit]);
-
-  const commentToEdit = comments.find((comment) => comment.id === edittingId);
+  }, [containerRef]);
 
   return (
     <Portal>
@@ -125,15 +151,7 @@ export default function CommentsInput({
             <div>
               Replying to <span>{replyingToComment.author.name}</span>
             </div>
-            <button
-              onClick={() => {
-                setReplyingToId(null);
-                localStorage.removeItem(replyKey);
-                localStorage.removeItem(editKey);
-                localStorage.removeItem(commentKey);
-                editor.commands.clearContent();
-              }}
-            >
+            <button onClick={resetInput}>
               <IconEx size={16} fill={theme.colors.white} />
             </button>
           </ReplyingTo>
@@ -141,15 +159,7 @@ export default function CommentsInput({
         {commentToEdit && (
           <ReplyingTo>
             <div>Editing message</div>
-            <button
-              onClick={() => {
-                setEdittingId(null);
-                localStorage.removeItem(replyKey);
-                localStorage.removeItem(editKey);
-                localStorage.removeItem(commentKey);
-                editor.commands.clearContent();
-              }}
-            >
+            <button onClick={resetInput}>
               <IconEx size={16} fill={theme.colors.white} />
             </button>
           </ReplyingTo>

@@ -2,6 +2,7 @@ import fs from "fs";
 import { Feed as RSSFeed } from "feed";
 import { useState } from "react";
 import styled from "styled-components";
+import { Tag } from "@prisma/client";
 import Banner from "../components/Banner";
 import FilterAndSort from "../components/FilterAndSort";
 import FilterAndSortMobile from "../components/FilterAndSortMobile";
@@ -10,6 +11,7 @@ import SEO from "../components/SEO";
 import Timeline from "../components/Timeline";
 import { clean } from "../helpers/json";
 import prisma from "../lib/prisma";
+import { ArticleHome, ArticleLive } from "../prisma/types";
 import { mq } from "../styles/mediaqueries";
 
 async function generateFeed(articles) {
@@ -53,16 +55,6 @@ async function generateFeed(articles) {
 }
 
 export async function getStaticProps() {
-  // context.res.setHeader(
-  //   "Cache-Control",
-  //   "public, s-maxage=10, stale-while-revalidate=59"
-  // );
-
-  // const sessionRequest = unstable_getServerSession(
-  //   context.req,
-  //   context.res,
-  //   authOptions
-  // );
   const articlesRequest = await prisma.post.findMany({
     where: { published: true },
     include: {
@@ -109,7 +101,13 @@ export async function getStaticProps() {
 
 export type Sort = "Latest" | "Earliest";
 
-export default function Home({ tags, articles, liveArticle }) {
+interface HomeProps {
+  tags: Tag[];
+  articles: ArticleHome[];
+  liveArticle: ArticleLive;
+}
+
+export default function Home({ tags, articles, liveArticle }: HomeProps) {
   const [sort, setSort] = useState<Sort>("Latest");
 
   return (
