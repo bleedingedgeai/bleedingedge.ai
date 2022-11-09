@@ -20,6 +20,7 @@ const samAndBradAmas = {
   published: true,
   live: false,
   disabled: true,
+  imported: true,
   format: "highlight",
   postedAt: "2018-02-16T01:05:00.000Z",
   title:

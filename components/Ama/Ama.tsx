@@ -219,10 +219,12 @@ export default function Ama({ article, comments }) {
                     </DateContainer>
                     {article.live && <Live onlyDot />}{" "}
                   </Flex>
-                  <Badge>
-                    <span>Imported</span>
-                    <IconTwitter size={14} />
-                  </Badge>
+                  {article.imported && (
+                    <Badge>
+                      <span>Imported</span>
+                      <IconTwitter size={14} />
+                    </Badge>
+                  )}
                 </Authors>
                 <Hosts authors={article.authors} />
               </FlexBetween>
