@@ -207,6 +207,9 @@ function CommentsRecursive({
                   <Names authors={[comment.author]} />
                   <Dot />
                   <UpdatedAt>{timeAgo(new Date(comment.updatedAt))}</UpdatedAt>
+                  <UpdatedAtMobile>
+                    {timeAgo(new Date(comment.updatedAt), "short")}
+                  </UpdatedAtMobile>
                 </Author>
                 <Content isHostReply={isHostReply}>
                   <CommentEditor
@@ -576,7 +579,14 @@ const Author = styled.div`
 `;
 
 const UpdatedAt = styled.span`
-  ${mq.tablet} {
+  ${mq.phablet} {
+    display: none;
+  }
+`;
+
+const UpdatedAtMobile = styled.span`
+  ${mq.phabletUp} {
+    display: none;
   }
 `;
 
