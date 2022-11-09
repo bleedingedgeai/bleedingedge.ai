@@ -213,6 +213,7 @@ const Inner = styled.div`
   position: relative;
   border-radius: 14px;
   overflow: hidden;
+  height: 100%;
 `;
 
 const ReplyingTo = styled.div`

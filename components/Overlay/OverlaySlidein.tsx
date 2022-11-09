@@ -41,7 +41,7 @@ const Container = styled.div`
   border-radius: 24px 24px 0 0;
   padding: 96px 16px 0;
   z-index: 2147483647;
-  transition: transform 1s cubic-bezier(0.1, 0.95, 0.15, 1);
+  transition: transform 0.67s cubic-bezier(0.6, 0.1, 0.1, 1);
 
   ${mq.phablet} {
     top: 76px;
