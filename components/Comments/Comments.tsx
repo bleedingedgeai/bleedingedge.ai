@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
 import { Fragment, useContext } from "react";
-import styled from "styled-components";
+import styled, { CSSProperties } from "styled-components";
 import { Editor } from "@tiptap/react";
 import { timeAgo } from "../../helpers/date";
 import {
@@ -145,7 +145,7 @@ function CommentsRecursive({
           isReplyingToThisComment || isEditingThisComment;
         const commentHasReplies =
           comment.children.filter((c) => c?.author).length > 0;
-        const firstReply = parentIndex === 1 && commentIndex === 0;
+        // const firstReply = parentIndex === 1 && commentIndex === 0;
         const isHostReply = hosts?.some((a) => a.id === comment.author?.id);
         const isUserReply = session?.data?.user.id === comment.author?.id;
 
@@ -167,25 +167,20 @@ function CommentsRecursive({
           );
         }
 
-        // const showConnectionLine =
-        //   (commentHasReplies && parentIndex === 0) || parentIndex !== 0;
+        const disabledCommentStyles: CSSProperties = {
+          pointerEvents: "none",
+          opacity: 0.32,
+        };
 
         return (
           <Fragment key={comment.id + comment.content}>
             <Container
               index={parentIndex}
-              style={{
-                opacity: eidtOrReplying
-                  ? edittingOrReplyingToThisComment
-                    ? 1
-                    : 0.32
-                  : 1,
-                pointerEvents: eidtOrReplying
-                  ? edittingOrReplyingToThisComment
-                    ? "initial"
-                    : "none"
-                  : "initial",
-              }}
+              style={
+                eidtOrReplying && !edittingOrReplyingToThisComment
+                  ? disabledCommentStyles
+                  : {}
+              }
             >
               {/* {showConnectionLine && (
                 <Connection style={{ paddingLeft }}>
@@ -199,7 +194,6 @@ function CommentsRecursive({
               )} */}
               <Avatar
                 src={comment.author.image}
-                alt={comment.author.username}
                 outline={isHostReply}
                 highlight={isHostReply}
               />
