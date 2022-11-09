@@ -35,6 +35,11 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
   const handleLike = (event: React.MouseEvent, article) => {
     event.preventDefault();
     event.stopPropagation();
+
+    if (article.disabled) {
+      return;
+    }
+
     if (session.status === "unauthenticated") {
       return showOverlay(OverlayType.AUTHENTICATION);
     }
@@ -113,6 +118,7 @@ export default function TimelineAma({ articles, sort }: TimelineProps) {
                 <Actions>
                   <Action>
                     <StyledButton
+                      disabled={article.disabled}
                       onClick={(event) => handleLike(event, article)}
                     >
                       {article.liked ? <IconLiked /> : <IconLike />}{" "}
@@ -369,7 +375,7 @@ const StyledLink = styled.a`
   }
 `;
 
-const StyledButton = styled.button`
+const StyledButton = styled.button<{ disabled?: boolean }>`
   display: flex;
   align-items: center;
   color: ${(p) => p.theme.colors.light_grey};
@@ -382,11 +388,14 @@ const StyledButton = styled.button`
     transition: fill 0.2s ease;
   }
 
-  &:hover {
-    color: ${(p) => p.theme.colors.off_white};
+  ${(p) =>
+    p.disabled
+      ? "cursor: default"
+      : `&:hover {
+    color: ${p.theme.colors.off_white};
 
     svg path {
-      fill: ${(p) => p.theme.colors.off_white};
+      fill: ${p.theme.colors.off_white};
     }
-  }
+  }`}
 `;
