@@ -2,7 +2,6 @@ import { useContext } from "react";
 import styled from "styled-components";
 import IconGoTo from "./Icons/IconGoTo";
 import { OverlayContext, OverlayType } from "./Overlay/Overlay";
-import Subscribe from "./Subscribe";
 
 export default function Contact() {
   const { showOverlay } = useContext(OverlayContext);
@@ -29,7 +28,9 @@ export default function Contact() {
         </Button>
       </Row>
       <Row>
-        <Subscribe />
+        <Button onClick={() => showOverlay(OverlayType.SUBSCRIBE)}>
+          Subscribe
+        </Button>
       </Row>
     </div>
   );
