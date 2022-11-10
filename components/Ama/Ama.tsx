@@ -541,7 +541,7 @@ const MobileGlow = styled.div`
   position: absolute;
   left: 6.53%;
   right: 6.53%;
-  bottom: 46px;
+  bottom: 8px;
   height: 124px;
   background: radial-gradient(
     47.07% 100% at 50% 100%,

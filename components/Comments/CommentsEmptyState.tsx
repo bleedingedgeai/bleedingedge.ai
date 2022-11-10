@@ -42,14 +42,16 @@ export default function CommentsEmptyState({
         <ImageContainer>
           <StyledImage
             src={imageSrc}
-            layout="fill"
+            width={841}
+            height={571}
             alt="AI generated painting of person"
           />
         </ImageContainer>
         <ImageContainerMobile>
           <StyledImage
+            width={375}
+            height={419}
             src={imageSrcMobile}
-            layout="fill"
             alt="AI generated painting of person"
           />
         </ImageContainerMobile>
@@ -75,6 +77,9 @@ export default function CommentsEmptyState({
 }
 
 const ImageContainer = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
   display: grid;
 
   ${mq.tablet} {
@@ -83,7 +88,11 @@ const ImageContainer = styled.div`
 `;
 
 const ImageContainerMobile = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
   display: grid;
+  overflow: hidden;
 
   ${mq.tabletUp} {
     display: none;
