@@ -45,6 +45,7 @@ export default function CommentsEmptyState({
             width={841}
             height={571}
             alt="AI generated painting of person"
+            priority
           />
         </ImageContainer>
         <ImageContainerMobile>
@@ -53,6 +54,7 @@ export default function CommentsEmptyState({
             height={419}
             src={imageSrcMobile}
             alt="AI generated painting of person"
+            priority
           />
         </ImageContainerMobile>
         <Text>
