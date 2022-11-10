@@ -27,8 +27,8 @@ export default function Hosts({ authors }: HostsProps) {
   });
 
   const handleMouseEnter = useCallback((author) => {
-    const { left, top } = containerRef.current.getBoundingClientRect();
-    setPosition({ left: left - 96, top: top + 44 });
+    const { right, top } = containerRef.current.getBoundingClientRect();
+    setPosition({ left: right - 193, top: top + 44 });
     setHovered(author);
   }, []);
 
@@ -124,12 +124,12 @@ const Card = styled(animated.div)`
     position: absolute;
     left: 0;
     right: 0%;
-    top: -25px;
+    top: -26px;
     bottom: 0;
     opacity: 0.5;
     z-index: -1;
-    border-top-left-radius: 50%;
-    border-top-right-radius: 50%;
+    border-top-left-radius: 60%;
+    border-top-right-radius: 20%;
   }
 `;
 
