@@ -89,26 +89,30 @@ export default function TimelineAma({ articles }: TimelineProps) {
                 <Top>
                   <TopLeft style={{ display: "flex" }}>
                     <Names authors={article.authors} />
-                    {article.imported && <Badges.Twitter />}
+                    <TabletDateContainer>
+                      <Dot />
+                      <span>{updatedAt}</span>
+                    </TabletDateContainer>
+                    <MobileDateContainer>
+                      {live ? (
+                        <Now>
+                          <LiveDot style={{ marginRight: 6 }} />
+                          Now
+                        </Now>
+                      ) : (
+                        <>
+                          <Dot />
+                          <span>{updatedAt}</span>
+                        </>
+                      )}
+                    </MobileDateContainer>
+                    {article.imported && (
+                      <ImportedContainer>
+                        <Badges.Twitter />
+                      </ImportedContainer>
+                    )}
                   </TopLeft>
 
-                  <TabletDateContainer>
-                    <Dot />
-                    <span>{updatedAt}</span>
-                  </TabletDateContainer>
-                  <MobileDateContainer>
-                    {live ? (
-                      <Now>
-                        <LiveDot style={{ marginRight: 6 }} />
-                        Now
-                      </Now>
-                    ) : (
-                      <>
-                        <Dot />
-                        <span>{updatedAt}</span>
-                      </>
-                    )}
-                  </MobileDateContainer>
                   <Flex>
                     {article.live && <Live />}{" "}
                     <DateContainer>{updatedAt}</DateContainer>
@@ -168,10 +172,10 @@ export default function TimelineAma({ articles }: TimelineProps) {
 const TopLeft = styled.span`
   display: flex;
   align-items: center;
+`;
 
-  & > span:last-of-type {
-    margin-left: 9px;
-  }
+const ImportedContainer = styled.span`
+  margin-left: 9px;
 `;
 
 const Container = styled.div`

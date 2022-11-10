@@ -19,10 +19,12 @@ import IconDelete from "../Icons/IconDelete";
 import IconEdit from "../Icons/IconEdit";
 import IconLike from "../Icons/IconLike";
 import IconLiked from "../Icons/IconLiked";
+import IconOptions from "../Icons/IconOptions";
 import IconReplied from "../Icons/IconReplied";
 import IconReply from "../Icons/IconReply";
 import Names from "../Names";
 import { OverlayContext, OverlayType } from "../Overlay/Overlay";
+import CommentsMenu from "./CommentsMenu";
 
 interface CommentProps {
   article: ArticleWithLike;
@@ -145,7 +147,6 @@ function CommentsRecursive({
           isReplyingToThisComment || isEditingThisComment;
         const commentHasReplies =
           comment.children.filter((c) => c?.author).length > 0;
-        // const firstReply = parentIndex === 1 && commentIndex === 0;
         const isHostReply = hosts?.some((a) => a.id === comment.author?.id);
         const isUserReply = session?.data?.user.id === comment.author?.id;
 
@@ -182,16 +183,6 @@ function CommentsRecursive({
                   : {}
               }
             >
-              {/* {showConnectionLine && (
-                <Connection style={{ paddingLeft }}>
-                  <ConnectionLine />
-                </Connection>
-              )}
-              {firstReply && (
-                <ConnectionCurve style={{ paddingLeft }}>
-                  <IconConnectionCurve />
-                </ConnectionCurve>
-              )} */}
               <Avatar
                 src={comment.author.image}
                 outline={isHostReply}
@@ -258,26 +249,12 @@ function CommentsRecursive({
                         </Action>
                       )}
                       {isUserReply && (
-                        <>
-                          <Action>
-                            <StyledButton
-                              onClick={(event) =>
-                                handleCommentEdit(event, comment)
-                              }
-                            >
-                              <IconEdit /> <span>Edit</span>
-                            </StyledButton>
-                          </Action>
-                          <Action>
-                            <StyledButton
-                              onClick={(event) =>
-                                handleDelete(event, comment.id)
-                              }
-                            >
-                              <IconDelete /> <span>Delete</span>
-                            </StyledButton>
-                          </Action>
-                        </>
+                        <CommentsMenu
+                          article={article}
+                          comment={comment}
+                          setEdittingId={setEdittingId}
+                          editor={editor}
+                        />
                       )}
                     </Actions>
                   )}
@@ -335,13 +312,10 @@ function CommentDeleted({
     parentId === comment.id || edittingId === comment.id;
   const eidtOrReplying = replyingToId || edittingId;
   const commentsWithReplies = comment.children.filter((x) => x?.author);
-  const firstReply = parentIndex === 1 && commentIndex === 0;
 
   if (commentsWithReplies.length === 0) {
     return null;
   }
-
-  const commentHasReplies = comment.children.length > 0;
 
   return (
     <Fragment>
@@ -360,24 +334,6 @@ function CommentDeleted({
             : "none",
         }}
       >
-        {/* {commentHasReplies && parentIndex === 0 && (
-          <Connection
-            style={{
-              paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
-            }}
-          >
-            <ConnectionLine />
-          </Connection>
-        )}
-        {firstReply && (
-          <ConnectionCurve
-            style={{
-              paddingLeft: clamp(parentIndex * 42 + 9, 0, 42 + 9),
-            }}
-          >
-            <IconConnectionCurve />
-          </ConnectionCurve>
-        )} */}
         <Avatar outline={false} />
         <DeletedContainer>
           <IconDeletedContainer>
@@ -615,6 +571,10 @@ const StyledButton = styled.button<{ disabled?: boolean }>`
 
   span {
     margin-left: 8px;
+  }
+
+  svg path {
+    transition: fill 0.2s ease;
   }
 
   ${(p) =>
