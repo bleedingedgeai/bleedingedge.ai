@@ -4,6 +4,7 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
+import { CommentWithLike } from "../../prisma/types";
 
 interface CommentMutationsProps {
   article: any;
@@ -84,7 +85,13 @@ export function useCommentMutations({
 
   const updateMutation = useMutation({
     mutationKey: COMMENTS_KEY,
-    mutationFn: ({ content, commentId }: any) => {
+    mutationFn: ({
+      content,
+      commentId,
+    }: {
+      content: string;
+      commentId: string;
+    }) => {
       return fetch(`/api/articles/${article.slug}/comments/${commentId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -99,7 +106,7 @@ export function useCommentMutations({
         return { previousComments };
       }
 
-      queryClient.setQueryData(COMMENTS_KEY, (comments: any) => {
+      queryClient.setQueryData(COMMENTS_KEY, (comments: CommentWithLike[]) => {
         return comments.map((comment) => {
           if (comment.id == commentId) {
             return { ...comment, content, updatedAt: new Date() };
@@ -127,6 +134,7 @@ export function useCommentMutations({
   const deleteMutation = useMutation({
     mutationKey: COMMENTS_KEY,
     mutationFn: (commentId: string) => {
+      console.log();
       return fetch(`/api/articles/${article.slug}/comments/${commentId}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
@@ -136,13 +144,14 @@ export function useCommentMutations({
       await queryClient.cancelQueries({ queryKey: COMMENTS_KEY });
       const previousComments = queryClient.getQueryData(COMMENTS_KEY);
 
-      queryClient.setQueryData(COMMENTS_KEY, (comments: any) => {
+      queryClient.setQueryData(COMMENTS_KEY, (comments: CommentWithLike[]) => {
         return comments.map((comment) => {
           if (comment.id == commentId) {
-            comment.authorId = null;
-            delete comment.author;
-
-            return comment;
+            return {
+              id: comment.id,
+              parentId: comment.parentId,
+              postId: comment.postId,
+            };
           }
 
           return comment;
@@ -166,7 +175,13 @@ export function useCommentMutations({
 
   const likeMutation = useMutation({
     mutationKey: COMMENTS_KEY,
-    mutationFn: ({ commentId, userId }: any) => {
+    mutationFn: ({
+      commentId,
+      userId,
+    }: {
+      commentId: string;
+      userId: string;
+    }) => {
       return fetch(`/api/articles/${article.slug}/comments/${commentId}/like`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -177,7 +192,7 @@ export function useCommentMutations({
       await queryClient.cancelQueries({ queryKey: COMMENTS_KEY });
       const previousComments = queryClient.getQueryData(COMMENTS_KEY);
 
-      queryClient.setQueryData(COMMENTS_KEY, (comments: any) => {
+      queryClient.setQueryData(COMMENTS_KEY, (comments: CommentWithLike[]) => {
         return comments.map((comment) => {
           if (comment.id == newComment.commentId) {
             const shouldLike = !comment.liked;

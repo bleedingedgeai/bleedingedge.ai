@@ -99,10 +99,10 @@ export default function CommentsMenu({
   //////////////////////////////////////////////////////////////////////////
 
   const dropdownTransitions = useTransition(show, {
-    from: { transform: "translate(0px, -6px) scale(1)", opacity: 0 },
+    from: { transform: "translate(0px, -3px) scale(1)", opacity: 0 },
     enter: { transform: "translate(0px, 0px) scale(1)", opacity: 1 },
-    leave: { transform: "translate(0px, -8px) scale(1)", opacity: 0 },
-    config: { tension: 1200, friction: 40 },
+    leave: { transform: "translate(0px, -3px) scale(1)", opacity: 0 },
+    config: { tension: 1200, friction: 50 },
   });
 
   //////////////////////////////////////////////////////////////////////////
@@ -200,6 +200,7 @@ const Dropdown = styled(animated.div)`
   padding: 4px;
   width: 200px;
   transform-origin: top right;
+  z-index: 2147483647;
 `;
 
 const Option = styled.div`

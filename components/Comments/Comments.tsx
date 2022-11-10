@@ -15,11 +15,9 @@ import { theme } from "../../styles/theme";
 import Avatar from "../Avatar";
 import Dot from "../Dot";
 import { editorCss } from "../Forms/Editor";
-import IconDelete from "../Icons/IconDelete";
 import IconEdit from "../Icons/IconEdit";
 import IconLike from "../Icons/IconLike";
 import IconLiked from "../Icons/IconLiked";
-import IconOptions from "../Icons/IconOptions";
 import IconReplied from "../Icons/IconReplied";
 import IconReply from "../Icons/IconReply";
 import Names from "../Names";
@@ -58,7 +56,6 @@ function CommentsRecursive({
   const session = useSession();
 
   const commentKey = `${STORAGE_COMMENT}-${article.slug}`;
-  const editKey = `${STORAGE_EDIT}-${article.slug}`;
   const replyKey = `${STORAGE_REPLY}-${article.slug}`;
 
   //////////////////////////////////////////////////////////////////////////
@@ -93,15 +90,6 @@ function CommentsRecursive({
     localStorage.setItem(replyKey, comment.id);
   };
 
-  const handleCommentEdit = (event: React.MouseEvent, comment) => {
-    event.preventDefault();
-    setEdittingId(comment.id);
-    editor?.commands?.setContent(comment.content);
-    editor?.commands?.focus();
-    localStorage.setItem(commentKey, comment.content);
-    localStorage.setItem(editKey, comment.id);
-  };
-
   const handleLike = (event: React.MouseEvent, comment) => {
     event.preventDefault();
     event.stopPropagation();
@@ -115,21 +103,6 @@ function CommentsRecursive({
     });
   };
 
-  const handleDelete = (event: React.MouseEvent, commentId) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    return showOverlay(OverlayType.CONFIRMATION, {
-      heading: "Deleting your comment",
-      text: "Are you sure you want to delete this comment? This cannot be undone. Any replies you may have received will remain visible.",
-      right: {
-        text: "Delete",
-        action: () => commentMutations.delete.mutate(commentId),
-      },
-      delete: true,
-    });
-  };
-
   if (!comments) {
     return null;
   }
@@ -139,7 +112,7 @@ function CommentsRecursive({
 
   return (
     <>
-      {comments.map((comment, commentIndex) => {
+      {comments.map((comment) => {
         const isEditingThisComment = edittingId === comment.id;
         const isReplyingToThisComment = replyingToId === comment.id;
 
@@ -155,7 +128,6 @@ function CommentsRecursive({
             <CommentDeleted
               comment={comment}
               parentIndex={parentIndex}
-              commentIndex={commentIndex}
               setReplyingToId={setReplyingToId}
               parentId={parentId}
               replyingToId={replyingToId}
@@ -305,7 +277,6 @@ function CommentDeleted({
   setReplyingToId,
   setEdittingId,
   article,
-  commentIndex,
   editor,
 }) {
   const edittingOrReplyingToThisComment =
@@ -339,9 +310,7 @@ function CommentDeleted({
           <IconDeletedContainer>
             <IconDeletedBoder />
           </IconDeletedContainer>
-          <span>
-            This {parentId ? "response" : "question"} was deleted by the author.
-          </span>
+          <span>This comment was deleted by the author.</span>
         </DeletedContainer>
       </Container>
       <CommentsRecursive
@@ -480,35 +449,35 @@ const Container = styled.div<{ index: number }>`
   }
 `;
 
-const Connection = styled.div`
-  position: absolute;
-  height: calc(100% - 4px);
-`;
+// const Connection = styled.div`
+//   position: absolute;
+//   height: calc(100% - 4px);
+// `;
 
-const ConnectionLine = styled.div`
-  top: 18px;
-  width: 1px;
-  height: 100%;
-  background: #202020;
-`;
+// const ConnectionLine = styled.div`
+//   top: 18px;
+//   width: 1px;
+//   height: 100%;
+//   background: #202020;
+// `;
 
-const ConnectionCurve = styled.div`
-  top: -29px;
-  left: -42.5px;
-  position: absolute;
-`;
+// const ConnectionCurve = styled.div`
+//   top: -29px;
+//   left: -42.5px;
+//   position: absolute;
+// `;
 
-const IconConnectionCurve = () => (
-  <svg
-    width="29"
-    height="39"
-    viewBox="0 0 29 39"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M1 0C1 24.577 7.89855 37.9826 29 37.9826" stroke="#202020" />
-  </svg>
-);
+// const IconConnectionCurve = () => (
+//   <svg
+//     width="29"
+//     height="39"
+//     viewBox="0 0 29 39"
+//     fill="none"
+//     xmlns="http://www.w3.org/2000/svg"
+//   >
+//     <path d="M1 0C1 24.577 7.89855 37.9826 29 37.9826" stroke="#202020" />
+//   </svg>
+// );
 
 const Content = styled.div<{ isHostReply: boolean }>`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
@@ -571,10 +540,6 @@ const StyledButton = styled.button<{ disabled?: boolean }>`
 
   span {
     margin-left: 8px;
-  }
-
-  svg path {
-    transition: fill 0.2s ease;
   }
 
   ${(p) =>

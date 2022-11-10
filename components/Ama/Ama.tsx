@@ -35,7 +35,6 @@ import IconArticle from "../Icons/IconArticle";
 import IconLike from "../Icons/IconLike";
 import IconLiked from "../Icons/IconLiked";
 import IconShare from "../Icons/IconShare";
-import IconTwitter from "../Icons/IconTwitter";
 import Live from "../Live";
 import suggestion from "../Mention/suggestion";
 import Names from "../Names";
@@ -119,7 +118,7 @@ export default function Ama({ article, comments }: AmaProps) {
 
   const groupedComments = useMemo(() => {
     const sortByLikes = (a, b) => {
-      return b._count.likes - a._count.likes;
+      return b?._count?.likes - a?._count?.likes;
     };
 
     const sortByEarliest = (date1, date2) => {

@@ -207,6 +207,7 @@ const Container = styled.div`
 
   ${mq.tablet} {
     height: 46px;
+    bottom: 40px;
   }
 `;
 
