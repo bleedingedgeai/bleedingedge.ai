@@ -16,7 +16,6 @@ import IconLike from "./Icons/IconLike";
 import IconLiked from "./Icons/IconLiked";
 import IconReply from "./Icons/IconReply";
 import IconShare from "./Icons/IconShare";
-import IconTwitter from "./Icons/IconTwitter";
 import Live from "./Live";
 import Names from "./Names";
 import { OverlayContext, OverlayType } from "./Overlay/Overlay";
@@ -85,39 +84,39 @@ export default function TimelineAma({ articles }: TimelineProps) {
               )}
             </AvatarContainer>
             <Main live={live}>
-              <Link key={article.id} href={amaHref}>
-                <Top>
-                  <TopLeft style={{ display: "flex" }}>
-                    <Names authors={article.authors} />
-                    <TabletDateContainer>
-                      <Dot />
-                      <span>{updatedAt}</span>
-                    </TabletDateContainer>
-                    <MobileDateContainer>
-                      {live ? (
-                        <Now>
-                          <LiveDot style={{ marginRight: 6 }} />
-                          Now
-                        </Now>
-                      ) : (
-                        <>
-                          <Dot />
-                          <span>{updatedAt}</span>
-                        </>
-                      )}
-                    </MobileDateContainer>
-                    {article.imported && (
-                      <ImportedContainer>
-                        <Badges.Twitter />
-                      </ImportedContainer>
+              <Top>
+                <TopLeft style={{ display: "flex" }}>
+                  <Names authors={article.authors} />
+                  <TabletDateContainer>
+                    <Dot />
+                    <span>{updatedAt}</span>
+                  </TabletDateContainer>
+                  <MobileDateContainer>
+                    {live ? (
+                      <Now>
+                        <LiveDot style={{ marginRight: 6 }} />
+                        Now
+                      </Now>
+                    ) : (
+                      <>
+                        <Dot />
+                        <span>{updatedAt}</span>
+                      </>
                     )}
-                  </TopLeft>
+                  </MobileDateContainer>
+                  {article.imported && (
+                    <ImportedContainer>
+                      <Badges.Twitter />
+                    </ImportedContainer>
+                  )}
+                </TopLeft>
 
-                  <Flex>
-                    {article.live && <Live />}{" "}
-                    <DateContainer>{updatedAt}</DateContainer>
-                  </Flex>
-                </Top>
+                <Flex>
+                  {article.live && <Live />}{" "}
+                  <DateContainer>{updatedAt}</DateContainer>
+                </Flex>
+              </Top>
+              <Link key={article.id} href={amaHref}>
                 <Middle>
                   <Title>{article.title}</Title>
                   <Content>{article.content}</Content>

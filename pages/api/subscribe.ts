@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import Client from "@sendgrid/client";
 import { ClientRequest } from "@sendgrid/client/src/request";
+import { withMethods } from "../../lib/middleware/withMethods";
 
 Client.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -22,11 +23,10 @@ export function validateEmail(email) {
   return re.test(email);
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === "POST") {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+  Client.setApiKey(process.env.SENDGRID_API_KEY);
+
+  try {
     const body = JSON.parse(req.body);
 
     if (!validateEmail(body.email)) {
@@ -38,7 +38,17 @@ export default async function handler(
       url: "/v3/marketing/contacts",
       body: JSON.stringify({
         list_ids: ["89e0ddb1-caa4-489a-a168-686a4f4e406f"], // bleeding edge contact list
-        contacts: [{ email: body.email }],
+        contacts: [
+          { email: body.email, custom_fields: { w1_T: body.frequency } },
+          // For future reference, the custom field frequency is w1_T -->
+          // custom_fields: [
+          //   {
+          //     id: 'w1_T',
+          //     name: 'frequency',
+          //     field_type: 'Text',
+          //     _metadata: [Object]
+          //   }
+        ],
       }),
     };
     const [response] = await Client.request(request);
@@ -46,7 +56,9 @@ export default async function handler(
     if (response.statusCode < 300) {
       return res.status(200).json({ message: "Subscribed" });
     }
+  } catch (error) {
+    return res.status(500).json({ error });
   }
-
-  res.status(400).json({ error: "Method not allowed" });
 }
+
+export default withMethods(["POST"], handler);

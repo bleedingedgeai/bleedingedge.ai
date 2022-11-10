@@ -69,4 +69,5 @@ const Text = styled.p`
   font-size: 16px;
   line-height: 120%;
   text-align: center;
+  color: ${(p) => p.theme.colors.off_white};
 `;

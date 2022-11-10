@@ -1,12 +1,13 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useContext } from "react";
 import styled from "styled-components";
 import IconLogo from "../components/Icons/IconLogo";
 import { theme } from "../styles/theme";
 import Dot from "./Dot";
 import IconGoTo from "./Icons/IconGoTo";
-import Subscribe from "./Subscribe";
+import { OverlayContext, OverlayType } from "./Overlay/Overlay";
 
 const links = [
   {
@@ -22,6 +23,7 @@ const links = [
 export default function Sidebar() {
   const router = useRouter();
   const session = useSession();
+  const { showOverlay } = useContext(OverlayContext);
 
   return (
     <Container>
@@ -52,7 +54,9 @@ export default function Sidebar() {
         })}
         <Spacer />
         <Row>
-          <Subscribe />
+          <StyledButton onClick={() => showOverlay(OverlayType.SUBSCRIBE)}>
+            Subscribe
+          </StyledButton>
         </Row>
         <Row style={{ opacity: session.status === "loading" ? 0 : 1 }}>
           {!session.data ? (
