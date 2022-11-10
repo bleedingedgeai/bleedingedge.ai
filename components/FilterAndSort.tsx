@@ -92,6 +92,10 @@ const SubmitButton = styled.button`
   &:hover {
     background: rgba(255, 255, 255, 0.08);
   }
+
+  ${mq.desktopSmall} {
+    font-size: 14px;
+  }
 `;
 
 const Container = styled.div`
@@ -144,6 +148,7 @@ const SortButton = styled.button`
 
   ${mq.desktopSmall} {
     margin-left: 8px;
+    font-size: 14px;
   }
 
   ${mq.phablet} {

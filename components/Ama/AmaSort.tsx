@@ -112,6 +112,7 @@ const SortButton = styled.button`
   }
 
   ${mq.desktopSmall} {
+    font-size: 14px;
   }
 
   ${mq.phablet} {

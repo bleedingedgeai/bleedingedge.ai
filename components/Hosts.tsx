@@ -5,7 +5,7 @@ import { User } from "@prisma/client";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 import Avatar from "./Avatar";
-import Badge from "./Badge";
+import Badges from "./Badges";
 import Portal from "./Portal";
 import Stacked from "./Stacked";
 
@@ -77,7 +77,7 @@ export default function Hosts({ authors }: HostsProps) {
                 >
                   @{author.username}
                 </Username>
-                <Badge />
+                <Badges.Host />
               </Flex>
             </Card>
           </Portal>

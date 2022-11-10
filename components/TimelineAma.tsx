@@ -10,6 +10,7 @@ import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
 import { AlertsContext } from "./Alerts/AlertsProvider";
 import Avatar from "./Avatar";
+import Badges from "./Badges";
 import Dot from "./Dot";
 import IconLike from "./Icons/IconLike";
 import IconLiked from "./Icons/IconLiked";
@@ -86,34 +87,32 @@ export default function TimelineAma({ articles }: TimelineProps) {
             <Main live={live}>
               <Link key={article.id} href={amaHref}>
                 <Top>
-                  <span>
+                  <TopLeft style={{ display: "flex" }}>
                     <Names authors={article.authors} />
-                    <TabletDateContainer>
-                      <Dot />
-                      <span>{updatedAt}</span>
-                    </TabletDateContainer>
-                    <MobileDateContainer>
-                      {live ? (
-                        <Now>
-                          <LiveDot style={{ marginRight: 6 }} />
-                          Now
-                        </Now>
-                      ) : (
-                        <>
-                          <Dot />
-                          <span>{updatedAt}</span>
-                        </>
-                      )}
-                    </MobileDateContainer>
+                    {article.imported && <Badges.Twitter />}
+                  </TopLeft>
+
+                  <TabletDateContainer>
+                    <Dot />
+                    <span>{updatedAt}</span>
+                  </TabletDateContainer>
+                  <MobileDateContainer>
+                    {live ? (
+                      <Now>
+                        <LiveDot style={{ marginRight: 6 }} />
+                        Now
+                      </Now>
+                    ) : (
+                      <>
+                        <Dot />
+                        <span>{updatedAt}</span>
+                      </>
+                    )}
+                  </MobileDateContainer>
+                  <Flex>
+                    {article.live && <Live />}{" "}
                     <DateContainer>{updatedAt}</DateContainer>
-                    {/* {article.imported && (
-                      <Badge>
-                        <span>Imported</span>
-                        <IconTwitter size={14} />
-                      </Badge>
-                    )} */}
-                  </span>
-                  <Flex>{article.live && <Live />} </Flex>
+                  </Flex>
                 </Top>
                 <Middle>
                   <Title>{article.title}</Title>
@@ -165,6 +164,15 @@ export default function TimelineAma({ articles }: TimelineProps) {
     </>
   );
 }
+
+const TopLeft = styled.span`
+  display: flex;
+  align-items: center;
+
+  & > span:last-of-type {
+    margin-left: 9px;
+  }
+`;
 
 const Container = styled.div`
   position: relative;
@@ -273,6 +281,7 @@ const AuthorCount = styled.span`
   color: ${(p) => p.theme.colors.white};
   top: -6px;
   right: -6px;
+  z-index: 1;
 `;
 
 const Main = styled.div<{ live: boolean }>`

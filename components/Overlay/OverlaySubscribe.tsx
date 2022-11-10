@@ -76,6 +76,7 @@ const Contiainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  padding-top: 48px;
 `;
 
 const Heading = styled.h2`

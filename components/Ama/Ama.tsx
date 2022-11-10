@@ -24,6 +24,7 @@ import { ellipsis } from "../../styles/css";
 import { mq } from "../../styles/mediaqueries";
 import { theme } from "../../styles/theme";
 import { AlertsContext } from "../Alerts/AlertsProvider";
+import Badges from "../Badges";
 import Comments from "../Comments/Comments";
 import CommentsEmptyState from "../Comments/CommentsEmptyState";
 import CommentsInput from "../Comments/CommentsInput";
@@ -223,12 +224,7 @@ export default function Ama({ article, comments }: AmaProps) {
                     </DateContainer>
                     {article.live && <Live onlyDot />}{" "}
                   </Flex>
-                  {article.imported && (
-                    <Badge>
-                      <span>Imported</span>
-                      <IconTwitter size={14} />
-                    </Badge>
-                  )}
+                  {article.imported && <Badges.Twitter />}
                 </Authors>
                 <Hosts authors={article.authors} />
               </FlexBetween>
@@ -330,26 +326,6 @@ const MainSticky = styled(Main)`
   }
 `;
 
-const Badge = styled.div`
-  font-family: ${(p) => p.theme.fontFamily.nouvelle};
-  font-style: normal;
-  font-weight: 500;
-  font-size: 10px;
-  line-height: 130%;
-  color: ${(p) => p.theme.colors.light_grey};
-  background: #141414;
-  border-radius: 77px;
-  display: flex;
-
-  align-items: center;
-
-  padding: 1px 4px 1px 8px;
-
-  svg {
-    margin-left: 6px;
-  }
-`;
-
 const Absolute = styled.div`
   position: absolute;
   top: 0;
@@ -406,6 +382,9 @@ const Shadows = styled.div<{ showEmptyState: boolean }>`
 `;
 
 const BackLinkContainer = styled.div`
+  position: relative;
+  top: -3px;
+
   ${mq.desktopSmall} {
     display: none;
   }

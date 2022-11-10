@@ -33,6 +33,8 @@ const AlertsContainer = styled.div`
   place-items: center;
   max-height: 100%;
   z-index: 2147483647;
+  margin: 0 auto;
+  pointer-events: none;
 `;
 
 /**

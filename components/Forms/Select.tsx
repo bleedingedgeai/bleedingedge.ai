@@ -223,6 +223,8 @@ const Button = styled.button`
   }
 
   ${mq.desktopSmall} {
+    font-size: 14px;
+
     &:hover {
       background: transparent;
     }

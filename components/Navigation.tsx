@@ -1,3 +1,4 @@
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
@@ -36,11 +37,6 @@ export default function Navigation() {
                 <IconLogo />
               </Link>
             </LogoContainer>
-            <DesktopLinks>
-              <SubscribButton>Subscribe</SubscribButton>
-              <Link href="/about">About</Link>
-              <Link href="/ama">AMAs</Link>
-            </DesktopLinks>
             <MenuButton
               onClick={() => {
                 setMenuOpen((prev) => !prev);
@@ -80,14 +76,15 @@ export default function Navigation() {
                 </BackButton>
                 <List>
                   <Item>
-                    <Link href="/">Home</Link>
-                  </Item>
-                  <Item>
                     <Link href="/ama">AMAs</Link>
                   </Item>
                   <Item>
                     <Link href="/about">About</Link>
                   </Item>
+                </List>
+                <Divider />
+
+                <List>
                   <Item>
                     <a href="mailto:lachy@bleedingedge.ai">Email</a>
                   </Item>
@@ -100,9 +97,6 @@ export default function Navigation() {
                       Twitter
                     </a>
                   </Item>
-                </List>
-                <Divider />
-                <List>
                   <Item>
                     <button
                       onClick={() => {
@@ -113,6 +107,13 @@ export default function Navigation() {
                       Subscribe
                     </button>
                   </Item>
+                </List>
+              </div>
+              <div>
+                <List>
+                  <Item>
+                    <button onClick={() => signIn("twitter")}>Login</button>
+                  </Item>
                   <Item>
                     <button
                       onClick={() => {
@@ -120,15 +121,11 @@ export default function Navigation() {
                         showOverlay(OverlayType.SUGGESTION);
                       }}
                     >
-                      Contribute
+                      Submit
                     </button>
                   </Item>
                 </List>
               </div>
-              <Signature>
-                A Project by
-                <br /> Lachy Groom
-              </Signature>
             </MenuContent>
           </Menu>
         </Portal>
@@ -217,14 +214,6 @@ const MenuContent = styled.div`
   height: 100%;
 `;
 
-const Signature = styled.div`
-  position: relative;
-  font-family: ${(p) => p.theme.fontFamily.nouvelle};
-  font-size: 16px;
-  line-height: 120%;
-  color: ${(p) => p.theme.colors.light_grey};
-`;
-
 const BackButton = styled.button`
   margin-bottom: 60px;
 `;
@@ -267,27 +256,8 @@ const LogoContainer = styled.div`
   max-width: 143px;
 `;
 
-const DesktopLinks = styled.div`
-  & a:not(:last-of-type) {
-    margin-right: 48px;
-  }
-
-  ${mq.phablet} {
-    display: none;
-  }
-`;
-const SubscribButton = styled.button`
-  margin-right: 48px;
-
-  ${mq.phablet} {
-    display: none;
-  }
-`;
-
 const MenuButton = styled.button`
-  ${mq.phabletUp} {
-    display: none;
-  }
+  font-size: 14px;
 `;
 
 const BlueGradientContainer = styled.div`

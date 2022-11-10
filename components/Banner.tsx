@@ -97,22 +97,36 @@ const MobileStacked = styled.div`
 `;
 
 const gradientAnimation = keyframes`
-    0% {
-      transform: scaleX(8) scaleY(1.5) rotate(0deg);
-      opacity:1
-    }
-    to {
-      transform:scaleX(8) scaleY(1.5) rotate(1turn);opacity:1}
-    }
+  from {
+    transform: scaleX(8) scaleY(2) rotate(0deg);
+  }
+  to {
+    transform:scaleX(8) scaleY(2) rotate(1turn);     
+  }
 `;
 
 const fadeAnimation = keyframes`
-    0% {
-      opacity:1
-    }
-    50% {
-      opacity:0}
-    }
+  from {
+    opacity:0.6;
+  }
+  to {
+    opacity:0.3;
+  }
+`;
+
+const Wrapper = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  isolation: isolate;
+  transform: translateZ(10px);
+  border-radius: 16px;
+  overflow: hidden;
+  display: block;
+
+  ${mq.phablet} {
+    opacity: 0.3;
+  }
 `;
 
 const Gradient = styled.div`
@@ -133,6 +147,21 @@ const Gradient = styled.div`
       ${(p) => p.theme.colors.orange} 0deg,
       transparent 121deg
     );
+
+  ${mq.phablet} {
+    animation: ${gradientAnimation} 10s linear infinite;
+    filter: blur(8px);
+    background: conic-gradient(
+        transparent 135deg,
+        rgb(209, 159, 100) 180deg,
+        transparent 300deg
+      ),
+      conic-gradient(
+        transparent 0deg,
+        rgb(209, 159, 100) 0deg,
+        transparent 121deg
+      );
+  }
 `;
 
 const ContainerMobile = styled.div`
@@ -178,8 +207,9 @@ const Inner = styled.div`
     padding: 16px 50px;
     border-radius: 16px;
     flex-direction: column;
-    width: calc(100% - 2px);
     overflow: hidden;
+    width: 100%;
+    background: linear-gradient(45deg, black, transparent);
   }
 `;
 
@@ -192,19 +222,6 @@ const Right = styled.span`
     color: ${(p) => p.theme.colors.light_grey};
     font-size: 12px;
   }
-`;
-
-const Wrapper = styled.div`
-  padding: 1px;
-  margin: -1px;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  isolation: isolate;
-  transform: translateZ(10px);
-  border-radius: 16px;
-  overflow: hidden;
-  display: block;
 `;
 
 const Live = styled.span`
@@ -285,7 +302,6 @@ const BannerContainer = styled(Link)`
     height: auto;
     border-radius: 16px;
     text-align: center;
-    padding: 0.5px 0;
   }
 `;
 

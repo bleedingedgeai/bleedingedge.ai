@@ -598,7 +598,7 @@ const Actions = styled.div`
 
 const Action = styled.div`
   min-width: 30px;
-  margin-right: 24px;
+  margin-right: 13px;
 `;
 
 const Bottom = styled.div`
