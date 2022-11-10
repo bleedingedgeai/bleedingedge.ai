@@ -185,6 +185,10 @@ const Container = styled.div`
   grid-gap: 36px;
   margin-bottom: 18px;
 
+  &:last-of-type {
+    margin-bottom: 120px;
+  }
+
   ${mq.tablet} {
     grid-gap: 18px;
   }
