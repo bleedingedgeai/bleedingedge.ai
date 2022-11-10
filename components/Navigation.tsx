@@ -109,23 +109,21 @@ export default function Navigation() {
                   </Item>
                 </List>
               </div>
-              <div>
-                <List>
-                  <Item>
-                    <button onClick={() => signIn("twitter")}>Login</button>
-                  </Item>
-                  <Item>
-                    <button
-                      onClick={() => {
-                        setMenuOpen(false);
-                        showOverlay(OverlayType.SUGGESTION);
-                      }}
-                    >
-                      Submit
-                    </button>
-                  </Item>
-                </List>
-              </div>
+              <List>
+                <Item>
+                  <button onClick={() => signIn("twitter")}>Login</button>
+                </Item>
+                <Item>
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      showOverlay(OverlayType.SUGGESTION);
+                    }}
+                  >
+                    Submit
+                  </button>
+                </Item>
+              </List>
             </MenuContent>
           </Menu>
         </Portal>
@@ -267,6 +265,7 @@ const BlueGradientContainer = styled.div`
   right: 0;
   filter: blur(52px);
   opacity: 1;
+  pointer-events: none;
 `;
 
 const BlueGradient = () => (

@@ -2,7 +2,7 @@ import { SessionProvider } from "next-auth/react";
 import { usePostHog } from "next-use-posthog";
 import dynamic from "next/dynamic";
 import Script from "next/script";
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components";
 import {
   Hydrate,
@@ -11,6 +11,7 @@ import {
 } from "@tanstack/react-query";
 import AlertsProvider from "../components/Alerts/AlertsProvider";
 import Favicon from "../components/Favicon";
+import { KeyType } from "../components/Keys";
 import { OverlayProvider } from "../components/Overlay/Overlay";
 import { GlobalStyle } from "../styles/global";
 import { theme } from "../styles/theme";
@@ -30,6 +31,13 @@ export default function App({ Component, pageProps }) {
       if (process.env.NODE_ENV === "development") posthog.opt_out_capturing();
     },
   });
+
+  useEffect(() => {
+    [KeyType.CMD, KeyType["W-RETURN"]].forEach((key) => {
+      const img = new Image();
+      img.src = `/keys/key-${key.toLowerCase()}.svg`;
+    });
+  }, []);
   const [queryClient] = useState(() => new QueryClient());
 
   return (

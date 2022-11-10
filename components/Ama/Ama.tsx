@@ -83,6 +83,7 @@ export default function Ama({ article, comments }: AmaProps) {
   }, [comments, article.authors]);
 
   const editor = useEditor({
+    editable: !article.disabled,
     extensions: [
       Document,
       Paragraph,
@@ -90,7 +91,10 @@ export default function Ama({ article, comments }: AmaProps) {
       TipTapLink,
       History,
       Placeholder.configure({
-        placeholder: "Ask me anything...",
+        placeholder: article.disabled
+          ? "Comments disabled"
+          : "Ask me anything...",
+        showOnlyWhenEditable: false,
       }),
       Mention.configure({
         HTMLAttributes: { class: "mention" },

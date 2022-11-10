@@ -38,7 +38,7 @@ export default function CommentsEmptyState({
 
   return (
     <>
-      <Container style={{ left: offset, width }}>
+      <Container style={{ left: offset, width, opacity: offset ? 1 : 0 }}>
         <ImageContainer>
           <StyledImage
             src={imageSrc}

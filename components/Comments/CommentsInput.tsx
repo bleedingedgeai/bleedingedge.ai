@@ -15,8 +15,10 @@ import { theme } from "../../styles/theme";
 import { AlertsContext } from "../Alerts/AlertsProvider";
 import IconEx from "../Icons/IconEx";
 import IconSend from "../Icons/IconSend";
+import Keys, { KeyType } from "../Keys";
 import { OverlayContext, OverlayType } from "../Overlay/Overlay";
 import Portal from "../Portal";
+import Tooltip from "../Tooltip";
 
 const DynamicEditor = dynamic(() => import("../Forms/Editor"), {
   suspense: true,
@@ -86,6 +88,14 @@ export default function CommentsInput({
       return;
     }
 
+    if (article.disabled) {
+      showAlert({
+        icon: IconSend,
+        text: "Comments are disabled",
+      });
+      return;
+    }
+
     if (editor.isEmpty) {
       showAlert({
         icon: IconSend,
@@ -119,13 +129,13 @@ export default function CommentsInput({
       }
     };
 
-    if (editor?.isFocused) {
+    if (editor?.isFocused && !article.disabled) {
       document.addEventListener("keydown", handleKeyDown);
       return () => {
         document.removeEventListener("keydown", handleKeyDown);
       };
     }
-  }, [replyingToId, handleSubmit, editor?.isFocused]);
+  }, [replyingToId, handleSubmit, editor?.isFocused, article.disabled]);
 
   //////////////////////////////////////////////////////////////////////////
   // Resize to get input the correct size
@@ -176,19 +186,30 @@ export default function CommentsInput({
               <DynamicEditor editor={editor} />
             </Suspense>
           </CommentInputForm>
-          {session.data ? (
-            <Submit type="submit" onClick={handleSubmit}>
-              <span>
-                @{session?.data?.user.username}
-                <Divider />
-              </span>
+          <Tooltip
+            label={
+              <>
+                Submit
+                <Keys keys={[KeyType.CMD, KeyType["W-RETURN"]]} theme="light" />
+              </>
+            }
+            placement="top"
+            offset={{ top: -6 }}
+          >
+            <Submit
+              type="submit"
+              onClick={handleSubmit}
+              disabled={article.disabled}
+            >
+              {session.data && (
+                <span>
+                  @{session?.data?.user.username}
+                  <Divider />
+                </span>
+              )}
               <IconSend />
             </Submit>
-          ) : (
-            <Submit type="submit" onClick={handleSubmit}>
-              <IconSend />
-            </Submit>
-          )}
+          </Tooltip>
         </Inner>
       </Container>
     </Portal>
@@ -286,7 +307,7 @@ const Divider = styled.div`
   transition: background 0.25s ease;
 `;
 
-const Submit = styled.button`
+const Submit = styled.button<{ disabled?: boolean }>`
   position: absolute;
   top: 16px;
   right: 16px;
@@ -300,6 +321,7 @@ const Submit = styled.button`
   border-radius: 7px;
   transition: background 0.25s ease, color 0.25s ease;
   font-size: 12px;
+  cursor: ${(p) => (p.disabled ? "default" : "initial")};
 
   span {
     display: flex;
@@ -309,17 +331,19 @@ const Submit = styled.button`
     transition: fill 0.25s ease;
   }
 
-  &:hover {
-    color: ${(p) => p.theme.colors.white};
+  ${(p) =>
+    !p.disabled &&
+    `&:hover {
+    color: ${p.theme.colors.white};
     background: rgba(255, 255, 255, 0.06);
     svg path {
-      fill: ${(p) => p.theme.colors.white};
+      fill: ${p.theme.colors.white};
     }
 
     ${Divider} {
       background: rgba(255, 255, 255, 0.42);
     }
-  }
+  }`}
 
   ${mq.tablet} {
     top: 14px;
