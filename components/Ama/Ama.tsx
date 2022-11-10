@@ -210,6 +210,7 @@ export default function Ama({ article, comments }: AmaProps) {
         </BackLinkContainer>
         <div style={{ width: "100%", position: "relative" }}>
           <Main>
+            <MobileGlow />
             <div ref={containerRef}>
               <FlexBetween>
                 <Authors>
@@ -235,7 +236,6 @@ export default function Ama({ article, comments }: AmaProps) {
           <MainSticky ref={stickyRef}>
             <div />
             <div>
-              <MobileGlow />
               <FlexBetween>
                 <Absolute
                   style={{
@@ -541,7 +541,7 @@ const MobileGlow = styled.div`
   position: absolute;
   left: 6.53%;
   right: 6.53%;
-  bottom: 8px;
+  bottom: -66px;
   height: 124px;
   background: radial-gradient(
     47.07% 100% at 50% 100%,

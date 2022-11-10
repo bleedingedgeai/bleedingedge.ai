@@ -191,11 +191,11 @@ const Container = styled.div`
 
   ${mq.tablet} {
     grid-gap: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
   }
 
   ${mq.phablet} {
     grid-gap: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
   }
 `;
 

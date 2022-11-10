@@ -156,7 +156,8 @@ function FilterAndSortSlidein({
     key: (item) => item?.title,
     from: { transform: `translateY(120%)` },
     enter: { transform: "translateY(0%)" },
-    config: { tension: 720, friction: 72 },
+    leave: { transform: "translateY(120%)" },
+    config: { tension: 800, friction: 72 },
   });
 
   return (
@@ -209,7 +210,7 @@ const CloseTagert = styled.div`
   left: 0;
   background: rgba(0, 0, 0, 0.64);
   z-index: 2147483647;
-  transition: opacity 0.4s;
+  transition: opacity 0.3s;
 
   ${mq.phabletUp} {
     display: none;
@@ -226,7 +227,6 @@ const ContainerSlidein = styled(animated.div)`
   box-shadow: 0px -6px 24px rgba(0, 0, 0, 0.6);
   padding: 0 16px;
   z-index: 2147483647;
-  transition: transform 0.4s cubic-bezier(0.1, 0.95, 0.15, 1);
   overflow: hidden;
 
   ${mq.phabletUp} {
