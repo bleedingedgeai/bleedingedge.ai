@@ -110,7 +110,6 @@ export default function TimelineAma({ articles }: TimelineProps) {
                     </ImportedContainer>
                   )}
                 </TopLeft>
-
                 <Flex>
                   {article.live && <Live />}{" "}
                   <DateContainer>{updatedAt}</DateContainer>
@@ -349,6 +348,10 @@ const Title = styled.h2`
 
   ${mq.desktopMaxUp} {
     font-size: 16px;
+  }
+
+  &:hover {
+    color: ${(p) => p.theme.colors.white};
   }
 `;
 

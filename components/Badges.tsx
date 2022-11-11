@@ -59,6 +59,8 @@ const TwitterContainer = styled.span`
   display: flex;
   align-items: center;
   padding: 1px 4px 1px 8px;
+  position: relative;
+  top: 1px;
 
   svg {
     margin-left: 6px;

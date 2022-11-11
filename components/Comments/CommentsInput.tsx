@@ -321,7 +321,7 @@ const Submit = styled.button<{ disabled?: boolean }>`
   border-radius: 7px;
   transition: background 0.25s ease, color 0.25s ease;
   font-size: 12px;
-  cursor: ${(p) => (p.disabled ? "default" : "initial")};
+  cursor: ${(p) => (p.disabled ? "default" : "pointer")};
 
   span {
     display: flex;

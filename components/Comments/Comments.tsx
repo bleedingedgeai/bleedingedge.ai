@@ -3,13 +3,10 @@ import { Fragment, useContext } from "react";
 import styled, { CSSProperties } from "styled-components";
 import { Editor } from "@tiptap/react";
 import { timeAgo } from "../../helpers/date";
-import {
-  STORAGE_COMMENT,
-  STORAGE_EDIT,
-  STORAGE_REPLY,
-} from "../../helpers/storage";
+import { STORAGE_COMMENT, STORAGE_REPLY } from "../../helpers/storage";
 import { useCommentMutations } from "../../lib/hooks/useCommentMutations";
 import { ArticleWithLike, CommentWithChildren } from "../../prisma/types";
+import { ellipsis } from "../../styles/css";
 import { mq } from "../../styles/mediaqueries";
 import { theme } from "../../styles/theme";
 import Avatar from "../Avatar";
@@ -18,7 +15,6 @@ import { editorCss } from "../Forms/Editor";
 import IconEdit from "../Icons/IconEdit";
 import IconLike from "../Icons/IconLike";
 import IconLiked from "../Icons/IconLiked";
-import IconReplied from "../Icons/IconReplied";
 import IconReply from "../Icons/IconReply";
 import Names from "../Names";
 import { OverlayContext, OverlayType } from "../Overlay/Overlay";
@@ -179,8 +175,7 @@ function CommentsRecursive({
                   {isReplyingToThisComment && (
                     <Action>
                       <StyledButton>
-                        {commentHasReplies ? <IconReplied /> : <IconReply />}{" "}
-                        <span>Replying to...</span>
+                        <IconReply /> <span>Replying to...</span>
                       </StyledButton>
                     </Action>
                   )}
@@ -207,11 +202,7 @@ function CommentsRecursive({
                               handleCommentReply(event, comment)
                             }
                           >
-                            {commentHasReplies ? (
-                              <IconReplied />
-                            ) : (
-                              <IconReply />
-                            )}{" "}
+                            <IconReply />{" "}
                             <span>
                               {edittingOrReplyingToThisComment
                                 ? "Replying to..."
@@ -298,11 +289,6 @@ function CommentDeleted({
               ? 1
               : 0.32
             : 1,
-          pointerEvents: eidtOrReplying
-            ? edittingOrReplyingToThisComment
-              ? "none"
-              : "initial"
-            : "none",
         }}
       >
         <Avatar outline={false} />
@@ -334,7 +320,6 @@ const CommentEditor = styled.div`
 
 const DeletedContainer = styled.div`
   position: relative;
-
   max-width: 306px;
   height: 36px;
   display: grid;
@@ -343,10 +328,11 @@ const DeletedContainer = styled.div`
   span {
     position: relative;
     font-family: ${(p) => p.theme.fontFamily.nouvelle};
-    font-size: 13px;
+    font-size: 12px;
     line-height: 130%;
     text-align: center;
     color: ${(p) => p.theme.colors.light_grey};
+    ${ellipsis}
   }
 `;
 
@@ -537,6 +523,11 @@ const StyledButton = styled.button<{ disabled?: boolean }>`
   display: flex;
   align-items: center;
   color: ${(p) => p.theme.colors.light_grey};
+  transition: color 0.2s ease;
+
+  svg path {
+    transition: fill 0.2s ease;
+  }
 
   span {
     margin-left: 8px;

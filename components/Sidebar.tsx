@@ -26,7 +26,7 @@ export default function Sidebar() {
   const { showOverlay } = useContext(OverlayContext);
 
   return (
-    <Container>
+    <Container className="Sidebar">
       <div>
         <LogoContainer>
           <Link href="/">
@@ -105,6 +105,7 @@ const Container = styled.div`
   flex-direction: column;
   height: 100vh;
   padding: 38px 0 40px;
+  max-width: 383px;
 `;
 
 const LogoContainer = styled.div`

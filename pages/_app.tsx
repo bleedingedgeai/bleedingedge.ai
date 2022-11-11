@@ -13,6 +13,7 @@ import AlertsProvider from "../components/Alerts/AlertsProvider";
 import Favicon from "../components/Favicon";
 import { KeyType } from "../components/Keys";
 import { OverlayProvider } from "../components/Overlay/Overlay";
+import PageAnimator from "../components/PageAnimator";
 import { GlobalStyle } from "../styles/global";
 import { theme } from "../styles/theme";
 
@@ -50,7 +51,7 @@ export default function App({ Component, pageProps }) {
             <ThemeProvider theme={theme}>
               <AlertsProvider>
                 <OverlayProvider>
-                  <Component {...pageProps} />
+                  <PageAnimator Component={<Component {...pageProps} />} />
                   <Suspense fallback={null}>
                     <DynamicOverlay />
                     <DynamicAlerts />
