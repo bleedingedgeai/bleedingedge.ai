@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from "react";
-import { animated, useTransition } from "react-spring";
 import styled from "styled-components";
 import { User } from "@prisma/client";
+import { animated, useTransition } from "@react-spring/web";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 import Avatar from "./Avatar";
@@ -14,23 +14,25 @@ interface HostsProps {
 }
 
 export default function Hosts({ authors }: HostsProps) {
-  const [hovered, setHovered] = useState();
+  const [hovered, setHovered] = useState<User>(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
 
   const transitions = useTransition(hovered, {
-    key: hovered ? "key" : null,
     from: { opacity: 0, transform: "translateY(-6%)" },
     enter: { opacity: 1, transform: "translateY(0%)" },
     leave: { opacity: 0, transform: "translateY(-6%)" },
     config: { tension: 600, friction: 60 },
   });
 
-  const handleMouseEnter = useCallback((author) => {
-    const { right, top } = containerRef.current.getBoundingClientRect();
-    setPosition({ left: right - 193, top: top + 44 });
-    setHovered(author);
-  }, []);
+  const handleMouseEnter = useCallback(
+    (author) => {
+      const { right, top } = containerRef.current.getBoundingClientRect();
+      setPosition({ left: right - 193, top: top + 44 });
+      setHovered(author);
+    },
+    [hovered]
+  );
 
   return (
     <Container>
@@ -53,11 +55,12 @@ export default function Hosts({ authors }: HostsProps) {
           />
         </StackedContainer>
       </Outline>
-      {transitions((style, author: any) => {
+      {transitions((style, author: User) => {
         if (!author) {
           return null;
         }
 
+        console.log(style, author);
         return (
           <Portal>
             <Card

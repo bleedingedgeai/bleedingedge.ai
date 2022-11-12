@@ -7,8 +7,8 @@ import React, {
   useState,
 } from "react";
 import OutsideClickHandler from "react-outside-click-handler";
-import { animated, useTransition } from "react-spring";
 import styled from "styled-components";
+import { animated, useTransition } from "@react-spring/web";
 import { Editor } from "@tiptap/react";
 import {
   STORAGE_COMMENT,

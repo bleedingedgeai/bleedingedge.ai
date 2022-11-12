@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import React from "react";
-import { animated, useTransition } from "react-spring";
 import styled from "styled-components";
 import { Tag } from "@prisma/client";
+import { animated, useTransition } from "@react-spring/web";
 import { scrollable } from "../helpers/dom";
 import { hideScrollBar } from "../styles/css";
 import { mq } from "../styles/mediaqueries";

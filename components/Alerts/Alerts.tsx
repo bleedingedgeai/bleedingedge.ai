@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { animated, useSpring, useTransition } from "react-spring";
 import styled from "styled-components";
+import { animated, useSpring, useTransition } from "@react-spring/web";
 import Portal from "../Portal";
 import { Alert, AlertsContext } from "./AlertsProvider";
 

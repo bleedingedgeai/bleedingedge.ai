@@ -6,8 +6,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { animated, useTransition } from "react-spring";
 import styled from "styled-components";
+import { animated, useTransition } from "@react-spring/web";
 import Portal from "./Portal";
 
 type Offset = {

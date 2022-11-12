@@ -1,5 +1,5 @@
-import { animated, useTrail } from "react-spring";
 import styled from "styled-components";
+import { animated, useTrail } from "@react-spring/web";
 import IconConfirmation from "../Icons/IconConfirmation";
 
 interface OverlaySuccessProps {

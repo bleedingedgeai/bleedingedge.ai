@@ -204,7 +204,7 @@ export default function CommentsInput({
               </>
             }
             placement="top"
-            offset={{ top: -6, left: -32 }}
+            offset={{ top: -6, left: session.data ? 0 : -32 }}
           >
             <Submit
               type="submit"
