@@ -69,7 +69,7 @@ export default function PageAnimator({ component }) {
       return;
     }
     const options = {
-      easing: "cubic-bezier(0.7, 0, 0.3, 1)",
+      easing: "cubic-bezier(0.72, 0, 0.28, 1)",
       duration: TIMING_MS,
     };
 
