@@ -28,107 +28,105 @@ export default function Navigation() {
     : { transform: "translateX(100%)" };
 
   return (
-    <>
-      <Nav>
+    <Nav>
+      <Bounds>
+        <Content>
+          <LogoContainer>
+            <Link href="/">
+              <IconLogo />
+            </Link>
+          </LogoContainer>
+          <MenuButton
+            onClick={() => {
+              setMenuOpen((prev) => !prev);
+              hideOverlay();
+            }}
+          >
+            Menu
+          </MenuButton>
+        </Content>
+      </Bounds>
+      {tag && (
         <Bounds>
-          <Content>
-            <LogoContainer>
-              <Link href="/">
-                <IconLogo />
-              </Link>
-            </LogoContainer>
-            <MenuButton
-              onClick={() => {
-                setMenuOpen((prev) => !prev);
-                hideOverlay();
-              }}
-            >
-              Menu
-            </MenuButton>
-          </Content>
+          <Tag onClick={() => router.replace("/")}>
+            {tag}
+            <IconEx size={16} />
+          </Tag>
         </Bounds>
-        {tag && (
-          <Bounds>
-            <Tag onClick={() => router.replace("/")}>
-              {tag}
-              <IconEx size={16} />
-            </Tag>
-          </Bounds>
-        )}
-        <Portal>
-          <MenuInvisible
-            style={menuInvisibleStyles}
-            onClick={() => setMenuOpen(false)}
-          />
-          <Menu style={menuStyles}>
-            <BlueGradientContainer>
-              <BlueGradient />
-            </BlueGradientContainer>
-            <MenuContent>
-              <div>
-                <BackButton
-                  onClick={() => {
-                    hideOverlay();
-                    setMenuOpen(false);
-                  }}
-                >
-                  <IconArrowLeft />
-                </BackButton>
-                <List>
-                  <Item>
-                    <Link href="/ama">AMAs</Link>
-                  </Item>
-                  <Item>
-                    <Link href="/about">About</Link>
-                  </Item>
-                </List>
-                <Divider />
-
-                <List>
-                  <Item>
-                    <a href="mailto:lachy@bleedingedge.ai">Email</a>
-                  </Item>
-                  <Item>
-                    <a
-                      href="https://twitter.com/bleedingedgeai"
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      Twitter
-                    </a>
-                  </Item>
-                  <Item>
-                    <button
-                      onClick={() => {
-                        setMenuOpen(false);
-                        showOverlay(OverlayType.SUBSCRIBE);
-                      }}
-                    >
-                      Subscribe
-                    </button>
-                  </Item>
-                </List>
-              </div>
+      )}
+      <Portal>
+        <MenuInvisible
+          style={menuInvisibleStyles}
+          onClick={() => setMenuOpen(false)}
+        />
+        <Menu style={menuStyles}>
+          <BlueGradientContainer>
+            <BlueGradient />
+          </BlueGradientContainer>
+          <MenuContent>
+            <div>
+              <BackButton
+                onClick={() => {
+                  hideOverlay();
+                  setMenuOpen(false);
+                }}
+              >
+                <IconArrowLeft />
+              </BackButton>
               <List>
                 <Item>
-                  <button onClick={() => signIn("twitter")}>Login</button>
+                  <Link href="/ama">AMAs</Link>
+                </Item>
+                <Item>
+                  <Link href="/about">About</Link>
+                </Item>
+              </List>
+              <Divider />
+
+              <List>
+                <Item>
+                  <a href="mailto:lachy@bleedingedge.ai">Email</a>
+                </Item>
+                <Item>
+                  <a
+                    href="https://twitter.com/bleedingedgeai"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Twitter
+                  </a>
                 </Item>
                 <Item>
                   <button
                     onClick={() => {
                       setMenuOpen(false);
-                      showOverlay(OverlayType.SUGGESTION);
+                      showOverlay(OverlayType.SUBSCRIBE);
                     }}
                   >
-                    Submit
+                    Subscribe
                   </button>
                 </Item>
               </List>
-            </MenuContent>
-          </Menu>
-        </Portal>
-      </Nav>
-    </>
+            </div>
+            <List>
+              <Item>
+                <button onClick={() => signIn("twitter")}>Login</button>
+              </Item>
+              <Item>
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    showOverlay(OverlayType.SUGGESTION);
+                  }}
+                >
+                  Submit
+                </button>
+              </Item>
+            </List>
+          </MenuContent>
+        </Menu>
+      </Portal>
+    </Nav>
   );
 }
 
@@ -266,6 +264,10 @@ const BlueGradientContainer = styled.div`
   filter: blur(52px);
   opacity: 1;
   pointer-events: none;
+
+  ${mq.desktopSmallUp} {
+    display: none;
+  }
 `;
 
 const BlueGradient = () => (

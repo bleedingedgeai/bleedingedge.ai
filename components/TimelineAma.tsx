@@ -129,7 +129,11 @@ export default function TimelineAma({ articles }: TimelineProps) {
                       disabled={article.disabled}
                       onClick={(event) => handleLike(event, article)}
                     >
-                      {article.liked ? <IconLiked /> : <IconLike />}{" "}
+                      {article.liked || article.disabled ? (
+                        <IconLiked />
+                      ) : (
+                        <IconLike />
+                      )}{" "}
                       {article._count.likes > 0 && (
                         <span
                           style={

@@ -205,7 +205,7 @@ export default function Ama({ article, comments }: AmaProps) {
   return (
     <>
       <Container>
-        <Shadows showEmptyState={showEmptyState} />
+        <Shadows showEmptyState={showEmptyState} disabled={article.disabled} />
         <BackLinkContainer>
           <BackLink href="/ama">
             <IconArrowLeft />
@@ -261,7 +261,11 @@ export default function Ama({ article, comments }: AmaProps) {
                       onClick={(event) => handleAmaLike(event, article)}
                       style={article.liked ? { color: theme.colors.white } : {}}
                     >
-                      {article.liked ? <IconLiked /> : <IconLike />}{" "}
+                      {article.liked || article.disabled ? (
+                        <IconLiked />
+                      ) : (
+                        <IconLike />
+                      )}{" "}
                       {article._count.likes > 0 && (
                         <span>{article._count.likes}</span>
                       )}
@@ -349,7 +353,7 @@ const AbsoluteTitle = styled.div`
   ${ellipsis};
 `;
 
-const Shadows = styled.div<{ showEmptyState: boolean }>`
+const Shadows = styled.div<{ showEmptyState: boolean; disabled: boolean }>`
   &::before {
     content: "";
     position: fixed;
@@ -370,10 +374,14 @@ const Shadows = styled.div<{ showEmptyState: boolean }>`
     content: "";
     position: fixed;
     width: 100%;
-    height: ${(p) => (p.showEmptyState ? "0" : "200px")};
+    height: ${(p) => (p.showEmptyState ? "0" : p.disabled ? "160px" : "200px")};
     left: 0;
     bottom: 0;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 33%);
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 0%,
+      #000000 ${(p) => (p.disabled ? 100 : 33)}%
+    );
     pointer-events: none;
     z-index: 2;
 

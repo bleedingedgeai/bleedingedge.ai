@@ -123,6 +123,7 @@ const Wrapper = styled.div`
   border-radius: 16px;
   overflow: hidden;
   display: block;
+  opacity: 0;
 
   ${mq.phablet} {
     opacity: 0.3;

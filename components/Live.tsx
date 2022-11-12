@@ -21,6 +21,8 @@ export default function Live({ onlyDot }: LiveProps) {
 const Container = styled.span`
   font-size: 10px;
   color: ${(p) => p.theme.colors.orange};
+  display: flex;
+  align-items: center;
 
   ${mq.desktopMaxUp} {
     font-size: 12px;

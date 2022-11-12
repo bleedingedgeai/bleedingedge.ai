@@ -25,7 +25,7 @@ const samAndBradAmas = {
   postedAt: "2018-02-16T01:05:00.000Z",
   title:
     "Sam Altman and Brad Lightcap answer questions about AI and their new AI Fund",
-  summary: "INSERT SUMMARY",
+  summary: null,
   content: null,
   source: "https://twitter.com/sama/status/1588622966115684352",
   score: 0,

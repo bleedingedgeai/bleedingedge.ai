@@ -1,38 +1,51 @@
 import { useRouter } from "next/router";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { $ } from "../helpers/dom";
+import { useMediaQuery } from "../hooks/useMediaQuery";
+import { useMounted } from "../hooks/useMounted";
 import AboutPage from "../pages/about";
 import Layout from "./Layout";
 import Portal from "./Portal";
 
-export default function PageAnimator({ Component }) {
-  const [currentPage, setCurrentPage] = useState(Component);
-  const [previousPage, setPreviousPage] = useState(null);
+const TIMING_MS = 800;
+
+export default function PageAnimator({ component }) {
+  const [currentPage, setCurrentComponent] = useState(component);
+  const [previousComponent, setPreviousComponent] = useState(null);
   const [difference, setDiffernce] = useState(0);
   const [animate, setAnimate] = useState(false);
+  const [direction, setDirection] = useState("");
   const router = useRouter();
 
+  const inRef = useRef<HTMLDivElement>(null);
+  const outRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
   const otherRef = useRef<HTMLDivElement>(null);
-  const isOnAboutPage = router.pathname === "/about";
+
+  const mounted = useMounted();
+  const media = useMediaQuery();
 
   useLayoutEffect(() => {
-    setPreviousPage(currentPage);
-    setCurrentPage(Component);
+    setPreviousComponent(currentPage);
+    setCurrentComponent(component);
 
     const timeout = setTimeout(() => {
-      setPreviousPage(null);
-    }, 1000);
+      setPreviousComponent(null);
+    }, TIMING_MS);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [Component, router.pathname]);
+  }, [component, router.pathname]);
 
   useEffect(() => {
     const handleRouteChange = (url) => {
-      console.log(url, router.pathname);
+      if (url === "/about") {
+        setDirection("in");
+      } else {
+        setDirection("out");
+      }
+
       setAnimate([url, router.pathname].includes("/about"));
 
       const about = aboutRef.current
@@ -46,151 +59,103 @@ export default function PageAnimator({ Component }) {
     };
 
     router.events.on("routeChangeStart", handleRouteChange);
-
-    // If the component is unmounted, unsubscribe
-    // from the event with the `off` method:
     return () => {
       router.events.off("routeChangeStart", handleRouteChange);
     };
-  }, [router.pathname]);
+  }, [router.pathname, previousComponent, inRef, outRef]);
 
-  if (previousPage && animate) {
-    if (isOnAboutPage) {
-      console.log({ difference, isOnAboutPage });
-      return (
-        <>
-          <InAbout difference={difference}>{Component}</InAbout>
-          <OutAbout difference={difference * -1}>{previousPage}</OutAbout>
-        </>
+  useLayoutEffect(() => {
+    if (!animate) {
+      return;
+    }
+    const options = {
+      easing: "cubic-bezier(0.7, 0, 0.3, 1)",
+      duration: TIMING_MS,
+    };
+
+    if (direction === "in") {
+      inRef.current?.animate(
+        [
+          { transform: `translateX(${difference}px` },
+          { transform: `translateX(0px)` },
+        ],
+        options
+      );
+      outRef.current?.animate(
+        [
+          { transform: `translateX(0px)`, opacity: 1 },
+          { transform: `translateX(${difference * -1}px`, opacity: 0 },
+        ],
+        options
       );
     }
 
-    return (
-      <>
-        <InOther difference={difference * -1}>{Component}</InOther>
-        <OutOther difference={difference}>{previousPage}</OutOther>
-      </>
-    );
+    if (direction === "out") {
+      inRef.current?.animate(
+        [
+          { transform: `translateX(${difference * -1}px`, opacity: 0 },
+          { transform: `translateX(0)`, opacity: 1 },
+        ],
+        options
+      );
+      outRef.current?.animate(
+        [
+          { transform: `translateX(0)`, opacity: 1 },
+          { transform: `translateX(${difference}px`, opacity: 0 },
+        ],
+        options
+      );
+    }
+  }, [
+    difference,
+    animate,
+    inRef.current,
+    outRef.current,
+    previousComponent,
+    direction,
+  ]);
+
+  if (media.desktopSmall) {
+    return component;
   }
 
   return (
     <>
-      {Component}
-      <Portal>
-        <HiddenPage ref={aboutRef}>
-          <AboutPage />
-        </HiddenPage>
-        <HiddenPage ref={otherRef}>
-          <Layout />
-        </HiddenPage>
-      </Portal>
+      {previousComponent && animate && mounted ? (
+        <>
+          <Fixed ref={inRef}>{component}</Fixed>
+          <Fixed ref={outRef}>{previousComponent}</Fixed>
+        </>
+      ) : (
+        component
+      )}
+      {mounted && (
+        <Portal>
+          <HiddenPage ref={aboutRef}>
+            <AboutPage />
+          </HiddenPage>
+          <HiddenPage ref={otherRef}>
+            <Layout />
+          </HiddenPage>
+        </Portal>
+      )}
     </>
   );
 }
 
-const OutAbout = styled.div<{ difference: number }>`
+const Fixed = styled.div`
   position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
   width: 100vw;
   opacity: 1;
-  animation: outAbout 1s cubic-bezier(0.68, 0, 0.32, 1) forwards;
   z-index: 2147483647;
-  will-change: opacity;
-
-  @keyframes outAbout {
-    0% {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    80% {
-      opacity: 1;
-    }
-    100% {
-      transform: translateX(${(p) => p.difference}px);
-      opacity: 0;
-    }
-  }
+  pointer-events: none;
 `;
 
-const InAbout = styled.div<{ difference: number }>`
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  opacity: 1;
-  animation: inAbout 1s cubic-bezier(0.68, 0, 0.32, 1) forwards;
-  z-index: 2147483647;
-  will-change: opacity;
-
-  @keyframes inAbout {
-    from {
-      transform: translateX(${(p) => p.difference}px);
-    }
-    to {
-      transform: translateX(0);
-    }
-  }
-`;
-
-const OutOther = styled.div<{ difference: number }>`
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  opacity: 1;
-  animation: out 1s cubic-bezier(0.68, 0, 0.32, 1) forwards;
-  z-index: 2147483647;
-  will-change: opacity;
-
-  @keyframes out {
-    0% {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    80% {
-      opacity: 1;
-    }
-    100% {
-      transform: translateX(${(p) => p.difference}px);
-      opacity: 0;
-    }
-  }
-`;
-
-const InOther = styled.div<{ difference: number }>`
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  opacity: 1;
-  animation: in 1s cubic-bezier(0.68, 0, 0.32, 1) forwards;
-  z-index: 2147483647;
-  will-change: opacity;
-
-  @keyframes in {
-    from {
-      transform: translateX(${(p) => p.difference}px);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-`;
-
-const HiddenPage = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
+const HiddenPage = styled(Fixed)`
   visibility: hidden;
   opacity: 0;
-  pointer-events: none;
+  z-index: -1;
 `;

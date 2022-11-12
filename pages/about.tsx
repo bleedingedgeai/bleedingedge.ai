@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, useContext } from "react";
 import styled from "styled-components";
@@ -179,10 +178,11 @@ const ColumnRight = styled.div`
 
   ${mq.desktopMedium} {
     max-width: 252px;
+    padding-right: 0;
   }
 
-  ${mq.desktopMedium} {
-    padding-right: 0;
+  ${mq.desktopSmall} {
+    display: none;
   }
 `;
 

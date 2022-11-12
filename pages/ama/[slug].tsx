@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
 import Ama from "../../components/Ama/Ama";
 import Layout from "../../components/Layout";
@@ -160,7 +160,6 @@ const generateOgImagePath = (article) => {
 };
 
 export default function AmaPage({ article }) {
-  const router = useRouter();
   const { data: commentsFromQuery } = useQuery({
     queryKey: ["comments", article.id],
     queryFn: async () => {
@@ -170,7 +169,7 @@ export default function AmaPage({ article }) {
     },
   });
   const { data: articleFromQuery } = useQuery({
-    queryKey: ["article", router.query.slug],
+    queryKey: ["article", article.slug],
     queryFn: async () => {
       return await (await fetch(`/api/articles/${article.slug}`)).json();
     },

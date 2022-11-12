@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 import { RefObject, Suspense, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Editor } from "@tiptap/react";
@@ -47,12 +48,12 @@ export default function CommentsInput({
 }: CommentsInputProps) {
   const { showOverlay } = useContext(OverlayContext);
   const session = useSession();
+  const router = useRouter();
   const [offset, setOffset] = useState(0);
   const [width, setWidth] = useState(0);
   const { showAlert } = useContext(AlertsContext);
   const replyingToComment = comments.find((c) => c.id === replyingToId);
   const commentToEdit = comments.find((comment) => comment.id === edittingId);
-
   //////////////////////////////////////////////////////////////////////////
   // Keys
   //////////////////////////////////////////////////////////////////////////
@@ -153,9 +154,18 @@ export default function CommentsInput({
     return () => window.removeEventListener("resize", handleResize);
   }, [containerRef]);
 
+  if (article.disabled) {
+    return null;
+  }
+
   return (
     <Portal>
-      <Container style={{ left: offset, width }}>
+      <Container
+        style={{
+          left: offset,
+          width,
+        }}
+      >
         {replyingToComment && (
           <ReplyingTo>
             <div>
@@ -194,7 +204,7 @@ export default function CommentsInput({
               </>
             }
             placement="top"
-            offset={{ top: -6 }}
+            offset={{ top: -6, left: -32 }}
           >
             <Submit
               type="submit"
@@ -224,7 +234,7 @@ const Container = styled.div`
   bottom: 42px;
   z-index: 12;
   border-radius: 14px;
-  isolation: isolate;
+  transition: opacity 1s;
 
   ${mq.tablet} {
     height: 46px;

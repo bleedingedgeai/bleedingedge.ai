@@ -51,7 +51,7 @@ export default function App({ Component, pageProps }) {
             <ThemeProvider theme={theme}>
               <AlertsProvider>
                 <OverlayProvider>
-                  <PageAnimator Component={<Component {...pageProps} />} />
+                  <PageAnimator component={<Component {...pageProps} />} />
                   <Suspense fallback={null}>
                     <DynamicOverlay />
                     <DynamicAlerts />

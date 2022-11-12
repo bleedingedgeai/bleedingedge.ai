@@ -2,7 +2,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import IconLogo from "../components/Icons/IconLogo";
 import { theme } from "../styles/theme";
 import Dot from "./Dot";
@@ -47,7 +47,7 @@ export default function Sidebar() {
                   active ? { color: theme.colors.white, fontWeight: 700 } : {}
                 }
               >
-                {link.text} {active && "—"}
+                {link.text} <span>{active && "—"}</span>
               </StyledLink>
             </Row>
           );
@@ -117,6 +117,15 @@ const Description = styled.div`
   color: ${(p) => p.theme.colors.light_grey};
   margin-bottom: 12px;
   line-height: 130%;
+`;
+
+const fadein = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 `;
 
 const StyledLink = styled(Link)`

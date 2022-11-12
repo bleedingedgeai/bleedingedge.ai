@@ -251,7 +251,13 @@ function CommentLike({ comment, handleLike, disabled }) {
       disabled={disabled}
       onClick={(event) => handleLike(event, comment)}
     >
-      {liked ? <IconLiked /> : <IconLike />}{" "}
+      {liked || disabled ? (
+        <IconLiked
+          fill={disabled ? theme.colors.light_grey : theme.colors.white}
+        />
+      ) : (
+        <IconLike />
+      )}{" "}
       {likes > 0 && (
         <span style={liked ? { color: theme.colors.white } : {}}>{likes}</span>
       )}
