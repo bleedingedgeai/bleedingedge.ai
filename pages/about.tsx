@@ -55,93 +55,97 @@ export default function About() {
   return (
     <>
       <SEO title="About | bleeding edge" />
-      <Background>
-        <Navigation />
-        <Bounds>
-          <Grid>
-            <ColumnLeft>
-              <AboutContainer>
-                <div>
-                  <button type="button" onClick={() => router.back()}>
-                    <Timeline>
-                      <ArrowContainer>
-                        <IconArrowLeft size={24} />
-                      </ArrowContainer>
-                      Return to timeline
-                    </Timeline>
-                  </button>
-                  <MobileAboutText>
-                    bleeding edge is a feed of noteworthy developments in AI.
-                    this site is very much a work in progress. please send
-                    suggestions and feedback!
-                  </MobileAboutText>
-                  <Paragraph>
-                    <span>What is this?</span> This is me scratching my own
-                    itch. The pace of development in AI right now is staggering
-                    and there’s been no easy way to keep up with all of the
-                    interesting developments. bleeding edge is my attempt at
-                    solving that. It’s a chronological collation of all the most
-                    noteworthy developments (as decided by me… for now). I hope
-                    to have a more developed criteria for what gets included in
-                    the future, and a better way to err on the side of including
-                    more niche content without diluting the usefulness of the
-                    homepage.
-                  </Paragraph>
-                  <Paragraph>
-                    <span>Who am I?</span> My name’s Lachy. I’m not an AI
-                    researcher, but I would like to better stay on top of
-                    everything going on. That’s why I started bleeding edge.
-                  </Paragraph>
-                </div>
-                <Footer>
-                  <div>
-                    Very special thanks to:{" "}
-                    {specialThanks.map((thanks, index) => (
-                      <Fragment key={thanks.name}>
-                        <a href={thanks.href} target="_blank" rel="noopener">
-                          {thanks.name}
-                        </a>
-                        {index !== specialThanks.length - 1 && ", "}
-                      </Fragment>
-                    ))}
-                    . Additional thanks to{" "}
-                    {additionalThanks.map((thanks, index) => (
-                      <Fragment key={thanks.name}>
-                        <a href={thanks.href} target="_blank" rel="noopener">
-                          {thanks.name}
-                        </a>
-                        {index !== specialThanks.length - 1 && ", "}
-                      </Fragment>
-                    ))}
-                    .
-                  </div>
-                  <div>
-                    <button onClick={() => showOverlay(OverlayType.SUGGESTION)}>
-                      Entry suggestions
-                    </button>{" "}
-                    are always welcome! In addition, I’ve open sourced the site
-                    on{" "}
-                    <a
-                      href="https://github.com/bleedingedgeai/bleedingedge.ai"
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      GitHub
-                    </a>
-                    , so please feel free to contribute.
-                  </div>
-                </Footer>
-              </AboutContainer>
-            </ColumnLeft>
-            <ColumnRight>
-              <SidebarContainer>
-                <Sidebar />
-              </SidebarContainer>
-            </ColumnRight>
-          </Grid>
-        </Bounds>
-      </Background>
+      <AboutLayout>
+        <AboutContainer>
+          <div>
+            <button type="button" onClick={() => router.back()}>
+              <Timeline>
+                <ArrowContainer>
+                  <IconArrowLeft size={24} />
+                </ArrowContainer>
+                Return to timeline
+              </Timeline>
+            </button>
+            <MobileAboutText>
+              bleeding edge is a feed of noteworthy developments in AI. this
+              site is very much a work in progress. please send suggestions and
+              feedback!
+            </MobileAboutText>
+            <Paragraph>
+              <span>What is this?</span> This is me scratching my own itch. The
+              pace of development in AI right now is staggering and there’s been
+              no easy way to keep up with all of the interesting developments.
+              bleeding edge is my attempt at solving that. It’s a chronological
+              collation of all the most noteworthy developments (as decided by
+              me… for now). I hope to have a more developed criteria for what
+              gets included in the future, and a better way to err on the side
+              of including more niche content without diluting the usefulness of
+              the homepage.
+            </Paragraph>
+            <Paragraph>
+              <span>Who am I?</span> My name’s Lachy. I’m not an AI researcher,
+              but I would like to better stay on top of everything going on.
+              That’s why I started bleeding edge.
+            </Paragraph>
+          </div>
+          <Footer>
+            <div>
+              Very special thanks to:{" "}
+              {specialThanks.map((thanks, index) => (
+                <Fragment key={thanks.name}>
+                  <a href={thanks.href} target="_blank" rel="noopener">
+                    {thanks.name}
+                  </a>
+                  {index !== specialThanks.length - 1 && ", "}
+                </Fragment>
+              ))}
+              . Additional thanks to{" "}
+              {additionalThanks.map((thanks, index) => (
+                <Fragment key={thanks.name}>
+                  <a href={thanks.href} target="_blank" rel="noopener">
+                    {thanks.name}
+                  </a>
+                  {index !== specialThanks.length - 1 && ", "}
+                </Fragment>
+              ))}
+              .
+            </div>
+            <div>
+              <button onClick={() => showOverlay(OverlayType.SUGGESTION)}>
+                Entry suggestions
+              </button>{" "}
+              are always welcome! In addition, I’ve open sourced the site on{" "}
+              <a
+                href="https://github.com/bleedingedgeai/bleedingedge.ai"
+                target="_blank"
+                rel="noopener"
+              >
+                GitHub
+              </a>
+              , so please feel free to contribute.
+            </div>
+          </Footer>
+        </AboutContainer>
+      </AboutLayout>
     </>
+  );
+}
+
+export function AboutLayout(props: React.PropsWithChildren<{}>) {
+  return (
+    <Background>
+      <Navigation />
+      <Bounds>
+        <Grid>
+          <ColumnLeft>{props.children}</ColumnLeft>
+          <ColumnRight>
+            <SidebarContainer>
+              <Sidebar />
+            </SidebarContainer>
+          </ColumnRight>
+        </Grid>
+      </Bounds>
+    </Background>
   );
 }
 

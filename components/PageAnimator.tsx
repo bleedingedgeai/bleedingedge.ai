@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { useMounted } from "../hooks/useMounted";
-import AboutPage from "../pages/about";
+import { AboutLayout } from "../pages/about";
 import Layout from "./Layout";
 import Portal from "./Portal";
 
@@ -46,6 +46,7 @@ export default function PageAnimator({ component }) {
         setDirection("out");
       }
 
+      setPreviousComponent(null);
       setAnimate([url, router.pathname].includes("/about"));
 
       const about = aboutRef.current
@@ -62,7 +63,7 @@ export default function PageAnimator({ component }) {
     return () => {
       router.events.off("routeChangeStart", handleRouteChange);
     };
-  }, [router.pathname, previousComponent, inRef, outRef]);
+  }, [router.pathname, previousComponent, inRef, outRef, animate]);
 
   useLayoutEffect(() => {
     if (!animate) {
@@ -119,6 +120,7 @@ export default function PageAnimator({ component }) {
     return component;
   }
 
+  console.log(previousComponent && animate && mounted);
   return (
     <>
       {previousComponent && animate && mounted ? (
@@ -132,7 +134,7 @@ export default function PageAnimator({ component }) {
       {mounted && (
         <Portal>
           <HiddenPage ref={aboutRef}>
-            <AboutPage />
+            <AboutLayout />
           </HiddenPage>
           <HiddenPage ref={otherRef}>
             <Layout />
