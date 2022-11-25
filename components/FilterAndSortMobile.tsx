@@ -212,7 +212,7 @@ const CloseTagert = styled.div`
   z-index: 2147483647;
   transition: opacity 0.3s;
 
-  ${mq.phabletUp} {
+  ${mq.tabletUp} {
     display: none;
   }
 `;
@@ -229,7 +229,7 @@ const ContainerSlidein = styled(animated.div)`
   z-index: 2147483647;
   overflow: hidden;
 
-  ${mq.phabletUp} {
+  ${mq.tabletUp} {
     display: none;
   }
 `;

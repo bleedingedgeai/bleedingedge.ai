@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 import styled from "styled-components";
+import { scrollable } from "../helpers/dom";
 import { mq } from "../styles/mediaqueries";
 import Bounds from "./Bounds";
 import IconArrowLeft from "./Icons/IconArrowLeft";
@@ -40,6 +41,7 @@ export default function Navigation() {
             onClick={() => {
               setMenuOpen((prev) => !prev);
               hideOverlay();
+              scrollable(false);
             }}
           >
             Menu
@@ -57,7 +59,10 @@ export default function Navigation() {
       <Portal>
         <MenuInvisible
           style={menuInvisibleStyles}
-          onClick={() => setMenuOpen(false)}
+          onClick={() => {
+            setMenuOpen(false);
+            scrollable(true);
+          }}
         />
         <Menu style={menuStyles}>
           <BlueGradientContainer>
@@ -69,6 +74,7 @@ export default function Navigation() {
                 onClick={() => {
                   hideOverlay();
                   setMenuOpen(false);
+                  scrollable(true);
                 }}
               >
                 <IconArrowLeft />
@@ -116,6 +122,7 @@ export default function Navigation() {
                 <button
                   onClick={() => {
                     setMenuOpen(false);
+                    scrollable(true);
                     showOverlay(OverlayType.SUGGESTION);
                   }}
                 >

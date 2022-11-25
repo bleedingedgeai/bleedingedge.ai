@@ -162,7 +162,7 @@ const Shadow = styled.div`
       height: 180px;
     }
 
-    ${mq.phablet} {
+    ${mq.tablet} {
       display: none;
     }
   }
@@ -182,7 +182,7 @@ const Shadow = styled.div`
       bottom: 0;
     }
 
-    ${mq.phablet} {
+    ${mq.tablet} {
       height: 60px;
       background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
     }
