@@ -10,7 +10,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const session = await unstable_getServerSession(req, res, authOptions);
     const rawPosts = await prisma.post.findMany({
-      where: { authors: { some: {} } },
+      where: { authors: { some: {} }, published: true },
       include: {
         authors: true,
         _count: {

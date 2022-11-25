@@ -33,7 +33,7 @@ export async function getServerSideProps(context) {
   const queryClient = new QueryClient();
   await queryClient.fetchQuery(["articles"], async () => {
     const rawPosts = await prisma.post.findMany({
-      where: { authors: { some: {} } },
+      where: { authors: { some: {} }, published: true },
       include: {
         authors: true,
         _count: {
