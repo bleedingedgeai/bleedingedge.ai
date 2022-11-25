@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import styled from "styled-components";
+import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { useMounted } from "../hooks/useMounted";
 import { AboutLayout } from "../pages/about";
@@ -25,7 +26,7 @@ export default function PageAnimator({ component }) {
   const mounted = useMounted();
   const media = useMediaQuery();
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setPreviousComponent(currentPage);
     setCurrentComponent(component);
 
@@ -38,7 +39,7 @@ export default function PageAnimator({ component }) {
     };
   }, [component, router.pathname]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const handleRouteChange = (url) => {
       if (url === "/about") {
         setDirection("in");
@@ -65,7 +66,7 @@ export default function PageAnimator({ component }) {
     };
   }, [router.pathname, previousComponent, inRef, outRef, animate]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!animate) {
       return;
     }

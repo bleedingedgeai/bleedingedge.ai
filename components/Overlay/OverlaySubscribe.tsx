@@ -70,7 +70,7 @@ export default function OverlaySubscribe() {
         <InputContainer>
           <Input
             type="email"
-            name="email"
+            name="subscribe"
             label="Email address"
             value={value}
             onChange={(event) => setValue(event.target.value)}
@@ -106,7 +106,7 @@ export default function OverlaySubscribe() {
 }
 
 const SuccessContainer = styled.div`
-  min-height: 480px;
+  min-height: calc(480px - 48px);
   display: grid;
   place-items: center;
   padding-bottom: 48px;
@@ -154,7 +154,7 @@ const Contiainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  padding-top: 48px;
+  padding-top: 64px;
 `;
 
 const Heading = styled.h2`
@@ -180,7 +180,7 @@ const Form = styled.form`
 `;
 
 const InputContainer = styled.div`
-  margin-bottom: 24px;
+  margin-bottom: 8px;
 `;
 
 const IconUnselected = () => (

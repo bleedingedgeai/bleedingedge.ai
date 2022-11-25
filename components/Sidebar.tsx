@@ -74,10 +74,14 @@ export default function Sidebar() {
           very much a work in progress. please send suggestions and feedback!
         </Description>
         <div>
-          <StyledLinkBottom href="/about">About</StyledLinkBottom>
-          <DotSpacer>
-            <Dot />
-          </DotSpacer>
+          {router.pathname !== "/about" && (
+            <>
+              <StyledLinkBottom href="/about">About</StyledLinkBottom>
+              <DotSpacer>
+                <Dot />
+              </DotSpacer>
+            </>
+          )}
           <StyledLinkBottom
             href="https://twitter.com/bleedingedgeai"
             target="_blank"

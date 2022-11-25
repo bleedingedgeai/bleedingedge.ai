@@ -152,6 +152,7 @@ function CommentsRecursive({
               }
             >
               <Avatar
+                href={`https://twitter.com/${comment.author.username}`}
                 src={comment.author.image}
                 outline={isHostReply}
                 highlight={isHostReply}

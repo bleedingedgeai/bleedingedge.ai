@@ -5,6 +5,7 @@ import { getRandomWholeNumber } from "../helpers/numbers";
 
 interface AvatarProps {
   src?: string;
+  href?: string;
   size?: number;
   highlight?: boolean;
   superHighlight?: boolean;
@@ -14,6 +15,7 @@ interface AvatarProps {
 
 export default function Avatar({
   src,
+  href,
   highlight,
   superHighlight,
   size = 18,
@@ -29,6 +31,9 @@ export default function Avatar({
     return `/assets/avatar/${fallbackNames[getRandomWholeNumber(0, 3)]}.jpg`;
   }, [src]);
 
+  if (href) {
+  }
+
   return (
     <AvatarContainer
       size={size}
@@ -37,7 +42,13 @@ export default function Avatar({
       superHighlight={superHighlight}
       greyScale={greyScale}
     >
-      <StyledImage src={imageSrc} width={size} height={size} alt="" />
+      {href ? (
+        <Anchor href={href} target="_blank" rel="noopener">
+          <StyledImage src={imageSrc} width={size} height={size} alt="" />
+        </Anchor>
+      ) : (
+        <StyledImage src={imageSrc} width={size} height={size} alt="" />
+      )}
     </AvatarContainer>
   );
 }
@@ -92,6 +103,9 @@ background: linear-gradient(217.16deg, rgba(209, 159, 100, 0.32) -7.44%, rgba(20
   }`}
 `;
 
+const Anchor = styled.a`
+  display: grid;
+`;
 const StyledImage = styled(Image)`
   width: 100%;
   border-radius: 50%;

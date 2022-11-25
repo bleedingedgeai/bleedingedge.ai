@@ -78,7 +78,11 @@ export default function TimelineAma({ articles }: TimelineProps) {
           <Container key={article.id}>
             {live && <MobileGlow />}
             <AvatarContainer>
-              <Avatar src={article.authors[0].image} superHighlight={live} />
+              <Avatar
+                src={article.authors[0].image}
+                href={`https://twitter.com/${article.authors[0].username}`}
+                superHighlight={live}
+              />
               {article.authors.length > 1 && (
                 <AuthorCount>{article.authors.length}</AuthorCount>
               )}
