@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { useMounted } from "../hooks/useMounted";
@@ -25,7 +25,7 @@ export default function PageAnimator({ component }) {
   const mounted = useMounted();
   const media = useMediaQuery();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setPreviousComponent(currentPage);
     setCurrentComponent(component);
 
@@ -65,7 +65,7 @@ export default function PageAnimator({ component }) {
     };
   }, [router.pathname, previousComponent, inRef, outRef, animate]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!animate) {
       return;
     }
@@ -120,7 +120,6 @@ export default function PageAnimator({ component }) {
     return component;
   }
 
-  console.log(previousComponent && animate && mounted);
   return (
     <>
       {previousComponent && animate && mounted ? (
