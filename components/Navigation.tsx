@@ -1,7 +1,7 @@
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { scrollable } from "../helpers/dom";
 import { mq } from "../styles/mediaqueries";
@@ -27,6 +27,17 @@ export default function Navigation() {
   const menuStyles = menuOpen
     ? { transform: "translateX(0%)" }
     : { transform: "translateX(100%)" };
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      scrollable(true);
+    };
+
+    router.events.on("routeChangeStart", handleRouteChange);
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChange);
+    };
+  }, [router]);
 
   return (
     <Nav>
