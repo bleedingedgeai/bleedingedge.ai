@@ -1,11 +1,11 @@
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { Fragment, useContext } from "react";
 import styled from "styled-components";
 import Bounds from "../components/Bounds";
 import Grid from "../components/Grid";
 import IconArrowLeft from "../components/Icons/IconArrowLeft";
 import Navigation from "../components/Navigation";
-import { OverlayContext, OverlayType } from "../components/Overlay";
+import { OverlayContext, OverlayType } from "../components/Overlay/Overlay";
 import SEO from "../components/SEO";
 import Sidebar from "../components/Sidebar";
 import { mq } from "../styles/mediaqueries";
@@ -50,97 +50,102 @@ const additionalThanks = [
 
 export default function About() {
   const { showOverlay } = useContext(OverlayContext);
+  const router = useRouter();
 
   return (
     <>
-      <SEO title="bleeding edge | About" />
-      <Background>
-        <Navigation />
-        <Bounds>
-          <Grid>
-            <ColumnLeft>
-              <AboutContainer>
-                <div>
-                  <Link href="/">
-                    <a>
-                      <Timeline>
-                        <ArrowContainer>
-                          <IconArrowLeft size={24} />
-                        </ArrowContainer>
-                        Return to timeline
-                      </Timeline>
-                    </a>
-                  </Link>
-                  <MobileAboutText>
-                    bleeding edge is a feed of noteworthy developments in AI.
-                    this site is very much a work in progress. please send
-                    suggestions and feedback!
-                  </MobileAboutText>
-                  <Paragraph>
-                    <span>What is this?</span> This is me scratching my own
-                    itch. The pace of development in AI right now is staggering
-                    and there’s been no easy way to keep up with all of the
-                    interesting developments. bleeding edge is my attempt at
-                    solving that. It’s a chronological collation of all the most
-                    noteworthy developments (as decided by me… for now). I hope
-                    to have a more developed criteria for what gets included in
-                    the future, and a better way to err on the side of including
-                    more niche content without diluting the usefulness of the
-                    homepage.
-                  </Paragraph>
-                  <Paragraph>
-                    <span>Who am I?</span> My name’s Lachy. I’m not an AI
-                    researcher, but I would like to better stay on top of
-                    everything going on. That’s why I started bleeding edge.
-                  </Paragraph>
-                </div>
-                <Footer>
-                  <div>
-                    Very special thanks to:{" "}
-                    {specialThanks.map((thanks, index) => (
-                      <Fragment key={thanks.name}>
-                        <a href={thanks.href} target="_blank" rel="noopener">
-                          {thanks.name}
-                        </a>
-                        {index !== specialThanks.length - 1 && ", "}
-                      </Fragment>
-                    ))}
-                    . Additional thanks to{" "}
-                    {additionalThanks.map((thanks, index) => (
-                      <Fragment key={thanks.name}>
-                        <a href={thanks.href} target="_blank" rel="noopener">
-                          {thanks.name}
-                        </a>
-                        {index !== specialThanks.length - 1 && ", "}
-                      </Fragment>
-                    ))}
-                    .
-                  </div>
-                  <div>
-                    <button onClick={() => showOverlay(OverlayType.SUGGESTION)}>
-                      Entry suggestions
-                    </button>{" "}
-                    are always welcome! In addition, I’ve open sourced the site
-                    on{" "}
-                    <a
-                      href="https://github.com/bleedingedgeai/bleedingedge.ai"
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      GitHub
-                    </a>
-                    , so please feel free to contribute.
-                  </div>
-                </Footer>
-              </AboutContainer>
-            </ColumnLeft>
-            <ColumnRight>
-              <Sidebar />
-            </ColumnRight>
-          </Grid>
-        </Bounds>
-      </Background>
+      <SEO title="About | bleeding edge" />
+      <AboutLayout>
+        <AboutContainer>
+          <div>
+            <button type="button" onClick={() => router.back()}>
+              <Timeline>
+                <ArrowContainer>
+                  <IconArrowLeft size={24} />
+                </ArrowContainer>
+                Return to timeline
+              </Timeline>
+            </button>
+            <MobileAboutText>
+              bleeding edge is a feed of noteworthy developments in AI. this
+              site is very much a work in progress. please send suggestions and
+              feedback!
+            </MobileAboutText>
+            <Paragraph>
+              <span>What is this?</span> This is me scratching my own itch. The
+              pace of development in AI right now is staggering and there’s been
+              no easy way to keep up with all of the interesting developments.
+              bleeding edge is my attempt at solving that. It’s a chronological
+              collation of all the most noteworthy developments (as decided by
+              me… for now). I hope to have a more developed criteria for what
+              gets included in the future, and a better way to err on the side
+              of including more niche content without diluting the usefulness of
+              the homepage.
+            </Paragraph>
+            <Paragraph>
+              <span>Who am I?</span> My name’s Lachy. I’m not an AI researcher,
+              but I would like to better stay on top of everything going on.
+              That’s why I started bleeding edge.
+            </Paragraph>
+          </div>
+          <Footer>
+            <div>
+              Very special thanks to:{" "}
+              {specialThanks.map((thanks, index) => (
+                <Fragment key={thanks.name}>
+                  <a href={thanks.href} target="_blank" rel="noopener">
+                    {thanks.name}
+                  </a>
+                  {index !== specialThanks.length - 1 && ", "}
+                </Fragment>
+              ))}
+              . Additional thanks to{" "}
+              {additionalThanks.map((thanks, index) => (
+                <Fragment key={thanks.name}>
+                  <a href={thanks.href} target="_blank" rel="noopener">
+                    {thanks.name}
+                  </a>
+                  {index !== specialThanks.length - 1 && ", "}
+                </Fragment>
+              ))}
+              .
+            </div>
+            <div>
+              <button onClick={() => showOverlay(OverlayType.SUGGESTION)}>
+                Entry suggestions
+              </button>{" "}
+              are always welcome! In addition, I’ve open sourced the site on{" "}
+              <a
+                href="https://github.com/bleedingedgeai/bleedingedge.ai"
+                target="_blank"
+                rel="noopener"
+              >
+                GitHub
+              </a>
+              , so please feel free to contribute.
+            </div>
+          </Footer>
+        </AboutContainer>
+      </AboutLayout>
     </>
+  );
+}
+
+export function AboutLayout(props: React.PropsWithChildren<{}>) {
+  return (
+    <Background>
+      <Navigation />
+      <Bounds>
+        <Grid>
+          <ColumnLeft>{props.children}</ColumnLeft>
+          <ColumnRight>
+            <SidebarContainer>
+              <Sidebar />
+            </SidebarContainer>
+          </ColumnRight>
+        </Grid>
+      </Bounds>
+    </Background>
   );
 }
 
@@ -173,9 +178,27 @@ const ColumnLeft = styled.div`
 const ColumnRight = styled.div`
   grid-column: 14 / 18;
   width: calc(100% + 21px);
+  padding-right: 6%;
+
+  ${mq.desktopMedium} {
+    max-width: 252px;
+    padding-right: 0;
+  }
 
   ${mq.desktopSmall} {
     display: none;
+  }
+`;
+
+const SidebarContainer = styled.div`
+  max-width: 282px;
+
+  ${mq.desktopMedium} {
+    max-width: 252px;
+  }
+
+  ${mq.desktopMedium} {
+    padding-right: 0;
   }
 `;
 

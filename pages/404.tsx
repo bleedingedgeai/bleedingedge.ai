@@ -16,26 +16,26 @@ export default function NotFound() {
           <AdjustedBounds>
             <LogoContainer>
               <Link href="/">
-                <a>
-                  <IconLogo />
-                </a>
+                <IconLogo />
               </Link>
             </LogoContainer>
-            <Link href="/">
-              <StyledLink>
-                Go back home
-                <ArrowContainer>
-                  <IconArrowRight />
-                </ArrowContainer>
-              </StyledLink>
-            </Link>
+            <StyledLink href="/">
+              Go back home
+              <ArrowContainer>
+                <IconArrowRight />
+              </ArrowContainer>
+            </StyledLink>
           </AdjustedBounds>
         </Top>
         <Middle>
           <AdjustedBounds>
             <ImageLayout>
               <ErrorImageContainer>
-                <Image src="/assets/404/be-error-404.svg" layout="fill" />
+                <Image
+                  src="/assets/404/be-error-404.svg"
+                  layout="fill"
+                  alt="Not found error code"
+                />
               </ErrorImageContainer>
               <ImageAlignBottom>
                 <StatueImageContainer>
@@ -43,6 +43,7 @@ export default function NotFound() {
                     src="/assets/404/be-statue.png"
                     layout="fill"
                     loading="eager"
+                    alt="AI generated statue"
                   />
                 </StatueImageContainer>
               </ImageAlignBottom>
@@ -182,7 +183,7 @@ const ArrowContainer = styled.span`
   }
 `;
 
-const StyledLink = styled.a`
+const StyledLink = styled(Link)`
   &:hover ${ArrowContainer} svg {
     opacity: 1;
     transform: translateX(4px);

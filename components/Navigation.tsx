@@ -1,3 +1,4 @@
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
@@ -7,7 +8,7 @@ import Bounds from "./Bounds";
 import IconArrowLeft from "./Icons/IconArrowLeft";
 import IconEx from "./Icons/IconEx";
 import IconLogo from "./Icons/IconLogo";
-import { OverlayContext, OverlayType } from "./Overlay";
+import { OverlayContext, OverlayType } from "./Overlay/Overlay";
 import Portal from "./Portal";
 
 export default function Navigation() {
@@ -27,112 +28,105 @@ export default function Navigation() {
     : { transform: "translateX(100%)" };
 
   return (
-    <>
-      <Nav>
+    <Nav>
+      <Bounds>
+        <Content>
+          <LogoContainer>
+            <Link href="/">
+              <IconLogo />
+            </Link>
+          </LogoContainer>
+          <MenuButton
+            onClick={() => {
+              setMenuOpen((prev) => !prev);
+              hideOverlay();
+            }}
+          >
+            Menu
+          </MenuButton>
+        </Content>
+      </Bounds>
+      {tag && (
         <Bounds>
-          <Content>
-            <LogoContainer>
-              <Link href="/">
-                <a>
-                  <IconLogo />
-                </a>
-              </Link>
-            </LogoContainer>
-            <DesktopLinks>
-              <SubscribButton>Subscribe</SubscribButton>
-              <Link href="/about">About</Link>
-            </DesktopLinks>
-            <MenuButton
-              onClick={() => {
-                setMenuOpen((prev) => !prev);
-                hideOverlay();
-              }}
-            >
-              Menu
-            </MenuButton>
-          </Content>
+          <Tag onClick={() => router.replace("/")}>
+            {tag}
+            <IconEx size={16} />
+          </Tag>
         </Bounds>
-        {tag && (
-          <Bounds>
-            <Tag onClick={() => router.replace("/")}>
-              {tag}
-              <IconEx size={16} />
-            </Tag>
-          </Bounds>
-        )}
-        <Portal>
-          <MenuInvisible
-            style={menuInvisibleStyles}
-            onClick={() => setMenuOpen(false)}
-          />
-          <Menu style={menuStyles}>
-            <BlueGradientContainer>
-              <BlueGradient />
-            </BlueGradientContainer>
-            <MenuContent>
-              <div>
-                <BackButton
+      )}
+      <Portal>
+        <MenuInvisible
+          style={menuInvisibleStyles}
+          onClick={() => setMenuOpen(false)}
+        />
+        <Menu style={menuStyles}>
+          <BlueGradientContainer>
+            <BlueGradient />
+          </BlueGradientContainer>
+          <MenuContent>
+            <div>
+              <BackButton
+                onClick={() => {
+                  hideOverlay();
+                  setMenuOpen(false);
+                }}
+              >
+                <IconArrowLeft />
+              </BackButton>
+              <List>
+                <Item>
+                  <Link href="/ama">AMAs</Link>
+                </Item>
+                <Item>
+                  <Link href="/about">About</Link>
+                </Item>
+              </List>
+              <Divider />
+
+              <List>
+                <Item>
+                  <a href="mailto:lachy@bleedingedge.ai">Email</a>
+                </Item>
+                <Item>
+                  <a
+                    href="https://twitter.com/bleedingedgeai"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Twitter
+                  </a>
+                </Item>
+                <Item>
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      showOverlay(OverlayType.SUBSCRIBE);
+                    }}
+                  >
+                    Subscribe
+                  </button>
+                </Item>
+              </List>
+            </div>
+            <List>
+              <Item>
+                <button onClick={() => signIn("twitter")}>Login</button>
+              </Item>
+              <Item>
+                <button
                   onClick={() => {
-                    hideOverlay();
                     setMenuOpen(false);
+                    showOverlay(OverlayType.SUGGESTION);
                   }}
                 >
-                  <IconArrowLeft />
-                </BackButton>
-                <List>
-                  <Item>
-                    {router.pathname === "/" ? (
-                      <Link href="/about">About</Link>
-                    ) : (
-                      <Link href="/">Home</Link>
-                    )}
-                  </Item>
-                  <Item>
-                    <a href="mailto:lachy@bleedingedge.ai">Email</a>
-                  </Item>
-                  <Item>
-                    <a
-                      href="https://twitter.com/bleedingedgeai"
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      Twitter
-                    </a>
-                  </Item>
-                </List>
-                <Divider />
-                <List>
-                  <Item>
-                    <button
-                      onClick={() => {
-                        setMenuOpen(false);
-                        showOverlay(OverlayType.SUBSCRIBE);
-                      }}
-                    >
-                      Subscribe
-                    </button>
-                  </Item>
-                  <Item>
-                    <button
-                      onClick={() => {
-                        setMenuOpen(false);
-                        showOverlay(OverlayType.SUGGESTION);
-                      }}
-                    >
-                      Contribute
-                    </button>
-                  </Item>
-                </List>
-              </div>
-              <Signature>
-                A Project by
-                <br /> Lachy Groom
-              </Signature>
-            </MenuContent>
-          </Menu>
-        </Portal>
-      </Nav>
-    </>
+                  Submit
+                </button>
+              </Item>
+            </List>
+          </MenuContent>
+        </Menu>
+      </Portal>
+    </Nav>
   );
 }
 
@@ -216,14 +210,6 @@ const MenuContent = styled.div`
   height: 100%;
 `;
 
-const Signature = styled.div`
-  position: relative;
-  font-family: ${(p) => p.theme.fontFamily.nouvelle};
-  font-size: 16px;
-  line-height: 120%;
-  color: ${(p) => p.theme.colors.light_grey};
-`;
-
 const BackButton = styled.button`
   margin-bottom: 60px;
 `;
@@ -266,23 +252,8 @@ const LogoContainer = styled.div`
   max-width: 143px;
 `;
 
-const DesktopLinks = styled.div`
-  ${mq.phablet} {
-    display: none;
-  }
-`;
-const SubscribButton = styled.button`
-  margin-right: 48px;
-
-  ${mq.phablet} {
-    display: none;
-  }
-`;
-
 const MenuButton = styled.button`
-  ${mq.phabletUp} {
-    display: none;
-  }
+  font-size: 14px;
 `;
 
 const BlueGradientContainer = styled.div`
@@ -292,6 +263,11 @@ const BlueGradientContainer = styled.div`
   right: 0;
   filter: blur(52px);
   opacity: 1;
+  pointer-events: none;
+
+  ${mq.desktopSmallUp} {
+    display: none;
+  }
 `;
 
 const BlueGradient = () => (

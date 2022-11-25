@@ -1,16 +1,17 @@
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import React from "react";
-import { animated, useTransition } from "react-spring";
 import styled from "styled-components";
+import { Tag } from "@prisma/client";
+import { animated, useTransition } from "@react-spring/web";
 import { scrollable } from "../helpers/dom";
 import { hideScrollBar } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
-import { Sort } from "./Feed";
+import { Sort } from "./Layout";
 import Portal from "./Portal";
 
 interface FilterAndSortMobileProps {
-  tags: string[];
+  tags: Tag[];
   sort: Sort;
   setSort: React.Dispatch<React.SetStateAction<Sort>>;
 }
@@ -56,7 +57,7 @@ export default function FilterAndSortMobile({
       scrollable(false);
       setSlidein({
         title: "Filter by",
-        options: tags.filter((t) => t !== tag),
+        options: tags.filter((t) => t.name !== tag).map((t) => t.name),
         type: "Filter",
       });
     },
@@ -114,7 +115,7 @@ const Container = styled.div`
   backdrop-filter: blur(13px);
   border-radius: 47px;
 
-  ${mq.phabletUp} {
+  ${mq.tabletUp} {
     display: none;
   }
 `;
@@ -155,7 +156,8 @@ function FilterAndSortSlidein({
     key: (item) => item?.title,
     from: { transform: `translateY(120%)` },
     enter: { transform: "translateY(0%)" },
-    config: { tension: 720, friction: 72 },
+    leave: { transform: "translateY(120%)" },
+    config: { tension: 800, friction: 72 },
   });
 
   return (
@@ -208,7 +210,7 @@ const CloseTagert = styled.div`
   left: 0;
   background: rgba(0, 0, 0, 0.64);
   z-index: 2147483647;
-  transition: opacity 0.4s;
+  transition: opacity 0.3s;
 
   ${mq.phabletUp} {
     display: none;
@@ -225,7 +227,6 @@ const ContainerSlidein = styled(animated.div)`
   box-shadow: 0px -6px 24px rgba(0, 0, 0, 0.6);
   padding: 0 16px;
   z-index: 2147483647;
-  transition: transform 0.4s cubic-bezier(0.1, 0.95, 0.15, 1);
   overflow: hidden;
 
   ${mq.phabletUp} {

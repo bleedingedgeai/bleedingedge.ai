@@ -9,6 +9,7 @@ export const breakpoints: BP[] = [
   ["desktop", 1024],
   ["desktopMedium", 1280],
   ["desktopLarge", 1440],
+  ["desktopMax", 1680],
 ];
 
 // Manually typing this
@@ -29,6 +30,8 @@ type MQ = {
   desktopMediumUp: `@media (min-width: 1280px)`;
   desktopLarge: `@media (max-width: 1440px)`;
   desktopLargeUp: `@media (min-width: 1440px)`;
+  desktopMax: `@media (max-width: 1680px)`;
+  desktopMaxUp: `@media (min-width: 1680px)`;
 };
 
 export type useMQ = {

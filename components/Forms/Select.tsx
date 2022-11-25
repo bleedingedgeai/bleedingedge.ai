@@ -2,8 +2,8 @@ import Fuse from "fuse.js/dist/fuse.basic";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import OutsideClickHandler from "react-outside-click-handler";
-import { animated, useSpring, useTransition } from "react-spring";
 import styled from "styled-components";
+import { animated, useSpring, useTransition } from "@react-spring/web";
 import { inputIsFocused } from "../../helpers/input";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { mq } from "../../styles/mediaqueries";
@@ -34,9 +34,10 @@ export default function Select({ options: initialOptions }: SelectProps) {
 
   const handleSelect = useCallback((value) => {
     if (value) {
-      router.replace(`/tags/${value}`);
+      router.replace(`${router.pathname}/tags/${value}`);
     } else {
-      router.replace(`/`);
+      const withoutTags = router.pathname.split("/tags/")[0] || "/";
+      router.replace(withoutTags);
     }
 
     setSelected(value);
@@ -110,7 +111,7 @@ export default function Select({ options: initialOptions }: SelectProps) {
         return;
       }
 
-      if (event.code === "KeyF") {
+      if (event.code === "KeyF" && !event.metaKey) {
         setOpen(true);
         event.stopPropagation();
         event.preventDefault();
@@ -222,6 +223,8 @@ const Button = styled.button`
   }
 
   ${mq.desktopSmall} {
+    font-size: 14px;
+
     &:hover {
       background: transparent;
     }

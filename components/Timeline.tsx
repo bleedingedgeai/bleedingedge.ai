@@ -1,13 +1,16 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
-import { IArticle } from "../db/articles";
+import { ArticleHome } from "../prisma/types";
 import { mq } from "../styles/mediaqueries";
 import Article from "./Article";
-import { Sort } from "./Feed";
+import { Sort } from "./Layout";
 import Timestamp from "./Timestamp";
 
 const getDateMinusDays = (days: number) => {
-  return getDateKey(new Date(new Date().setDate(new Date().getDate() - days)));
+  const today = new Date();
+  const subtractedDaysTime = today.getDate() - days;
+  const subtractedDaysDate = new Date(today.setDate(subtractedDaysTime));
+  return getDateKey(subtractedDaysDate);
 };
 
 function checkIfDateIsBeforeOtherDate(time1: string, time2: string) {
@@ -27,13 +30,13 @@ const getMonthDateKey = (d: Date) => {
   return `${yyyy}/${mm}/01`;
 };
 
-export const today = getDateKey(new Date());
+export const today = getDateMinusDays(0);
 export const yesterday = getDateMinusDays(1);
 export const lastWeek = getDateMinusDays(7);
 
 const groupArticlesByDate = (articles) => {
   return articles.reduce((prev, article) => {
-    const postedAt = new Date(article.posted_at);
+    const postedAt = new Date(article.postedAt);
     const podatedAtKey = getDateKey(postedAt);
 
     // TODAY
@@ -90,7 +93,7 @@ const sortByEarliest = (date1, date2) => {
 };
 
 interface TimelineProps {
-  articles: IArticle[];
+  articles: ArticleHome[];
   sort: Sort;
 }
 
@@ -102,41 +105,89 @@ export default function Timeline({ articles, sort }: TimelineProps) {
   );
 
   return (
-    <Container>
-      {Object.keys(groupedArticles)
-        .sort(sortMethod)
-        .map((date, index) => {
-          const sortedArticles = [...groupedArticles[date]].sort((a, b) =>
-            sortMethod(a.posted_at, b.posted_at)
-          );
+    <>
+      <Shadow />
+      <Container>
+        {Object.keys(groupedArticles)
+          .sort(sortMethod)
+          .map((date, index) => {
+            const sortedArticles = [...groupedArticles[date]].sort((a, b) =>
+              sortMethod(a.postedAt, b.postedAt)
+            );
 
-          return (
-            <Content key={date}>
-              <Timestamp first={index === 0} dateKey={date} />
-              {sortedArticles.map((article, index) => {
-                const firstArticle = index === 0;
-                const nextArticle = sortedArticles[index + 1] as IArticle;
-                const withMarginTop = firstArticle && Boolean(article?.format);
-                const withMarginBottom =
-                  Boolean(article?.format) && Boolean(nextArticle?.format);
+            return (
+              <Content key={date}>
+                <Timestamp first={index === 0} dateKey={date} />
+                {sortedArticles.map((article, index) => {
+                  const firstArticle = index === 0;
+                  const nextArticle = sortedArticles[index + 1];
+                  const withMarginTop =
+                    firstArticle && Boolean(article?.format);
+                  const withMarginBottom =
+                    Boolean(article?.format) && Boolean(nextArticle?.format);
 
-                return (
-                  <Article
-                    key={article.title}
-                    article={article}
-                    dateKey={date}
-                    withMarginTop={withMarginTop}
-                    withMarginBottom={withMarginBottom}
-                    nextArticleIsDefault={!Boolean(nextArticle?.format)}
-                  />
-                );
-              })}
-            </Content>
-          );
-        })}
-    </Container>
+                  return (
+                    <Article
+                      key={article.title}
+                      article={article}
+                      dateKey={date}
+                      withMarginTop={withMarginTop}
+                      withMarginBottom={withMarginBottom}
+                      nextArticleIsDefault={!Boolean(nextArticle?.format)}
+                    />
+                  );
+                })}
+              </Content>
+            );
+          })}
+      </Container>
+    </>
   );
 }
+
+const Shadow = styled.div`
+  &::before {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 124px;
+    left: 0;
+    top: 0;
+    background: linear-gradient(#000 50%, transparent 100%);
+    z-index: 2;
+    pointer-events: none;
+
+    ${mq.desktopSmall} {
+      background: linear-gradient(#000 87%, transparent 100%);
+      height: 180px;
+    }
+
+    ${mq.phablet} {
+      display: none;
+    }
+  }
+
+  &::after {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 143px;
+    left: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
+    pointer-events: none;
+    z-index: 2;
+
+    ${mq.desktopSmall} {
+      bottom: 0;
+    }
+
+    ${mq.phablet} {
+      height: 60px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
+    }
+  }
+`;
 
 const Content = styled.div`
   margin-bottom: 16px;

@@ -11,7 +11,7 @@ export default function Bounds(
 const Bound = styled.div`
   position: relative;
   width: 100%;
-  max-width: calc(1356px + 84px);
+  max-width: calc(1680px + 84px);
   padding: 0 42px;
   margin: 0 auto;
   height: 100%;

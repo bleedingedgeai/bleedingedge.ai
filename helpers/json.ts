@@ -46,3 +46,7 @@ export function parse<T>(serialized: string): T {
     return v;
   });
 }
+
+export function clean(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}

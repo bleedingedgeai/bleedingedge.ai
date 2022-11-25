@@ -1,8 +1,8 @@
 export interface IArticle {
   title: string;
-  blurb: string;
-  posted_at: Date;
-  url: string;
+  summary: string;
+  postedAt: Date;
+  source: string;
   tags: string[];
   format: string;
   thanks_to: string;

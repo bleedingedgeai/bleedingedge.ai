@@ -41,6 +41,7 @@ export default function Input({
       <input
         tabIndex={-1}
         type={type || "text"}
+        name={name}
         style={{ opacity: 0, height: 0, width: 0, position: "absolute" }}
         aria-hidden="true"
       />
@@ -119,6 +120,7 @@ const StyledInput = styled.input`
   height: 48px;
   width: 100%;
   font-size: 16px;
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
   padding: 24px 16px 14px;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16);
   border-radius: 7px;
@@ -141,8 +143,8 @@ const StyledInput = styled.input`
   }
 
   &:focus {
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.32),
-      0 0 0 3px rgba(255, 255, 255, 0.24);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16),
+      0 0 0 2px rgba(255, 255, 255, 0.24);
   }
 
   &::-webkit-input-placeholder {

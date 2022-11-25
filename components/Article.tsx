@@ -1,14 +1,16 @@
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import IconStar from "../components/Icons/IconStar";
-import { IArticle } from "../db/articles";
+import { pluralize, slugify } from "../helpers/string";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
+import Dot from "./Dot";
+import IconReply from "./Icons/IconReply";
 import { today, yesterday } from "./Timeline";
 
 interface ArticleProps {
-  article: IArticle;
+  article: any;
   dateKey: string;
   nextArticleIsDefault?: boolean;
   withMarginTop?: boolean;
@@ -28,6 +30,30 @@ const getPrettyHostname = (urlString: string) => {
 };
 
 // When someone suggests an article we want to give them credit
+function CommentsLink({ article }: { article: any }) {
+  const comments = article._count.comments;
+  const router = useRouter();
+
+  if (comments === 0) {
+    return null;
+  }
+
+  const handleClick = (event) => {
+    event.preventDefault();
+    router.push(`/ama/${slugify(article.title)}`);
+  };
+
+  return (
+    <ThanksContainer>
+      <Dot />
+      <ThanksToAnchor onClick={handleClick}>
+        {comments}{" "}
+        <span style={{ marginLeft: 2 }}>{pluralize("comment", comments)}</span>
+      </ThanksToAnchor>
+    </ThanksContainer>
+  );
+}
+
 function ThanksTo({ twitterUrl }: { twitterUrl?: string }) {
   if (!twitterUrl) {
     return null;
@@ -38,9 +64,10 @@ function ThanksTo({ twitterUrl }: { twitterUrl?: string }) {
     event.preventDefault();
     window.open(twitterUrl, "_blank").focus();
   };
+
   return (
     <ThanksContainer>
-      <DotDivider>·</DotDivider>
+      <Dot />
       <ThanksToAnchor onClick={handleClick}>
         Submitted by @{url.pathname.split("/")[1]}
       </ThanksToAnchor>
@@ -72,18 +99,33 @@ function ArticleDefault({
   dateKey,
   nextArticleIsDefault,
 }: ArticleProps) {
+  const router = useRouter();
+
+  const handleClick = (event) => {
+    event.preventDefault();
+    router.push(`/ama/${slugify(article.title)}`);
+  };
+
   return (
     <ArticleDefaultContainer
-      href={article.url}
+      href={article.source}
       target="_blank"
       rel="noopener"
       nextArticleIsDefault={!nextArticleIsDefault}
     >
       <ArticleDefaultContent>
         <TextContainer>
-          <Title>{article.title}</Title>
+          <Title>
+            {article.title}{" "}
+            {article.authors.length > 0 && (
+              <ThanksToAnchor onClick={handleClick}>
+                <IconReply />
+              </ThanksToAnchor>
+            )}
+          </Title>
           <Host>
-            {getPrettyHostname(article.url)}{" "}
+            {getPrettyHostname(article.source)}{" "}
+            <CommentsLink article={article} />
             <ThanksTo twitterUrl={article.thanks_to} />
           </Host>
         </TextContainer>
@@ -107,12 +149,18 @@ const Host = styled.div`
   color: ${(p) => p.theme.colors.light_grey};
   margin-top: 2px;
 
+  ${mq.desktopMaxUp} {
+    font-size: 12px;
+  }
+
   ${mq.desktopSmall} {
     display: none;
   }
 `;
 
 const Title = styled.h3`
+  display: flex;
+  align-items: center;
   font-weight: 500;
   font-size: 14px;
   line-height: 120%;
@@ -122,10 +170,18 @@ const Title = styled.h3`
   padding-right: 6px;
   transition: color 0.15s ease;
 
+  ${mq.desktopMaxUp} {
+    font-size: 16px;
+  }
+
   ${mq.tablet} {
     font-size: 16px;
     white-space: normal;
     overflow: visible;
+  }
+
+  svg {
+    margin-left: 6px;
   }
 `;
 
@@ -138,6 +194,11 @@ const Blurb = styled.p`
   line-height: 120%;
   max-width: 613px;
 
+  ${mq.desktopMaxUp} {
+    max-width: 734px;
+    font-size: 14px;
+  }
+
   ${mq.phablet} {
     margin-top: 4px;
     margin-bottom: 8px;
@@ -148,6 +209,10 @@ const ArticleDefaultContainer = styled.a<{ nextArticleIsDefault?: boolean }>`
   display: block;
   position: relative;
   margin-bottom: 16px;
+
+  ${mq.desktopMaxUp} {
+    margin-bottom: 18px;
+  }
 
   ${mq.tablet} {
     margin-bottom: 24px;
@@ -214,13 +279,13 @@ function ArticleHighlightOrFeature({
   withMarginTop,
   withMarginBottom,
 }: ArticleProps) {
-  const host = getPrettyHostname(article.url);
-  const highlight = article.format === "highlight";
+  const host = getPrettyHostname(article.source);
   const feature = article.format === "featured";
+  const highlight = article.format === "highlight";
 
   return (
     <ArticleWithBackgroundContainer
-      href={article.url}
+      href={article.source}
       target="_blank"
       rel="noopener"
       nextArticleIsDefault={nextArticleIsDefault}
@@ -232,7 +297,7 @@ function ArticleHighlightOrFeature({
           <IconStar />
         </StarContainer>
       ) : (
-        <Dot />
+        <IconDot />
       )}
       <ArticleWithBackgroundContent>
         {highlight && (
@@ -254,10 +319,11 @@ function ArticleHighlightOrFeature({
         )}
         <TextContainer>
           <Title>{article.title}</Title>
+          <Blurb>{article.summary}</Blurb>
           <ArticleFeaturedSourceDesktop>
             <span>{host}</span>
+            <CommentsLink article={article} />
           </ArticleFeaturedSourceDesktop>
-          <Blurb>{article.blurb}</Blurb>
         </TextContainer>
         <ArticleMetadata article={article} dateKey={dateKey} />
       </ArticleWithBackgroundContent>
@@ -265,7 +331,7 @@ function ArticleHighlightOrFeature({
   );
 }
 
-const Dot = styled.div`
+const IconDot = styled.div`
   position: absolute;
   width: 7px;
   height: 7px;
@@ -334,10 +400,12 @@ function ArticleMetadata({
         <HideOnDesktop>
           <ThanksTo twitterUrl={article.thanks_to} />
         </HideOnDesktop>
-        <PostedAt>{format(new Date(article.posted_at))}</PostedAt>
-        <DotDividerMobile>·</DotDividerMobile>
+        <PostedAt>{format(new Date(article.postedAt))}</PostedAt>
+        <MobileOnly>
+          <Dot />
+        </MobileOnly>
         <ArticleMetadataMobile>
-          {getPrettyHostname(article.url)}
+          {getPrettyHostname(article.source)}
         </ArticleMetadataMobile>
       </ArticleMetadataContent>
     </ArticleMetadataContainer>
@@ -373,12 +441,7 @@ const ArticleMetadataMobile = styled.div`
   }
 `;
 
-const DotDivider = styled.span`
-  margin: 0 6px;
-  color: ${(p) => p.theme.colors.light_grey};
-`;
-
-const DotDividerMobile = styled(DotDivider)`
+const MobileOnly = styled.span`
   ${mq.phabletUp} {
     display: none;
   }
@@ -445,6 +508,10 @@ const PostedAt = styled.div`
   text-align: right;
   color: ${(p) => p.theme.colors.light_grey};
   min-width: 55px;
+
+  ${mq.desktopMaxUp} {
+    font-size: 12px;
+  }
 
   ${mq.desktopSmall} {
     min-width: auto;
@@ -537,7 +604,7 @@ const ArticleWithBackgroundContent = styled.div`
 const ArticleFeaturedSourceDesktop = styled.div`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-weight: 400;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 120%;
   color: ${(p) => p.theme.colors.light_grey};
   margin-top: 2px;
@@ -646,9 +713,9 @@ const BlueGradientHighlight = () => (
         width="668"
         height="291"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feBlend
           mode="normal"
           in="SourceGraphic"
@@ -668,9 +735,9 @@ const BlueGradientHighlight = () => (
         y2="48.9511"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#072839" />
-        <stop offset="0.525533" stop-color="#033151" />
-        <stop offset="1" stop-color="#28445C" />
+        <stop stopColor="#072839" />
+        <stop offset="0.525533" stopColor="#033151" />
+        <stop offset="1" stopColor="#28445C" />
       </linearGradient>
     </defs>
   </svg>

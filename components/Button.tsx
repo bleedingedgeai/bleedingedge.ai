@@ -4,6 +4,8 @@ import styled from "styled-components";
 interface ButtonProps {
   text: string;
   type?: "button" | "submit" | "reset";
+  color?: string;
+  background?: string;
   onClick?: (event: React.MouseEvent) => any;
   disabled?: boolean;
 }
@@ -13,27 +15,31 @@ export default function Button({
   type = "submit",
   text,
   disabled,
+  color,
+  background,
 }: ButtonProps) {
   return (
     <StyledButton
       onClick={onClick && !disabled ? onClick : () => {}}
       type={type}
       disabled={disabled}
+      color={color}
+      background={background}
     >
       {text}
     </StyledButton>
   );
 }
 
-const StyledButton = styled.button`
-  background: ${(p) => p.theme.colors.white};
+const StyledButton = styled.button<{ color?: string; background?: string }>`
+  background: ${(p) => p.background || p.theme.colors.white};
   border-radius: 7px;
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   font-weight: 500;
   font-size: 18px;
   line-height: 125%;
   text-align: center;
-  color: ${(p) => p.theme.colors.black};
+  color: ${(p) => p.color || p.theme.colors.black};
   text-shadow: 0px 0px 10px rgba(71, 159, 250, 0.25);
   padding: 15px 16px;
   width: 100%;

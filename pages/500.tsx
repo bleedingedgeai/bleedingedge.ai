@@ -12,9 +12,7 @@ export default function ServerError() {
         <AdjustedBounds>
           <LogoContainer>
             <Link href="/">
-              <a>
-                <IconLogo />
-              </a>
+              <IconLogo />
             </Link>
           </LogoContainer>
         </AdjustedBounds>
@@ -23,7 +21,11 @@ export default function ServerError() {
         <AdjustedBounds>
           <ImageLayout>
             <ErrorImageContainer>
-              <Image src="/assets/500/be-error-500.svg" layout="fill" />
+              <Image
+                src="/assets/500/be-error-500.svg"
+                layout="fill"
+                alt="Error code"
+              />
             </ErrorImageContainer>
             <ImageAlignBottom>
               <StatueImageContainer>
@@ -31,6 +33,7 @@ export default function ServerError() {
                   src="/assets/404/be-statue.png"
                   layout="fill"
                   loading="eager"
+                  alt="AI generated statue"
                 />
               </StatueImageContainer>
             </ImageAlignBottom>

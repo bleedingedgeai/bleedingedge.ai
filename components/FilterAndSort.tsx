@@ -1,13 +1,16 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import styled from "styled-components";
+import { Tag } from "@prisma/client";
 import { inputIsFocused } from "../helpers/input";
 import { mq } from "../styles/mediaqueries";
-import { Sort } from "./Feed";
+import Dot from "./Dot";
 import Select from "./Forms/Select";
 import IconArrow from "./Icons/IconArrow";
+import { Sort } from "./Layout";
+import { OverlayContext, OverlayType } from "./Overlay/Overlay";
 
 interface FilterAndSortProps {
-  tags: string[];
+  tags: Tag[];
   sort: Sort;
   setSort: React.Dispatch<React.SetStateAction<Sort>>;
 }
@@ -17,6 +20,8 @@ export default function FilterAndSort({
   sort,
   setSort,
 }: FilterAndSortProps) {
+  const { showOverlay } = useContext(OverlayContext);
+
   const handleSortClick = useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
@@ -41,21 +46,57 @@ export default function FilterAndSort({
   }, [setSort]);
 
   return (
-    <Container>
-      <SortContainer onClick={handleSortClick}>
-        <SortArrow
-          style={sort === "Latest" ? {} : { transform: "rotate(180deg" }}
-        >
-          <IconArrow />
-        </SortArrow>
-        <SortButton>
-          Sort by <span>:: {sort}</span>
-        </SortButton>
-      </SortContainer>
-      <Select options={tags} />
-    </Container>
+    <>
+      <Container>
+        <SortContainer onClick={handleSortClick}>
+          <SortArrow
+            style={sort === "Latest" ? {} : { transform: "rotate(180deg" }}
+          >
+            <IconArrow />
+          </SortArrow>
+          <SortButton>
+            Sort by <span>:: {sort}</span>
+          </SortButton>
+        </SortContainer>
+        <Right>
+          <Select options={tags.map((t) => t.name)} />
+          <DotSpacer>
+            <Dot />
+          </DotSpacer>
+          <SubmitButton onClick={() => showOverlay(OverlayType.SUGGESTION)}>
+            Submit
+          </SubmitButton>
+        </Right>
+      </Container>
+    </>
   );
 }
+
+const Right = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const SubmitButton = styled.button`
+  margin-left: 7px;
+  padding: 4px 7px 5px;
+  margin: 0 -7px;
+  background: rgba(255, 255, 255, 0);
+  border-radius: 5px;
+  transition: background 0.25s ease;
+
+  span {
+    color: ${(p) => p.theme.colors.light_grey};
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  ${mq.desktopSmall} {
+    font-size: 14px;
+  }
+`;
 
 const Container = styled.div`
   display: flex;
@@ -69,8 +110,7 @@ const Container = styled.div`
     margin-bottom: 64px;
   }
 
-  ${mq.phablet} {
-    margin-bottom: 28px;
+  ${mq.tablet} {
     display: none;
   }
 `;
@@ -108,6 +148,7 @@ const SortButton = styled.button`
 
   ${mq.desktopSmall} {
     margin-left: 8px;
+    font-size: 14px;
   }
 
   ${mq.phablet} {
@@ -122,4 +163,8 @@ const SortButton = styled.button`
       display: none;
     }
   }
+`;
+
+const DotSpacer = styled.span`
+  margin: 0 10px;
 `;
