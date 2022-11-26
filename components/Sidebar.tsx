@@ -20,6 +20,16 @@ const links = [
   },
 ];
 
+const isActive = (linkPathname, currentPathname) => {
+  if (linkPathname === "/") {
+    return (
+      currentPathname === linkPathname || currentPathname.startsWith("/tags/")
+    );
+  }
+
+  return currentPathname.includes(linkPathname);
+};
+
 export default function Sidebar() {
   const router = useRouter();
   const session = useSession();
@@ -34,10 +44,7 @@ export default function Sidebar() {
           </Link>
         </LogoContainer>
         {links.map((link) => {
-          const active =
-            link.path === "/"
-              ? router.pathname === link.path
-              : router.pathname.includes(link.path);
+          const active = isActive(link.path, router.pathname);
 
           return (
             <Row key={link.path}>

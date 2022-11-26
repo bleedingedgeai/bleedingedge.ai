@@ -262,7 +262,11 @@ export default function Ama({ article, comments }: AmaProps) {
                       style={article.liked ? { color: theme.colors.white } : {}}
                     >
                       {article.liked || article.disabled ? (
-                        <IconLiked />
+                        <IconLiked
+                          fill={
+                            article.disabled ? theme.colors.light_grey : null
+                          }
+                        />
                       ) : (
                         <IconLike />
                       )}{" "}
