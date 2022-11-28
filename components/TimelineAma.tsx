@@ -81,6 +81,7 @@ export default function TimelineAma({ articles }: TimelineProps) {
             <AvatarContainer>
               <Avatar
                 src={article.authors[0].image}
+                username={article.authors[0].username}
                 href={`https://twitter.com/${article.authors[0].username}`}
                 superHighlight={live}
               />

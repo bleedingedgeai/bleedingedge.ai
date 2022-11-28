@@ -142,18 +142,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const generateOgImagePath = (article) => {
+  console.log(article.authors);
   const params = new URLSearchParams();
   params.set("title", article.title);
   params.set("hosts", article.authors.map((author) => author.name).join(","));
   params.set(
     "avatars",
     article.authors
-      .map(
-        (author) =>
-          author.image
+      .map((author) => {
+        if (author.image.includes("pbs.twimg")) {
+          return author.image
             .split("https://pbs.twimg.com/profile_images/")[1]
-            .split("_normal.jpg")[0]
-      )
+            .split("_normal.jpg")[0];
+        }
+
+        return "";
+      })
       .join(",")
   );
   return `/api/og?${params.toString()}`;

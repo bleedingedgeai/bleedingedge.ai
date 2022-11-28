@@ -27,14 +27,24 @@ export default function Banner({ article }: BannerProps) {
       <MobileBanner article={article} />
       <ContainerDesktop>
         <Author>
-          <Avatar src={author.image} size={28} superHighlight />
+          <Avatar
+            src={author.image}
+            username={author.username}
+            size={28}
+            superHighlight
+          />
         </Author>
         <BannerContainer href={`/ama/${slugify(article.title)}`}>
           <AnimatedGradient />
           <Inner>
             <span style={{ display: "flex", alignItems: "center" }}>
               <MobileAuthor>
-                <Avatar src={author.image} size={28} outline={false} />
+                <Avatar
+                  src={author.image}
+                  username={author.username}
+                  size={28}
+                  outline={false}
+                />
               </MobileAuthor>
               <OrangeGradient />
               <BlueGradient />

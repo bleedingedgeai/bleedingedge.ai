@@ -51,6 +51,7 @@ export default function Hosts({ authors }: HostsProps) {
               >
                 <Avatar
                   src={author.image}
+                  username={author.username}
                   href={`https://twitter.com/${author.username}`}
                   size={18}
                   outline={false}
@@ -77,6 +78,7 @@ export default function Hosts({ authors }: HostsProps) {
                 <Title>{author.name}</Title>
                 <Avatar
                   src={author.image}
+                  username={author.username}
                   href={`https://twitter.com/${author.username}`}
                   size={24}
                   outline={false}
