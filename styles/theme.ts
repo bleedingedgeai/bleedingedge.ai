@@ -1,3 +1,27 @@
+import { Space_Mono } from "@next/font/google";
+import localFont from "@next/font/local";
+
+const nouvelle = localFont({
+  src: [
+    {
+      path: "./fonts/nouvelle/NNNouvelleGroteskSTD-Normal.woff2",
+      weight: "400",
+    },
+    {
+      path: "./fonts/nouvelle/NNNouvelleGroteskSTD-Medium.woff2",
+      weight: "500",
+    },
+  ],
+  display: "swap",
+});
+
+const spaceMono = Space_Mono({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  display: "swap",
+  fallback: ["monospace"],
+});
+
 export interface BleedingEdgeTheme {
   colors: {
     white: string;
@@ -25,7 +49,7 @@ export const theme: BleedingEdgeTheme = {
     magenta: "#FA2162",
   },
   fontFamily: {
-    nouvelle: "'Nouvelle Grotesk', monospace, sans-serif",
-    space: "'Space Mono', monospace, sans-serif",
+    nouvelle: nouvelle.style.fontFamily,
+    space: spaceMono.style.fontFamily,
   },
 };
