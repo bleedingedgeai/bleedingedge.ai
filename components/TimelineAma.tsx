@@ -127,7 +127,6 @@ export default function TimelineAma({ articles }: TimelineProps) {
                   <Content>{article.content}</Content>
                 </Middle>
               </Link>
-
               <Bottom>
                 <Actions>
                   <Action>
@@ -377,6 +376,12 @@ const Content = styled.p`
   color: ${(p) => p.theme.colors.light_grey};
   max-width: 612px;
   transition: color 0.2s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 
   ${mq.desktopMaxUp} {
     font-size: 14px;
