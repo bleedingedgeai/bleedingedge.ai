@@ -298,7 +298,9 @@ export default function Ama({ article, comments }: AmaProps) {
                       {article.liked || article.disabled ? (
                         <IconLiked
                           fill={
-                            article.disabled ? theme.colors.light_grey : null
+                            article.disabled
+                              ? theme.colors.light_grey
+                              : theme.colors.white
                           }
                         />
                       ) : (
