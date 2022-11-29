@@ -33,6 +33,7 @@ export default function Participants({
         elements={particpantsToShow.map((comment) => (
           <Avatar
             src={comment.author.image}
+            username={comment.author.username}
             href={`https://twitter.com/${comment.author.username}`}
             size={18}
             outline={false}

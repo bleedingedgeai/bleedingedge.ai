@@ -151,11 +151,13 @@ export default function OverlaySuggestion() {
 }
 
 const SuccessContainer = styled.div`
-  padding-top: 64px;
+  padding-top: 96px;
+  height: calc(506px - 48px);
 `;
 
 const Container = styled.div`
   position: relative;
+  max-height: 355px;
 `;
 
 const RadialShadow = styled.div`

@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { useMemo } from "react";
 import styled from "styled-components";
-import { getRandomWholeNumber } from "../helpers/numbers";
+import { clamp, getRandomWholeNumber } from "../helpers/numbers";
 
 interface AvatarProps {
   src?: string;
   href?: string;
+  username?: string;
   size?: number;
   highlight?: boolean;
   superHighlight?: boolean;
@@ -13,9 +14,49 @@ interface AvatarProps {
   greyScale?: boolean;
 }
 
+export function generateRandomAvatar(username: string) {
+  const alphabet = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+  ];
+
+  const index =
+    alphabet.findIndex((a) => a.toLowerCase() === username[0].toLowerCase()) ||
+    0;
+  const percent = (index + 1) / alphabet.length;
+  const number = clamp(Math.round(percent * 3), 0, 3);
+  const fallbackNames = ["alexandra", "annunciata", "francesca", "maria"];
+  return `/assets/avatar/${fallbackNames[number]}.jpg`;
+}
+
 export default function Avatar({
   src,
   href,
+  username,
   highlight,
   superHighlight,
   size = 18,
@@ -23,16 +64,12 @@ export default function Avatar({
   greyScale,
 }: AvatarProps) {
   const imageSrc = useMemo(() => {
-    if (src) {
+    if (src?.includes("pbs.twimg.com")) {
       return src;
     }
 
-    const fallbackNames = ["alexandra", "annunciata", "francesca", "maria"];
-    return `/assets/avatar/${fallbackNames[getRandomWholeNumber(0, 3)]}.jpg`;
-  }, [src]);
-
-  if (href) {
-  }
+    return generateRandomAvatar(username);
+  }, [src, username]);
 
   return (
     <AvatarContainer

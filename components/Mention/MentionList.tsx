@@ -123,6 +123,7 @@ export default forwardRef((props: any, ref) => {
               }
             >
               <Avatar
+                username={item.username}
                 src={item.image}
                 size={16}
                 outline={isAuthorOfArticle}

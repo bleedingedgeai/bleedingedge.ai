@@ -14,6 +14,7 @@ import Badges from "./Badges";
 import Dot from "./Dot";
 import IconLike from "./Icons/IconLike";
 import IconLiked from "./Icons/IconLiked";
+import IconReplied from "./Icons/IconReplied";
 import IconReply from "./Icons/IconReply";
 import IconShare from "./Icons/IconShare";
 import Live from "./Live";
@@ -80,6 +81,7 @@ export default function TimelineAma({ articles }: TimelineProps) {
             <AvatarContainer>
               <Avatar
                 src={article.authors[0].image}
+                username={article.authors[0].username}
                 href={`https://twitter.com/${article.authors[0].username}`}
                 superHighlight={live}
               />
@@ -134,7 +136,11 @@ export default function TimelineAma({ articles }: TimelineProps) {
                       onClick={(event) => handleLike(event, article)}
                     >
                       {article.liked || article.disabled ? (
-                        <IconLiked />
+                        <IconLiked
+                          fill={
+                            article.disabled ? theme.colors.light_grey : null
+                          }
+                        />
                       ) : (
                         <IconLike />
                       )}{" "}

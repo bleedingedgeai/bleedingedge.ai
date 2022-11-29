@@ -148,12 +148,13 @@ const generateOgImagePath = (article) => {
   params.set(
     "avatars",
     article.authors
-      .map(
-        (author) =>
-          author.image
-            .split("https://pbs.twimg.com/profile_images/")[1]
-            .split("_normal.jpg")[0]
-      )
+      .map((author) => {
+        if (author.image.includes("pbs.twimg")) {
+          return author.image;
+        }
+
+        return "";
+      })
       .join(",")
   );
   return `/api/og?${params.toString()}`;
