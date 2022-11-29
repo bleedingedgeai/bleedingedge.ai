@@ -64,11 +64,7 @@ export default function Avatar({
   greyScale,
 }: AvatarProps) {
   const imageSrc = useMemo(() => {
-<<<<<<< HEAD
-    if (src.includes("pbs.twimg.com")) {
-=======
     if (src?.includes("pbs.twimg.com")) {
->>>>>>> main
       return src;
     }
 
