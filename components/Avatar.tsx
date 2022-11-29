@@ -45,8 +45,9 @@ export function generateRandomAvatar(username: string) {
   ];
 
   const index =
-    alphabet.findIndex((a) => a.toLowerCase() === username[0].toLowerCase()) ||
-    0;
+    alphabet.findIndex(
+      (a) => a.toLowerCase() === username?.[0]?.toLowerCase()
+    ) || 0;
   const percent = (index + 1) / alphabet.length;
   const number = clamp(Math.round(percent * 3), 0, 3);
   const fallbackNames = ["alexandra", "annunciata", "francesca", "maria"];
