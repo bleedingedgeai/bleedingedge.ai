@@ -203,11 +203,18 @@ export default function Ama({ article, comments }: AmaProps) {
   };
 
   const { contentPreview, readMore } = useMemo(() => {
+    if (!article?.content) {
+      return {
+        contentPreview: "",
+        readMore: false,
+      };
+    }
+
     const maxChar = 207;
-    const readMore = article.content.length > maxChar;
+    const readMore = article.content?.length > maxChar;
 
     return {
-      contentPreview: `${article.content.substring(0, maxChar).trimEnd()}${
+      contentPreview: `${article.content?.substring(0, maxChar).trimEnd()}${
         readMore ? "... " : ""
       }`,
       readMore,
