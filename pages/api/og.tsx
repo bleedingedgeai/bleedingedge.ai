@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { ImageResponse } from "@vercel/og";
+import { generateRandomAvatar } from "../../components/Avatar";
 import { theme } from "../../styles/theme";
 
 export const config = {
@@ -73,12 +74,31 @@ export default async function handler(req: NextRequest) {
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               {avatars.map((avatar, index) => {
+                if (!avatar) {
+                  return (
+                    <img
+                      key={index}
+                      width="54"
+                      height="54"
+                      src={`${
+                        process.env.NEXT_PUBLIC_URL
+                      }/${generateRandomAvatar(hosts[index])}`}
+                      style={{
+                        borderRadius: "50%",
+                        border: "6px solid black",
+                        position: "relative",
+                        top: index * -10,
+                      }}
+                    />
+                  );
+                }
+
                 return (
                   <img
                     key={avatar}
                     width="54"
                     height="54"
-                    src={`https://pbs.twimg.com/profile_images/${avatar}_400x400.jpg`}
+                    src={avatar.replace("_normal", "_400x400")}
                     style={{
                       borderRadius: "50%",
                       border: "6px solid black",
@@ -98,7 +118,12 @@ export default async function handler(req: NextRequest) {
               width: "100%",
             }}
           >
-            <div style={{ display: "flex", flexDirection: "column" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
               <div
                 style={{
                   color: theme.colors.light_grey,
@@ -118,6 +143,8 @@ export default async function handler(req: NextRequest) {
                   lineHeight: "145%",
                   letterSpacing: "-0.02em",
                   display: "flex",
+                  flexWrap: "wrap",
+                  maxWidth: "80%",
                 }}
               >
                 {hosts.map((host, index) => {

@@ -14,6 +14,45 @@ interface AvatarProps {
   greyScale?: boolean;
 }
 
+export function generateRandomAvatar(username: string) {
+  const alphabet = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+  ];
+
+  const index =
+    alphabet.findIndex((a) => a.toLowerCase() === username[0].toLowerCase()) ||
+    0;
+  const percent = (index + 1) / alphabet.length;
+  const number = clamp(Math.round(percent * 3), 0, 3);
+  const fallbackNames = ["alexandra", "annunciata", "francesca", "maria"];
+  return `/assets/avatar/${fallbackNames[number]}.jpg`;
+}
+
 export default function Avatar({
   src,
   href,
@@ -25,47 +64,11 @@ export default function Avatar({
   greyScale,
 }: AvatarProps) {
   const imageSrc = useMemo(() => {
-    const alphabet = [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "I",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "O",
-      "P",
-      "Q",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-    ];
-
     if (src.includes("pbs.twimg.com")) {
       return src;
     }
 
-    const index =
-      alphabet.findIndex(
-        (a) => a.toLowerCase() === username[0].toLowerCase()
-      ) || 0;
-    const percent = (index + 1) / alphabet.length;
-    const number = clamp(Math.round(percent * 3), 0, 3);
-    const fallbackNames = ["alexandra", "annunciata", "francesca", "maria"];
-    return `/assets/avatar/${fallbackNames[number]}.jpg`;
+    return generateRandomAvatar(username);
   }, [src, username]);
 
   return (

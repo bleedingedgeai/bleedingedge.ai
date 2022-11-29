@@ -56,17 +56,7 @@ export default function SEO({
 
   const pageUrl = site.siteUrl + router.pathname;
 
-  const fullURL = (path: string) => (path ? `${path}` : site.siteUrl);
-
-  // If no image is provided lets looks for a default novela static image
   image = `${site.siteUrl}${image}`;
-
-  // Checks if the source of the image is hosted on Contentful
-  if (`${image}`.includes("ctfassets")) {
-    image = `${image}`;
-  } else {
-    image = fullURL(image);
-  }
 
   const metaTags = [
     { name: "twitter:card", content: "summary_large_image" },

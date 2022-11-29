@@ -142,7 +142,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const generateOgImagePath = (article) => {
-  console.log(article.authors);
   const params = new URLSearchParams();
   params.set("title", article.title);
   params.set("hosts", article.authors.map((author) => author.name).join(","));
@@ -151,9 +150,7 @@ const generateOgImagePath = (article) => {
     article.authors
       .map((author) => {
         if (author.image.includes("pbs.twimg")) {
-          return author.image
-            .split("https://pbs.twimg.com/profile_images/")[1]
-            .split("_normal.jpg")[0];
+          return author.image;
         }
 
         return "";
