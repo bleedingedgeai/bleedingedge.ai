@@ -110,7 +110,7 @@ async function main() {
   const createArticles = articles.map((a) => {
     const tags = {
       connect: a.tags?.map((t) => ({
-        id: createdTags.find((ct) => ct.name === t).id,
+        id: createdTags.find((ct) => ct.name === t)?.id,
       })),
     };
 
