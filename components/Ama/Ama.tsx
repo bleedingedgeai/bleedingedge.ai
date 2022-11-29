@@ -202,6 +202,18 @@ export default function Ama({ article, comments }: AmaProps) {
     editor,
   };
 
+  const { contentPreview, readMore } = useMemo(() => {
+    const maxChar = 207;
+    const readMore = article.content.length > maxChar;
+
+    return {
+      contentPreview: `${article.content.substring(0, maxChar).trimEnd()}${
+        readMore ? "... " : ""
+      }`,
+      readMore,
+    };
+  }, [article.content]);
+
   return (
     <>
       <Container>
@@ -233,7 +245,22 @@ export default function Ama({ article, comments }: AmaProps) {
                 <Hosts authors={article.authors} />
               </FlexBetween>
               <Title>{article.title}</Title>
-              <Content>{article.content}</Content>
+              <Content>
+                {contentPreview}
+                {readMore && (
+                  <ReadMore
+                    onClick={() => {
+                      return showOverlay(OverlayType.READ_MORE, {
+                        heading: article.title,
+                        text: article.content,
+                        authors: article.authors,
+                      });
+                    }}
+                  >
+                    read more
+                  </ReadMore>
+                )}
+              </Content>
             </div>
           </Main>
           <MainSticky ref={stickyRef}>
@@ -433,6 +460,10 @@ const CommentsContainer = styled.div`
 
 const DateContainer = styled.span`
   margin-right: 8px;
+
+  ${mq.tablet} {
+    display: none;
+  }
 `;
 
 const FlexBetween = styled.div`
@@ -476,9 +507,17 @@ const Title = styled.h2`
 const Content = styled.p`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
   color: ${(p) => p.theme.colors.light_grey};
-  font-size: 16px;
-  line-height: 120%;
+  font-size: 14px;
+  line-height: 130%;
   max-width: 690px;
+`;
+
+const ReadMore = styled.button`
+  font-family: ${(p) => p.theme.fontFamily.nouvelle};
+  color: ${(p) => p.theme.colors.off_white};
+  font-size: 14px;
+  line-height: 130%;
+  text-decoration-line: underline;
 `;
 
 const Authors = styled.div`
@@ -491,6 +530,11 @@ const Authors = styled.div`
 
   ${mq.tablet} {
     margin-bottom: 3px;
+    max-width: 65%;
+  }
+
+  ${mq.phablet} {
+    max-width: 75%;
   }
 `;
 
@@ -563,6 +607,7 @@ const MobileGlow = styled.div`
     rgba(52, 39, 32, 0.364) 0%,
     rgba(52, 39, 32, 0) 100%
   );
+  pointer-events: none;
 
   ${mq.desktopSmallUp} {
     display: none;

@@ -10,6 +10,7 @@ import IconEx from "../Icons/IconEx";
 import Portal from "../Portal";
 import OverlayAuthentication from "./OverlayAuthentication";
 import OverlayConfirmation from "./OverlayConfirmation";
+import OverlayReadMore from "./OverlayReadMore";
 import OverlaySlidein from "./OverlaySlidein";
 import OverlaySubscribe from "./OverlaySubscribe";
 import OverlaySuggestion from "./OverlaySuggestion";
@@ -19,6 +20,7 @@ export enum OverlayType {
   SUBSCRIBE = "SUBSCRIBE",
   AUTHENTICATION = "AUTHENTICATION",
   CONFIRMATION = "CONFIRMATION",
+  READ_MORE = "READ_MORE",
 }
 
 const OverlayComponentMap = {
@@ -26,6 +28,7 @@ const OverlayComponentMap = {
   [OverlayType.SUBSCRIBE]: OverlaySubscribe,
   [OverlayType.AUTHENTICATION]: OverlayAuthentication,
   [OverlayType.CONFIRMATION]: OverlayConfirmation,
+  [OverlayType.READ_MORE]: OverlayReadMore,
 };
 
 enum Action {
