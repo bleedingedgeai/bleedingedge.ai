@@ -36,6 +36,7 @@ export const editorCss = css<{ fontSize: number }>`
   p {
     font-size: ${(p) => p.fontSize}px;
     font-family: ${(p) => p.theme.fontFamily.nouvelle};
+    color: ${(p) => p.theme.colors.off_white};
 
     ${mq.desktopMaxUp} {
       font-size: 16px;
