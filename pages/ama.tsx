@@ -11,17 +11,12 @@ import TimelineAma from "../components/TimelineAma";
 import { staticAmas } from "../db/static";
 import { clean } from "../helpers/json";
 import prisma from "../lib/prisma";
-import { ArticleLike, ArticleWithLike } from "../prisma/types";
+import { ArticleWithLike } from "../prisma/types";
 import { mq } from "../styles/mediaqueries";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { Sort } from ".";
 
 export async function getServerSideProps(context) {
-  context.res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=10, stale-while-revalidate=59"
-  );
-
   const sessionRequest = unstable_getServerSession(
     context.req,
     context.res,

@@ -35,6 +35,7 @@ export default function Sidebar() {
   const session = useSession();
   const { showOverlay } = useContext(OverlayContext);
 
+  console.log(session.status);
   return (
     <Container className="Sidebar">
       <div>
