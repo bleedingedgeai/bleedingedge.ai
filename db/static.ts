@@ -1104,7 +1104,7 @@ const samAndBradAmas = {
   ],
   _count: {
     comments: 60,
-    likes: 83,
+    likes: 11,
   },
 };
 
