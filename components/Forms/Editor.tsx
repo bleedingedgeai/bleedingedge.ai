@@ -49,6 +49,7 @@ export const editorCss = css<{ fontSize: number }>`
 
   a {
     text-decoration: underline;
+    word-break: break-all;
   }
 `;
 
