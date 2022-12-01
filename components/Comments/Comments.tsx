@@ -10,6 +10,7 @@ import { ellipsis } from "../../styles/css";
 import { mq } from "../../styles/mediaqueries";
 import { theme } from "../../styles/theme";
 import Avatar from "../Avatar";
+import Badges from "../Badges";
 import Dot from "../Dot";
 import { editorCss } from "../Forms/Editor";
 import IconEdit from "../Icons/IconEdit";
@@ -114,8 +115,7 @@ function CommentsRecursive({
 
         const edittingOrReplyingToThisComment =
           isReplyingToThisComment || isEditingThisComment;
-        const commentHasReplies =
-          comment.children.filter((c) => c?.author).length > 0;
+
         const isHostReply = hosts?.some((a) => a.id === comment.author?.id);
         const isUserReply = session?.data?.user.id === comment.author?.id;
 
@@ -161,11 +161,21 @@ function CommentsRecursive({
               <div>
                 <Author>
                   <Names authors={[comment.author]} />
-                  <Dot />
-                  <UpdatedAt>{timeAgo(new Date(comment.updatedAt))}</UpdatedAt>
-                  <UpdatedAtMobile>
-                    {timeAgo(new Date(comment.updatedAt), "short")}
-                  </UpdatedAtMobile>
+                  {isHostReply ? (
+                    <BadgContainer>
+                      <Badges.Host />
+                    </BadgContainer>
+                  ) : (
+                    <>
+                      <Dot />
+                      <UpdatedAt>
+                        {timeAgo(new Date(comment.updatedAt))}
+                      </UpdatedAt>
+                      <UpdatedAtMobile>
+                        {timeAgo(new Date(comment.updatedAt), "short")}
+                      </UpdatedAtMobile>
+                    </>
+                  )}
                 </Author>
                 <Content isHostReply={isHostReply}>
                   <CommentEditor
@@ -486,8 +496,13 @@ const Content = styled.div<{ isHostReply: boolean }>`
   }
 `;
 
+const BadgContainer = styled.div`
+  margin: 1px 0 0 7px;
+`;
+
 const Author = styled.div`
   display: flex;
+  align-items: center;
   font-size: 10px;
   line-height: 135%;
   color: ${(p) => p.theme.colors.light_grey};
