@@ -16,10 +16,9 @@ export default function Marquee(props: React.PropsWithChildren<{}>) {
     const innerWidth = (inner.width - 200) / 2;
 
     setAnimate(innerWidth > width);
-    setTiming(inner.width / 100);
+    setTiming(inner.width / 80);
   }, [containerRef, innerRef]);
 
-  console.log(timing);
   return (
     <Container ref={containerRef}>
       <Inner
