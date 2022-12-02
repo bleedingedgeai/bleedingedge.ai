@@ -1,4 +1,5 @@
-import styled, { css, keyframes } from "styled-components";
+import styled from "styled-components";
+import { pulsateMixin } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 import { lastWeek, today, yesterday } from "./Timeline";
 
@@ -74,35 +75,6 @@ const TimestampContainer = styled.div<{ first: boolean }>`
     &::after {
       display: none;
     }
-  }
-`;
-
-const pulsate = keyframes`
-  0% {
-    transform: scale(0, 0);
-    opacity: 0;
-  }
-  50% {
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(1.1, 1.1);
-    opacity: 0;
-  }
-`;
-
-const pulsateMixin = css`
-  &::after {
-    content: "";
-    border: 2px solid ${(p) => p.theme.colors.orange};
-    border-radius: 50%;
-    height: 21px;
-    width: 21px;
-    position: absolute;
-    left: -7px;
-    top: -7px;
-    animation: ${pulsate} 1.6s ease-out infinite;
-    opacity: 0;
   }
 `;
 

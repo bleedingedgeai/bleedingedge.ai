@@ -53,7 +53,12 @@ export default function Names({ authors }: NamesProps) {
 }
 
 const Container = styled.span`
-  ${ellipsis}
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
 `;
 const Anchor = styled.a`
   color: ${(p) => p.theme.colors.off_white};

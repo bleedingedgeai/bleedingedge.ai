@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { pulsateMixin } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 
 interface LiveProps {
@@ -31,8 +32,10 @@ const Container = styled.span`
 
 const LiveDot = styled.span`
   display: inline-block;
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: ${(p) => p.theme.colors.orange};
+  position: relative;
+  ${pulsateMixin}
 `;

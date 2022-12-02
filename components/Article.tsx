@@ -432,6 +432,7 @@ const HideOnDesktop = styled.span`
     display: none;
   }
 `;
+
 const ArticleMetadataMobile = styled.div`
   font-size: 12px;
   color: ${(p) => p.theme.colors.light_grey};

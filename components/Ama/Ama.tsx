@@ -36,6 +36,7 @@ import IconLike from "../Icons/IconLike";
 import IconLiked from "../Icons/IconLiked";
 import IconShare from "../Icons/IconShare";
 import Live from "../Live";
+import Marquee from "../Marquee";
 import suggestion from "../Mention/suggestion";
 import Names from "../Names";
 import { OverlayContext, OverlayType } from "../Overlay/Overlay";
@@ -236,8 +237,17 @@ export default function Ama({ article, comments }: AmaProps) {
             <div ref={containerRef}>
               <FlexBetween>
                 <Authors>
-                  <Names authors={article.authors} />
-                  <Dot />
+                  <HideOnMobile>
+                    <Names authors={article.authors} />
+                  </HideOnMobile>
+                  <HideOnDesktop>
+                    <Marquee>
+                      <Names authors={article.authors} />
+                    </Marquee>
+                  </HideOnDesktop>
+                  <DotContainer>
+                    <Dot />
+                  </DotContainer>
                   <Flex>
                     <DateContainer>
                       {new Intl.DateTimeFormat("en", {
@@ -247,7 +257,11 @@ export default function Ama({ article, comments }: AmaProps) {
                     </DateContainer>
                     {article.live && <Live onlyDot />}{" "}
                   </Flex>
-                  {article.imported && <Badges.Twitter />}
+                  {article.imported && (
+                    <BadgesContainer>
+                      <Badges.Twitter />
+                    </BadgesContainer>
+                  )}
                 </Authors>
                 <Hosts authors={article.authors} />
               </FlexBetween>
@@ -342,6 +356,20 @@ export default function Ama({ article, comments }: AmaProps) {
     </>
   );
 }
+
+const HideOnDesktop = styled.div`
+  width: 100%;
+
+  ${mq.tabletUp} {
+    display: none;
+  }
+`;
+
+const HideOnMobile = styled.div`
+  ${mq.tablet} {
+    display: none;
+  }
+`;
 
 const Container = styled.div`
   position: relative;
@@ -470,6 +498,18 @@ const CommentsContainer = styled.div`
 const DateContainer = styled.span`
   margin-right: 8px;
 
+  ${mq.tablet} {
+    display: none;
+  }
+`;
+
+const DotContainer = styled.span`
+  ${mq.tablet} {
+    display: none;
+  }
+`;
+
+const BadgesContainer = styled.span`
   ${mq.tablet} {
     display: none;
   }
@@ -609,7 +649,7 @@ const MobileGlow = styled.div`
   position: absolute;
   left: 6.53%;
   right: 6.53%;
-  bottom: -66px;
+  bottom: -60px;
   height: 124px;
   background: radial-gradient(
     47.07% 100% at 50% 100%,

@@ -8,7 +8,6 @@ import IconShield from "../Icons/IconShield";
 export default function OverlayAuthentication() {
   return (
     <>
-      <RadialShadow />
       <Container>
         <Heading style={{ marginBottom: 7 }}>Sign in to participate</Heading>
         <Text>

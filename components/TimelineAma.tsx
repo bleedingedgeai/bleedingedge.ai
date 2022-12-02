@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { copyToClipboard, slugify } from "../helpers/string";
 import { useArticleMutations } from "../lib/hooks/useArticleMutations";
 import { ArticleWithLike } from "../prisma/types";
+import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
 import { theme } from "../styles/theme";
 import { AlertsContext } from "./Alerts/AlertsProvider";
@@ -17,6 +18,7 @@ import IconLiked from "./Icons/IconLiked";
 import IconReply from "./Icons/IconReply";
 import IconShare from "./Icons/IconShare";
 import Live from "./Live";
+import Marquee from "./Marquee";
 import Names from "./Names";
 import { OverlayContext, OverlayType } from "./Overlay/Overlay";
 import Participants from "./Participants";
@@ -90,8 +92,10 @@ export default function TimelineAma({ articles }: TimelineProps) {
             </AvatarContainer>
             <Main live={live}>
               <Top>
-                <TopLeft style={{ display: "flex" }}>
-                  <Names authors={article.authors} />
+                <TopLeft>
+                  <NamesContainer>
+                    <Names authors={article.authors} />
+                  </NamesContainer>
                   <TabletDateContainer>
                     <Dot />
                     <span>{updatedAt}</span>
@@ -181,6 +185,12 @@ export default function TimelineAma({ articles }: TimelineProps) {
   );
 }
 
+const NamesContainer = styled.div`
+  ${mq.tablet} {
+    max-width: 82%;
+  }
+`;
+
 const TopLeft = styled.span`
   display: flex;
   align-items: center;
@@ -227,26 +237,6 @@ const MobileGlow = styled.div`
 
   ${mq.phabletUp} {
     display: none;
-  }
-`;
-
-const Badge = styled.div`
-  font-family: ${(p) => p.theme.fontFamily.nouvelle};
-  font-style: normal;
-  font-weight: 500;
-  font-size: 10px;
-  line-height: 130%;
-  color: ${(p) => p.theme.colors.light_grey};
-  background: #141414;
-  border-radius: 77px;
-  display: flex;
-
-  align-items: center;
-
-  padding: 1px 4px 1px 8px;
-
-  svg {
-    margin-left: 6px;
   }
 `;
 
