@@ -71,7 +71,7 @@ export async function getStaticProps({ params }) {
         tags,
         tag: params.tag,
       },
-      revalidate: 60, // In seconds
+      revalidate: 1,
     };
   } catch (error) {
     return {
@@ -80,7 +80,7 @@ export async function getStaticProps({ params }) {
         tags: [],
         tag: params.tag,
       },
-      revalidate: 60, // In seconds
+      revalidate: 1,
     };
   }
 }
