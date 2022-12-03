@@ -95,7 +95,7 @@ export async function getStaticProps() {
       liveArticle: clean(liveArticle),
       tags,
     },
-    revalidate: 1,
+    revalidate: 60,
   };
 }
 
