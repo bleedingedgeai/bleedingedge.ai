@@ -55,7 +55,7 @@ async function generateFeed(articles) {
 }
 
 export async function getStaticProps() {
-  const articlesRequest = await prisma.post.findMany({
+  const articlesRequest = prisma.post.findMany({
     where: { published: true },
     include: {
       _count: {
@@ -66,9 +66,8 @@ export async function getStaticProps() {
       },
     },
   });
-  const tagsRequest = prisma.tag.findMany();
 
-  const liveArticleRequest = await prisma.post.findFirst({
+  const liveArticleRequest = prisma.post.findFirst({
     where: { live: true },
     include: {
       authors: true,
@@ -81,6 +80,7 @@ export async function getStaticProps() {
     },
   });
 
+  const tagsRequest = prisma.tag.findMany();
   const [articles, liveArticle, tags] = await Promise.all([
     articlesRequest,
     liveArticleRequest,
