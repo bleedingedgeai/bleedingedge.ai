@@ -36,7 +36,6 @@ export default class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <link href="/fonts/fonts.css" rel="stylesheet" />
           <meta name="theme-color" content={theme.colors.black} />
           <link
             rel="mask-icon"

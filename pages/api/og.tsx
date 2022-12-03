@@ -9,20 +9,20 @@ export const config = {
 
 const nouvelle = fetch(
   new URL(
-    "../../public/fonts/nouvelle/NNNouvelleGroteskSTD-Medium.woff",
+    "../../styles/fonts/nouvelle/NNNouvelleGroteskSTD-Medium.woff",
     import.meta.url
   )
 ).then((res) => res.arrayBuffer());
 
 const spaceRegular = fetch(
   new URL(
-    "../../public/fonts/space-mono/SpaceMono-Regular.ttf",
+    "../../styles/fonts/space-mono/SpaceMono-Regular.ttf",
     import.meta.url
   )
 ).then((res) => res.arrayBuffer());
 
 const spaceBold = fetch(
-  new URL("../../public/fonts/space-mono/SpaceMono-Bold.ttf", import.meta.url)
+  new URL("../../styles/fonts/space-mono/SpaceMono-Bold.ttf", import.meta.url)
 ).then((res) => res.arrayBuffer());
 
 export default async function handler(req: NextRequest) {
