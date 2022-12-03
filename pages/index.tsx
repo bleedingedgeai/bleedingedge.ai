@@ -49,9 +49,8 @@ async function generateFeed(articles) {
     });
   });
 
-  fs.mkdirSync("./public/rss", { recursive: true });
-  fs.writeFileSync("./public/rss/feed.xml", feed.rss2());
-  fs.writeFileSync("./public/rss/feed.json", feed.json1());
+  fs.writeFileSync("./public/feed.xml", feed.rss2());
+  fs.writeFileSync("./public/feed.json", feed.json1());
 }
 
 export async function getStaticProps() {
