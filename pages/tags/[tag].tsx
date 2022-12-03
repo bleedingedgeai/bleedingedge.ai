@@ -43,9 +43,9 @@ export async function getStaticProps({ params }) {
     },
   });
 
-  const getTags = prisma.tag.findMany();
+  const getTagsRequest = prisma.tag.findMany();
 
-  const liveArticleRequest = await prisma.post.findFirst({
+  const liveArticleRequest = prisma.post.findFirst({
     where: { live: true },
     include: {
       authors: true,
@@ -62,7 +62,7 @@ export async function getStaticProps({ params }) {
     const [articles, liveArticle, tags] = await Promise.all([
       getArticles,
       liveArticleRequest,
-      getTags,
+      getTagsRequest,
     ]);
     return {
       props: {
