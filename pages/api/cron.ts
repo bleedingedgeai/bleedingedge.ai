@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifySignature } from "@upstash/qstash/nextjs";
 import { slugify } from "../../helpers/string";
-import { withMethods } from "../../lib/middleware/withMethods";
 import prisma from "../../lib/prisma";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {

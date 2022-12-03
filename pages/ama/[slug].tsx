@@ -1,7 +1,6 @@
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
-import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React from "react";
 import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
 import Ama from "../../components/Ama/Ama";
 import Layout from "../../components/Layout";
