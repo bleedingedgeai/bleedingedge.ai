@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useContext } from "react";
 import styled, { keyframes } from "styled-components";
 import IconLogo from "../components/Icons/IconLogo";
+import { ADMINS } from "../pages/admin";
 import { theme } from "../styles/theme";
 import Dot from "./Dot";
 import IconGoTo from "./Icons/IconGoTo";
@@ -44,7 +45,7 @@ export default function Sidebar() {
           </Link>
         </LogoContainer>
         {links.map((link) => {
-          const active = isActive(link.path, router.pathname);
+          const active = isActive(link.path, router.asPath);
 
           return (
             <Row key={link.path}>
@@ -74,6 +75,22 @@ export default function Sidebar() {
             <StyledButton onClick={() => signOut()}>Sign out</StyledButton>
           )}
         </Row>
+        {ADMINS.includes(session?.data?.user.username) && (
+          <>
+            <Row>
+              <StyledLink
+                href="/admin"
+                style={
+                  router.asPath === "/admin"
+                    ? { color: theme.colors.white, fontWeight: 700 }
+                    : {}
+                }
+              >
+                Admin
+              </StyledLink>
+            </Row>
+          </>
+        )}
       </div>
       <div>
         <Description>
@@ -128,15 +145,6 @@ const Description = styled.div`
   color: ${(p) => p.theme.colors.light_grey};
   margin-bottom: 12px;
   line-height: 130%;
-`;
-
-const fadein = keyframes`
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
 `;
 
 const StyledLink = styled(Link)`
