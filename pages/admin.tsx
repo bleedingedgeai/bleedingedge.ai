@@ -75,7 +75,6 @@ export default function Home({ tags, articles }: HomeProps) {
               {new Intl.DateTimeFormat("en").format(new Date(a.postedAt))}
             </PostedAt>
             <span>{a.title}</span>
-            <span>{a.title}</span>
           </Article>
         ))}
       </Layout>
