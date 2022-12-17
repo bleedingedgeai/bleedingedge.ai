@@ -17,7 +17,7 @@ import {
   STORAGE_REPLY,
 } from "../../helpers/storage";
 import { copyToClipboard } from "../../helpers/string";
-import { useArticleMutations } from "../../lib/hooks/useArticleMutations";
+import { useArticleLikeMutations } from "../../lib/hooks/useArticleLikeMutations";
 import { formatNestedComments } from "../../pages/ama/[slug]";
 import { ArticleWithLike, CommentWithChildren } from "../../prisma/types";
 import { ellipsis } from "../../styles/css";
@@ -61,7 +61,7 @@ export default function Ama({ article, comments }: AmaProps) {
   const stickyRef = useRef<HTMLDivElement>(null);
 
   const session = useSession();
-  const articleMutations = useArticleMutations({});
+  const articleMutations = useArticleLikeMutations({});
 
   /////////////////////////////////////////////////////////
   // Storage Keys

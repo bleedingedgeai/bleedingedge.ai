@@ -84,11 +84,11 @@ const groupArticlesByDate = (articles) => {
   }, {});
 };
 
-const sortByLatest = (date1, date2) => {
+export const sortByLatest = (date1, date2) => {
   return new Date(date2).getTime() - new Date(date1).getTime();
 };
 
-const sortByEarliest = (date1, date2) => {
+export const sortByEarliest = (date1, date2) => {
   return new Date(date1).getTime() - new Date(date2).getTime();
 };
 

@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import {
   UseMutationResult,
   useMutation,
@@ -6,58 +5,128 @@ import {
 } from "@tanstack/react-query";
 
 interface CommentMutationsProps {
-  onLike?: () => void;
+  onCreate?: () => void;
+  onUpdate?: () => void;
+  onDelete?: () => void;
 }
 
-export function useArticleMutations({ onLike }: CommentMutationsProps): {
-  like: UseMutationResult;
+export function useArticleMutations({
+  onCreate,
+  onUpdate,
+  onDelete,
+}: CommentMutationsProps): {
+  create: UseMutationResult;
+  update: UseMutationResult;
+  delete: UseMutationResult;
 } {
-  const router = useRouter();
-  const ARTICLE_KEY = ["article", router.query.slug];
+  const ARTICLES_KEY = ["articles"];
   const queryClient = useQueryClient();
 
   ///////////////////////////////////////////////////////////////////
-  // LIKE
+  // CREATE
   ///////////////////////////////////////////////////////////////////
 
-  const likeMutation = useMutation({
-    mutationKey: ARTICLE_KEY,
-    mutationFn: ({ postId, userId, slug }: any) => {
-      return fetch(`/api/articles/${slug}/like`, {
+  const createUpdate = useMutation({
+    mutationKey: ARTICLES_KEY,
+    mutationFn: (body: any) => {
+      return fetch(`/api/article`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ postId, userId }),
+        body: JSON.stringify(body),
       });
     },
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ARTICLE_KEY });
-      const previousArticle = queryClient.getQueryData(ARTICLE_KEY);
+    onMutate: async (newArticle) => {
+      await queryClient.cancelQueries({ queryKey: ARTICLES_KEY });
+      const previousArticles = queryClient.getQueryData(ARTICLES_KEY);
 
-      queryClient.setQueryData(ARTICLE_KEY, (old: any) => {
-        const shouldLike = !old.liked;
-
-        return {
-          ...old,
-          _count: {
-            ...old._count,
-            likes: shouldLike ? old._count.likes + 1 : old._count.likes - 1,
-          },
-          liked: shouldLike,
-        };
+      queryClient.setQueryData(ARTICLES_KEY, (old: any) => {
+        return [newArticle, ...old];
       });
 
-      onLike?.();
-      return { previousArticle };
+      onCreate?.();
+      return { previousArticles };
     },
-    onError: (err, newLike, context) => {
-      queryClient.setQueryData(ARTICLE_KEY, context.previousArticle);
+    onError: (err, _, context) => {
+      queryClient.setQueryData(ARTICLES_KEY, context.previousArticles);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ARTICLE_KEY });
+      queryClient.invalidateQueries({ queryKey: ARTICLES_KEY });
+    },
+  });
+  ///////////////////////////////////////////////////////////////////
+  // UPDATE
+  ///////////////////////////////////////////////////////////////////
+
+  const updateMutation = useMutation({
+    mutationKey: ARTICLES_KEY,
+    mutationFn: ({ body, articleId }: { body: any; articleId: string }) => {
+      return fetch(`/api/article/${articleId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    },
+    onMutate: async ({ body, articleId }) => {
+      await queryClient.cancelQueries({ queryKey: ARTICLES_KEY });
+      const previousArticles = queryClient.getQueryData(ARTICLES_KEY);
+
+      queryClient.setQueryData(ARTICLES_KEY, (articles: any[]) => {
+        return articles.map((article) => {
+          if (article.id == articleId) {
+            return { ...article, ...body, updatedAt: new Date() };
+          }
+
+          return article;
+        });
+      });
+
+      onUpdate?.();
+      return { previousArticles };
+    },
+    onError: (err, _, context) => {
+      queryClient.setQueryData(ARTICLES_KEY, context.previousArticles);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ARTICLES_KEY });
+    },
+  });
+
+  ///////////////////////////////////////////////////////////////////
+  // DELETE
+  ///////////////////////////////////////////////////////////////////
+
+  const deleteMutation = useMutation({
+    mutationKey: ARTICLES_KEY,
+    mutationFn: (articleId: string) => {
+      return fetch(`/api/article/${articleId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+    },
+    onMutate: async (articleId) => {
+      await queryClient.cancelQueries({ queryKey: ARTICLES_KEY });
+      const previousArticles = queryClient.getQueryData(ARTICLES_KEY);
+
+      queryClient.setQueryData(ARTICLES_KEY, (articles: any[]) => {
+        return articles.filter((article) => {
+          return article.id !== articleId;
+        });
+      });
+
+      onDelete?.();
+      return { previousArticles };
+    },
+    onError: (err, _, context) => {
+      queryClient.setQueryData(ARTICLES_KEY, context.previousArticles);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ARTICLES_KEY });
     },
   });
 
   return {
-    like: likeMutation,
+    create: createUpdate,
+    update: updateMutation,
+    delete: deleteMutation,
   };
 }

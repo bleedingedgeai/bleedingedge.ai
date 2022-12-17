@@ -35,7 +35,7 @@ const StyledTextarea = styled.textarea`
   font-family: ${(p) => p.theme.fontFamily.nouvelle};
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.16);
+    color: rgba(255, 255, 255, 0.3);
   }
 
   &:not([disabled], :focus):hover {

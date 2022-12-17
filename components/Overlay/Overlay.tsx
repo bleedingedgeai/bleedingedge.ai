@@ -8,6 +8,7 @@ import { mq } from "../../styles/mediaqueries";
 import { theme } from "../../styles/theme";
 import IconEx from "../Icons/IconEx";
 import Portal from "../Portal";
+import OverlayArticle from "./OverlayArticle";
 import OverlayAuthentication from "./OverlayAuthentication";
 import OverlayConfirmation from "./OverlayConfirmation";
 import OverlayReadMore from "./OverlayReadMore";
@@ -21,6 +22,7 @@ export enum OverlayType {
   AUTHENTICATION = "AUTHENTICATION",
   CONFIRMATION = "CONFIRMATION",
   READ_MORE = "READ_MORE",
+  ARTICLE = "ARTICLE",
 }
 
 const OverlayComponentMap = {
@@ -29,6 +31,7 @@ const OverlayComponentMap = {
   [OverlayType.AUTHENTICATION]: OverlayAuthentication,
   [OverlayType.CONFIRMATION]: OverlayConfirmation,
   [OverlayType.READ_MORE]: OverlayReadMore,
+  [OverlayType.ARTICLE]: OverlayArticle,
 };
 
 enum Action {
@@ -50,6 +53,7 @@ export interface Context {
   showOverlay: ShowOverlayFn;
   hideOverlay: HideOverlayFn;
   overlayProps: any;
+  overlayType: OverlayType;
 }
 
 const defaultContext: Context = {
@@ -57,6 +61,7 @@ const defaultContext: Context = {
   showOverlay: () => {},
   hideOverlay: () => {},
   overlayProps: {},
+  overlayType: null,
 };
 
 export const OverlayContext = React.createContext<Context>(defaultContext);
@@ -64,6 +69,7 @@ export const OverlayContext = React.createContext<Context>(defaultContext);
 const initialState = {
   OverlayComponent: null,
   overlayProps: null,
+  overlayType: null,
 };
 
 function overlayReducer(
@@ -75,6 +81,7 @@ function overlayReducer(
       return {
         OverlayComponent: OverlayComponentMap[type],
         overlayProps: props,
+        overlayType: type,
       };
     case Action.HIDE:
       return initialState;
@@ -84,10 +91,8 @@ function overlayReducer(
 }
 
 export function OverlayProvider(props: React.PropsWithChildren<{}>) {
-  const [{ OverlayComponent, overlayProps }, dispatch] = useReducer(
-    overlayReducer,
-    initialState
-  );
+  const [{ OverlayComponent, overlayProps, overlayType }, dispatch] =
+    useReducer(overlayReducer, initialState);
 
   const showOverlay = useCallback(
     (type, props) => {
@@ -109,6 +114,7 @@ export function OverlayProvider(props: React.PropsWithChildren<{}>) {
         showOverlay,
         hideOverlay,
         overlayProps,
+        overlayType,
       }}
     >
       {props.children}
@@ -118,7 +124,7 @@ export function OverlayProvider(props: React.PropsWithChildren<{}>) {
 
 export default function Overlay() {
   const { phablet } = useMediaQuery();
-  const { OverlayComponent, hideOverlay, overlayProps } =
+  const { OverlayComponent, hideOverlay, overlayProps, overlayType } =
     useContext(OverlayContext);
 
   const show = OverlayComponent
@@ -169,7 +175,10 @@ export default function Overlay() {
           <Portal>
             <Fixed style={{ opacity: show ? 1 : 0 }}>
               <OutsideClickHandler onOutsideClick={() => hideOverlay()}>
-                <Container style={style}>
+                <Container
+                  style={style}
+                  wide={overlayType === OverlayType.ARTICLE}
+                >
                   <ExitContainer onClick={() => hideOverlay()}>
                     <IconEx size={24} fill={theme.colors.white} />
                   </ExitContainer>
@@ -201,8 +210,8 @@ const Fixed = styled.div`
   transition: opacity 0.1s;
 `;
 
-const Container = styled(animated.div)`
-  width: 444px;
+const Container = styled(animated.div)<{ wide: boolean }>`
+  width: ${(p) => (p.wide ? "540px" : "444px")};
   margin: 0 auto;
   padding: 0 48px 46px;
   background: rgba(22, 22, 22, 0.52);

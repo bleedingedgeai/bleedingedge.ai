@@ -24,7 +24,7 @@ export default function Article(props: ArticleProps) {
   return <ArticleComponent {...props} />;
 }
 
-const getPrettyHostname = (urlString: string) => {
+export const getPrettyHostname = (urlString: string) => {
   // https://www.example.com -> example.com
   return new URL(urlString).hostname.replace("www.", "");
 };

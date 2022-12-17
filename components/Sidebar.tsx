@@ -2,7 +2,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import IconLogo from "../components/Icons/IconLogo";
 import { ADMINS } from "../pages/admin";
 import { theme } from "../styles/theme";
@@ -76,20 +76,18 @@ export default function Sidebar() {
           )}
         </Row>
         {ADMINS.includes(session?.data?.user.username) && (
-          <>
-            <Row>
-              <StyledLink
-                href="/admin"
-                style={
-                  router.asPath === "/admin"
-                    ? { color: theme.colors.white, fontWeight: 700 }
-                    : {}
-                }
-              >
-                Admin
-              </StyledLink>
-            </Row>
-          </>
+          <Row style={{ opacity: session.status === "loading" ? 0 : 1 }}>
+            <StyledLink
+              href="/admin"
+              style={
+                router.asPath === "/admin"
+                  ? { color: theme.colors.white, fontWeight: 700 }
+                  : {}
+              }
+            >
+              Admin
+            </StyledLink>
+          </Row>
         )}
       </div>
       <div>

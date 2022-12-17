@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { copyToClipboard, slugify } from "../helpers/string";
-import { useArticleMutations } from "../lib/hooks/useArticleMutations";
+import { useArticleLikeMutations } from "../lib/hooks/useArticleLikeMutations";
 import { ArticleWithLike } from "../prisma/types";
 import { ellipsis } from "../styles/css";
 import { mq } from "../styles/mediaqueries";
@@ -32,7 +32,7 @@ export default function TimelineAma({ articles }: TimelineProps) {
   const session = useSession();
   const { showOverlay } = useContext(OverlayContext);
   const { showAlert } = useContext(AlertsContext);
-  const articleMutations = useArticleMutations({});
+  const articleMutations = useArticleLikeMutations({});
 
   const handleLike = (event: React.MouseEvent, article) => {
     event.preventDefault();
