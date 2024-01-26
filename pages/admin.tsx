@@ -18,7 +18,7 @@ import { mq } from "../styles/mediaqueries";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { Sort } from ".";
 
-export const ADMINS = ["lachygroom", "brotzky_", "tcosta_co", "davidtsong"];
+export const ADMINS = ["lachygroom", "brotzky_", "tcosta_co", "davidtsong", "jtvhk"];
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
